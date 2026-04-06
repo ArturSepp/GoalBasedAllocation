@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "goal-based-allocation"
+version = "0.1.0"
+description = "Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Artur Sepp"},
+]
+keywords = [
+    "portfolio-optimization",
+    "mean-variance",
+    "regime-switching",
+    "jump-diffusion",
+    "goal-based-investing",
+    "laplace-transform",
+    "quantitative-finance",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "ruff"]
+
+[project.urls]
+Homepage = "https://github.com/ArturSepp/GoalBasedAllocation"
+Repository = "https://github.com/ArturSepp/GoalBasedAllocation"
+Issues = "https://github.com/ArturSepp/GoalBasedAllocation/issues"
+
+[tool.setuptools.packages.find]
+include = ["goal_based_allocation*"]
