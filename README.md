@@ -382,8 +382,6 @@ If you use this package in your research, please cite:
 ## Key References
 
 
-## Key References
-
 - Sepp, A., Ossa, I., and Kastenholz, M. (2026). Robust optimization of strategic and
   tactical asset allocation for multi-asset portfolios. *Journal of Portfolio Management*, 52(4), 86-120.
 - Sepp, A., Hansen, E., and Kastenholz, M. (2026). Capital market assumptions and strategic
