@@ -375,12 +375,11 @@ If you use this package in your research, please cite:
   title   = {Dynamic Mean-Variance Portfolio Allocation under Regime-Switching
              Jump-Diffusions with Absorbing Barriers},
   year    = {2026},
-  note    = {Available at SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=XXXXXXX}
+  note    = {Available at SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=XXXXXXXX}
 }
 ```
 
 ## Key References
-
 
 - Sepp, A., Ossa, I., and Kastenholz, M. (2026). Robust optimization of strategic and
   tactical asset allocation for multi-asset portfolios. *Journal of Portfolio Management*, 52(4), 86-120.
