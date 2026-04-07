@@ -375,7 +375,7 @@ If you use this package in your research, please cite:
   title   = {Dynamic Mean-Variance Portfolio Allocation under Regime-Switching
              Jump-Diffusions with Absorbing Barriers},
   year    = {2026},
-  note    = {Available at SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=XXXXXXXX}
+  note    = {Available at SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579}
 }
 ```
 

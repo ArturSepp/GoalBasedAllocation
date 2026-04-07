@@ -501,39 +501,33 @@ def figure_path_dynamics(filename, outdir):
 
 
 # ============================================================
-# Figure 10: Mandate Comparison (3 subplots: Conservative, Balanced, Growth)
+# Figure 10: Mandate Comparison (2 subplots: Conservative, Balanced)
 # ============================================================
 def figure_mandate_comparison(filename, outdir, n_paths=N_PATHS_MC):
     """Terminal wealth density for mandates: analytical vs MC.
 
-    Three subplots in one row showing survived density (blue) and
-    overshoot density (red) overlaid on MC histograms.
-    Validates the full pipeline: portfolio aggregation → Riccati →
-    gap process → Laplace density → MC comparison.
+    Two subplots showing survived density (blue) and overshoot density
+    (red) overlaid on MC histograms. Uses _calibrate_mandate with
+    c=0%, ω*(0)=1, q_dd=2 — matching Table 2 parameters.
     """
-    assets = create_paper_assets()
-    mandates = create_paper_mandates(assets)
+    mandate_specs = [
+        ('Conservative',  0.65),
+        ('Balanced',      0.35),
+    ]
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
 
-    for idx, name in enumerate(['conservative', 'balanced', 'growth']):
+    for idx, (label, w_bd) in enumerate(mandate_specs):
         ax = axes[idx]
-        mandate = mandates[name]
-        eff = mandate_effective_asset(mandate)
-        target = MANDATE_TARGETS[name]
-
-        # Solve Riccati & gap process
-        ell, ric = find_ell(eff, T, target, r, r)  # c = r = 2%
-        gap = gap_process_asset(ric)
-        r_c = max(0, r - r)  # = 0 for base case
-        PiT = ric.derived_at_tau(0)['Pi_star'][0]
-        L_T = eff.pi_floor * np.exp(r_c * T)
-        B_T = PiT - L_T
+        cal = _calibrate_mandate(w_bd, c=0.0, omega_0=1.0)
+        gap = cal['gap']; eff = cal['eff']; ric = cal['ric']
+        PiT = cal['PiT']; L_T = cal['L_T']; B_T = cal['B_T']
+        wa = cal['wa']
 
         # Analytical bounded density (survived component)
-        x_max = min(8.0, gap.x0 + 6*max(gap.params.sigma0,
-                                          gap.params.sigma1)*np.sqrt(T))
-        x_grid = np.linspace(0.001, x_max, 800)
+        x_max = min(10.0, gap.x0 + 8*max(gap.params.sigma0,
+                                           gap.params.sigma1)*np.sqrt(T))
+        x_grid = np.linspace(0.0001, x_max, 500)
         d0_b, d1_b = compute_density(T, x_grid, gap)
         dg_b = d0_b + d1_b
         S = compute_survival(T, gap.x0, gap)
@@ -542,8 +536,9 @@ def figure_mandate_comparison(filename, outdir, n_paths=N_PATHS_MC):
         Pi_surv = PiT - B_T * np.exp(-x_grid)
         f_Pi_surv = dg_b / (B_T * np.exp(-x_grid))
 
-        # Analytical overshoot density
-        d_ov_grid = np.linspace(0.001, 8.0, 400)
+        # Analytical overshoot density — extend to cover Pi > 0
+        d_ov_max = np.log(B_T / 1.0) if B_T > 1 else 8.0  # Pi_over = 0 at d = ln(B_T)
+        d_ov_grid = np.linspace(0.001, min(d_ov_max, 10.0), 300)
         f_ov = compute_overshoot_density(T, d_ov_grid, gap)
         over_mass = float(np.trapezoid(f_ov, d_ov_grid))
         Pi_over = PiT - B_T * np.exp(d_ov_grid)
@@ -558,64 +553,53 @@ def figure_mandate_comparison(filename, outdir, n_paths=N_PATHS_MC):
         # MC histograms (density = counts / (N_total * bin_width))
         if np.sum(survived) > 100:
             vals_s = Pi_T_mc[survived]
-            counts_s, edges_s = np.histogram(vals_s, bins=80)
+            counts_s, edges_s = np.histogram(vals_s, bins=50)
             widths_s = np.diff(edges_s)
             density_s = counts_s / (n_paths * widths_s)
             centers_s = 0.5 * (edges_s[:-1] + edges_s[1:])
             ax.bar(centers_s, density_s, width=widths_s, alpha=0.35,
-                   color='C0', edgecolor='none', label='MC survived', zorder=2)
+                   color='C0', edgecolor='none',
+                   label='MC survived' if idx == 0 else None, zorder=2)
 
         if np.sum(is_overshoot) > 10:
             vals_o = Pi_T_mc[is_overshoot]
-            counts_o, edges_o = np.histogram(vals_o, bins=40)
+            counts_o, edges_o = np.histogram(vals_o, bins=25)
             widths_o = np.diff(edges_o)
             density_o = counts_o / (n_paths * widths_o)
             centers_o = 0.5 * (edges_o[:-1] + edges_o[1:])
             ax.bar(centers_o, density_o, width=widths_o, alpha=0.35,
-                   color='C3', edgecolor='none', label='MC overshoot', zorder=2)
+                   color='C3', edgecolor='none',
+                   label='MC overshoot' if idx == 0 else None, zorder=2)
 
         # Analytical survived density
         ax.plot(Pi_surv, f_Pi_surv, 'C0-', lw=2,
-                label='Analytical (survived)', zorder=5)
+                label='Analytical (survived)' if idx == 0 else None, zorder=5)
 
         # Analytical overshoot density
         if over_mass > 0.001:
-            valid_ov = (Pi_over > (L_T - 40)) & (f_Pi_over > 1e-8)
+            valid_ov = (Pi_over > 0) & (f_Pi_over > 1e-8)
             ax.plot(Pi_over[valid_ov], f_Pi_over[valid_ov], 'C3-', lw=2,
-                    label='Analytical (overshoot)', zorder=5)
+                    label='Analytical (overshoot)' if idx == 0 else None, zorder=5)
 
         # Floor line
         ax.axvline(L_T, color='r', ls='--', lw=1.5, alpha=0.6,
                    label='Floor $L_T$' if idx == 0 else None)
 
-        ax.set_title(MANDATE_LABELS[name], fontsize=13, fontweight='bold')
+        ax.set_title(label, fontsize=13, fontweight='bold')
         ax.set_xlabel(r'Terminal wealth $\Pi_T$', fontsize=10)
         if idx == 0:
             ax.set_ylabel('Density', fontsize=11)
 
-        xleft = max(L_T - 15, 0)
-        xright = PiT + 5
-        ax.set_xlim(xleft, xright)
+        ax.set_xlim(0, 260)
         ax.set_ylim(bottom=0)
         ax.grid(alpha=0.15)
 
-        pct_s = f'{100*S:.0f}' if S > 0.999 else f'{100*S:.1f}'
-        wa = abs(ric.derived_at_tau(ric.T)['w_a'][0])
-        info = (f'Surv = {pct_s}%\n'
-                f'$L_T$ = {L_T:.0f}\n'
-                f'$\\Pi^*_T$ = {PiT:.0f}\n'
-                f'$|\\omega^*_a|$ = {wa:.2f}')
-        ax.text(0.97, 0.97, info, transform=ax.transAxes, fontsize=9,
-                va='top', ha='right',
-                bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
-                          edgecolor='gray', alpha=0.9))
-
-        print(f"    {name:16s}: S_an={S:.3f} O_an={over_mass:.3f} | "
+        print(f"    {label:20s}: S_an={S:.3f} O_an={over_mass:.3f} | "
               f"S_mc={np.mean(survived):.3f} O_mc={np.mean(is_overshoot):.3f} | "
               f"|w_a|={wa:.2f}")
 
-    axes[0].legend(fontsize=8, loc='upper left')
-    plt.subplots_adjust(left=0.05, right=0.98, bottom=0.14, top=0.92, wspace=0.22)
+    axes[0].legend(fontsize=8, loc='upper right')
+    plt.subplots_adjust(left=0.07, right=0.98, bottom=0.14, top=0.92, wspace=0.22)
     fig.savefig(outdir / filename, dpi=150, bbox_inches='tight')
     plt.close('all')
     print(f'  Saved {filename}')
