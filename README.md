@@ -36,10 +36,10 @@ with exponential jumps at regime transitions and an absorbing wealth floor.
 
 The MV-optimal strategy takes the form
 
-$$\omega^*(t) = |\omega^*_a| \cdot \left(\frac{\Pi^*(t)}{\Pi_t} - 1\right)$$
+$$\omega^{\ast}(t) = |\omega^{\ast}_a| \cdot \left(\frac{\Pi^{\ast}(t)}{\Pi_t} - 1\right)$$
 
-where $\Pi^*(t)$ is the target wealth trajectory derived from the Riccati ODE system,
-and $|\omega^*_a|$ is the regime-dependent allocation intensity. This produces an
+where $\Pi^{\ast}(t)$ is the target wealth trajectory derived from the Riccati ODE system,
+and $|\omega^{\ast}_a|$ is the regime-dependent allocation intensity. This produces an
 **endogenous de-risking glide path**: early in the horizon the funding gap is large
 and allocation is aggressive; as the portfolio approaches the target, allocation
 moderates automatically.
@@ -82,7 +82,7 @@ with two states: **growth** ($i=1$) and **stress** ($i=2$).
 | $\mu^{[i]} = \bar{\mu}^{[i]} - \lambda \alpha^{[i]}$ | Diffusion drift | `mu_bar` |
 | $r_h = \max(r, c)$ | Hurdle rate | `r_h` |
 | $r_c = r_h - c = \max(0, r-c)$ | Net floor growth rate | `r_c` |
-| $\omega^*_a = -\tilde{a}^{[i]}/\Sigma^{[i]}$ | Risky allocation coefficient | `w_a` |
+| $\omega^{\ast}_a = -\tilde{a}^{[i]}/\Sigma^{[i]}$ | Risky allocation coefficient | `w_a` |
 
 ### Process specification
 
@@ -91,7 +91,7 @@ with two states: **growth** ($i=1$) and **stress** ($i=2$).
 | Diffusion | Regime-dependent drift $\mu^{[i]}$ and volatility $\sigma^{[i]}$ |
 | Jumps | Exponential crash at growth→stress ($\eta^{[1]}$), exponential recovery at stress→growth ($\eta^{[2]}$) |
 | Regime switching | Poisson rates $\lambda^{[12]}$ (crash) and $\lambda^{[21]}$ (recovery) |
-| MV-optimal control | $\omega^*(t) = \|\omega_a^*\| \cdot (\Pi^*(t)/\Pi_t - 1)$, from Riccati system |
+| MV-optimal control | $\omega^{\ast}(t) = \|\omega_a^{\ast}\| \cdot (\Pi^{\ast}(t)/\Pi_t - 1)$, from Riccati system |
 | Absorbing floor | Wealth stopped at $L_t = L_0 \cdot e^{r_c t}$, converting to cash |
 
 ### Asset class parameters
@@ -116,9 +116,9 @@ $w_{\text{eq}} = g(1-w)$, $w_{\text{pe}} = (1-g)(1-w)$.
 | Balanced | 35/43/22 | 11.1 / 16.7% | 4.34 / 0.70% | 0.233 |
 | Growth | 0/67/33 | 15.8 / 23.8% | 5.33 / 0.00% | 0.334 |
 
-### MV-optimal results ($c=0\%$, $\omega^*(0)=1$, $q_{dd}=2$)
+### MV-optimal results ($c=0\%$, $\omega^{\ast}(0)=1$, $q_{dd}=2$)
 
-| Mandate | $r_{\text{impl}}$ | $\Pi^*_T$ | $\mathbb{E}[\Pi_T]$ | Std | Survival | $r^{\text{BH}}_{\text{impl}}$ | $\text{Std}^{\text{BH}}$ |
+| Mandate | $r_{\text{impl}}$ | $\Pi^{\ast}_T$ | $\mathbb{E}[\Pi_T]$ | Std | Survival | $r^{\text{BH}}_{\text{impl}}$ | $\text{Std}^{\text{BH}}$ |
 |---|---|---|---|---|---|---|---|
 | Income | 2.39% | 240 | 127 | 24.7 | 85.5% | 2.46% | 30.4 |
 | Conservative | 2.92% | 200 | 134 | 33.7 | 83.2% | 3.33% | 48.3 |
@@ -377,7 +377,7 @@ The analytical framework proceeds in three steps:
 **Step 1: Riccati ODE system.** The pre-commitment MV problem reduces to a
 system of coupled Riccati ODEs for the value function coefficients
 in each regime. The solution yields the optimal allocation
-intensity $|\omega^*_a|$ and the target wealth trajectory $\Pi^*(t)$.
+intensity $|\omega^{\ast}_a|$ and the target wealth trajectory $\Pi^{\ast}(t)$.
 
 **Step 2: Gap process.** Under the optimal policy, the log-cushion ratio
 $X_t = \ln(B_t/Z_t)$ is a regime-switching jump-diffusion with an absorbing
