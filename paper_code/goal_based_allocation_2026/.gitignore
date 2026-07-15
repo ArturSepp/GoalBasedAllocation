@@ -1,0 +1,9 @@
+# Track only the LaTeX source, the compiled PDF, the figures, and the
+# figure-generation script. Everything else (LaTeX build artifacts, etc.) is ignored.
+*
+!.gitignore
+!*.tex
+!*.pdf
+!generate_paper_figures.py
+!figures/
+!figures/**

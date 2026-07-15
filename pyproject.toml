@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "goal-based-allocation"
-version = "0.1.0"
-description = "Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions"
+version = "0.2.0"
+description = "Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
@@ -19,6 +19,7 @@ keywords = [
     "jump-diffusion",
     "goal-based-investing",
     "laplace-transform",
+    "option-pricing",
     "quantitative-finance",
 ]
 classifiers = [
@@ -41,6 +42,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "black", "ruff"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: slower tests such as Monte Carlo cross-checks",
+]
 
 [project.urls]
 Homepage = "https://github.com/ArturSepp/GoalBasedAllocation"

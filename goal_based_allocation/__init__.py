@@ -2,7 +2,8 @@
 Goal-Based Allocation under Regime-Switching Jump-Diffusions.
 
 Companion code to: "Dynamic Mean-Variance Portfolio Allocation under
-Regime-Switching Jump-Diffusions with Absorbing Barriers" (Sepp, 2026).
+Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution
+Matching" (Sepp, 2026).
 
 Modules
 -------
@@ -12,6 +13,7 @@ riccati_solver : Riccati ODE system for MV-optimal allocation.
 client_solver : Client profile specification and calibration.
 mandate_utils : Portfolio mandate construction from individual assets.
 opportunity_set : Investment opportunity set and two-step client framework.
+vanilla_option_pricer : Laplace-transform vanilla option pricing under regime switching.
 """
 
 from .regime_switch_paper import (
@@ -29,5 +31,12 @@ from .regime_switch_paper import (
 from .riccati_solver import find_ell, gap_process_asset
 from .client_solver import build_effective_asset, portfolio_sigma_unc, portfolio_eta_quadrature
 from .opportunity_set import AdvisorSpec, compute_opportunity_point, build_opportunity_set
+from .vanilla_option_pricer import (
+    RiskNeutralParams,
+    OptionType,
+    Regime,
+    price_vanilla,
+    implied_vol,
+)
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

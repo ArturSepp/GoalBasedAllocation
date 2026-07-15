@@ -2,7 +2,7 @@
 """
 Generate all figures and run integration tests for the paper:
 "Dynamic Mean-Variance Portfolio Allocation under Regime-Switching
-Jump-Diffusions with Absorbing Barriers" (Sepp, 2026).
+Jump-Diffusions with Absorbing Barriers and Distribution Matching" (Sepp, 2026).
 
 Usage:
     python -m paper_figures.generate_paper_figures [--outdir figures/] [--figure N]
@@ -785,8 +785,9 @@ def _generate_all_figures(outdir):
 def main():
     parser = argparse.ArgumentParser(
         description='Generate paper figures and run integration tests')
-    parser.add_argument('--outdir', type=str, default='figures',
-                        help='Output directory for figures')
+    parser.add_argument('--outdir', type=str, default=None,
+                        help='Output directory for figures '
+                             '(default: the figures/ folder next to this script)')
     parser.add_argument('--figure', type=int, default=None,
                         help='Generate only figure N (1-10)')
     parser.add_argument('--test', action='store_true',
@@ -797,7 +798,7 @@ def main():
         local_integration_tests()
         return
 
-    outdir = Path(args.outdir)
+    outdir = Path(args.outdir) if args.outdir else (Path(__file__).resolve().parent / 'figures')
     outdir.mkdir(exist_ok=True)
 
     if args.figure is not None:

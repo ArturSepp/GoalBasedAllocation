@@ -1,10 +1,13 @@
 # GoalBasedAllocation
 
 <p align="center">
-  <em>Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions</em>
+  <em>Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions<br>with Absorbing Barriers and Distribution Matching</em>
 </p>
 
 <p align="center">
+  <a href="https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml">
+    <img src="https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml/badge.svg" alt="Tests">
+  </a>
   <a href="https://github.com/ArturSepp/GoalBasedAllocation/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT">
   </a>
@@ -22,8 +25,8 @@
 Companion code to:
 
 > **Sepp, A. (2026). Dynamic Mean-Variance Portfolio Allocation under Regime-Switching
-> Jump-Diffusions with Absorbing Barriers.**
-> [SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=XXXXXXX](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=XXXXXXX)
+> Jump-Diffusions with Absorbing Barriers and Distribution Matching.**
+> [SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579)
 
 ## Overview
 
@@ -62,6 +65,7 @@ simulation is needed for pricing; MC is used only for validation.
 - Portfolio mandate construction with deterministic quadrature for jump aggregation
 - Expected allocation glide paths with variance bands
 - Investment opportunity set construction for client-facing portfolio advice
+- Vanilla option pricing under the same regime-switching jump-diffusion via one Laplace inversion (calls/puts, both regimes, joint strikes)
 - Monte Carlo simulator for validation of all analytical results
 - Integration tests and all paper figures reproducible from a single command
 
@@ -151,10 +155,18 @@ GoalBasedAllocation/
 │   ├── laplace_inversion.py        # Abate-Whitt & Stehfest numerical inversion
 │   ├── client_solver.py            # Effective asset construction, portfolio eta quadrature
 │   ├── mandate_utils.py            # Portfolio mandate construction from assets
-│   └── opportunity_set.py          # Investment opportunity set & advisor framework
-├── paper_figures/                  # Paper reproduction
-│   └── generate_paper_figures.py   # All 10 figures + integration tests
-├── figures/                        # Pre-generated figures
+│   ├── opportunity_set.py          # Investment opportunity set & advisor framework
+│   └── vanilla_option_pricer.py    # Laplace-transform vanilla option pricing (regime switching)
+├── examples/                       # Minimal, self-contained illustrations
+│   ├── wealth_process_simulation.py
+│   ├── terminal_wealth_distribution.py
+│   ├── investment_opportunity_set.py
+│   └── regime_switch_smile.py      # Vol smile + Fourier/MC reference pricers
+├── paper_code/
+│   └── goal_based_allocation_2026/ # Self-contained paper: LaTeX, PDF, figures
+│       ├── goal_based_allocation_2026.tex
+│       ├── generate_paper_figures.py   # All 10 figures + integration tests
+│       └── figures/
 ├── pyproject.toml
 ├── LICENSE
 └── README.md
@@ -170,6 +182,7 @@ GoalBasedAllocation/
 | `client_solver` | Effective single-asset from multi-asset portfolios | `build_effective_asset`, `portfolio_sigma_unc`, `portfolio_eta_quadrature` |
 | `mandate_utils` | Named mandates (Income, Conservative, Balanced, Growth) | `mandate_effective_asset` |
 | `opportunity_set` | Two-step advisor framework: opportunity set + client profile | `AdvisorSpec`, `compute_opportunity_point`, `build_opportunity_set` |
+| `vanilla_option_pricer` | Laplace-transform vanilla option pricing under regime switching | `RiskNeutralParams`, `price_vanilla`, `implied_vol` |
 
 ## Quick Start
 
@@ -261,22 +274,49 @@ for p in opp:
           f"Surv={p['S']:5.1%}  Median={p['q50']:6.0f}")
 ```
 
+### 5. Price a vanilla option under regime switching
+
+```python
+import numpy as np
+from goal_based_allocation import RiskNeutralParams, price_vanilla, implied_vol, Regime
+
+# risk-neutral parameters (rate convention: eta_rate = 1 / eta_mean)
+params = RiskNeutralParams.from_rates(sigma_0=0.18, sigma_1=0.28,
+                                      lambda_01=0.10, lambda_10=1.0,
+                                      eta_01=3.0, eta_10=8.0, rate=0.03)
+
+strikes = np.array([80.0, 100.0, 120.0, 150.0, 200.0])
+calls = price_vanilla(params, spot=100.0, strikes=strikes, ttm=10.0,
+                      regime=Regime.GROWTH, option_type='call')
+vols = implied_vol(params, spot=100.0, strikes=strikes, ttm=10.0, regime=Regime.GROWTH)
+
+for k, c, v in zip(strikes, calls, vols):
+    print(f"K={k:5.0f}  call={c:8.4f}  implied_vol={v:6.2%}")
+```
+
+Prices come from a single Laplace inversion in maturity (Abate-Whitt), so all
+strikes are priced jointly and the same characteristic roots reused by the
+wealth-floor machinery. See `examples/regime_switch_smile.py` for the smile plus
+Fourier and Monte Carlo cross-checks.
+
 ## Reproducing Paper Results
 
 All figures and integration tests can be reproduced with a single command:
 
 ```bash
-# Run integration tests (9 assertions) + generate all 10 figures
-python -m paper_figures.generate_paper_figures --test
+cd paper_code/goal_based_allocation_2026
 
-# Generate all figures only
-python -m paper_figures.generate_paper_figures
+# Run integration tests (9 assertions)
+python generate_paper_figures.py --test
+
+# Generate all figures only (writes to ./figures/)
+python generate_paper_figures.py
 
 # Generate a single figure
-python -m paper_figures.generate_paper_figures --figure 10
+python generate_paper_figures.py --figure 10
 
 # Custom output directory
-python -m paper_figures.generate_paper_figures --outdir my_figures/
+python generate_paper_figures.py --outdir my_figures/
 ```
 
 ### Integration tests
@@ -311,8 +351,8 @@ The `--test` flag runs 7 tests with 9 assertions covering:
 ### Selected figures
 
 <p align="center">
-  <img src="figures/mandate_density_overlay_c0.png" width="48%" />
-  <img src="figures/mandate_comparison.png" width="48%" />
+  <img src="paper_code/goal_based_allocation_2026/figures/mandate_density_overlay_c0.png" width="48%" />
+  <img src="paper_code/goal_based_allocation_2026/figures/mandate_comparison.png" width="48%" />
 </p>
 
 <p align="center">
@@ -321,8 +361,8 @@ The `--test` flag runs 7 tests with 9 assertions covering:
 </p>
 
 <p align="center">
-  <img src="figures/path_dynamics_balanced.png" width="48%" />
-  <img src="figures/opportunity_set_c0.png" width="48%" />
+  <img src="paper_code/goal_based_allocation_2026/figures/path_dynamics_balanced.png" width="48%" />
+  <img src="paper_code/goal_based_allocation_2026/figures/opportunity_set_c0.png" width="48%" />
 </p>
 
 <p align="center">
@@ -367,15 +407,30 @@ of Proposition B.7.
 
 ## Citation
 
-If you use this package in your research, please cite:
+If you use this work in your research, please cite both the paper and the software.
+
+**Paper:**
 
 ```bibtex
 @article{Sepp2026GoalBased,
   author  = {Sepp, Artur},
   title   = {Dynamic Mean-Variance Portfolio Allocation under Regime-Switching
-             Jump-Diffusions with Absorbing Barriers},
+             Jump-Diffusions with Absorbing Barriers and Distribution Matching},
   year    = {2026},
   note    = {Available at SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579}
+}
+```
+
+**Software:**
+
+```bibtex
+@misc{SeppGBA2026,
+  author       = {Sepp, Artur},
+  title        = {{GoalBasedAllocation}: A {Python} package for dynamic mean-variance
+                  portfolio allocation under regime-switching jump-diffusions},
+  year         = {2026},
+  note         = {Version 0.2.0},
+  howpublished = {\url{https://github.com/ArturSepp/GoalBasedAllocation}}
 }
 ```
 

@@ -1,8 +1,8 @@
 """
 Regime-Switching Jump-Diffusion: Analytical Density via Laplace Inversion.
 
-Companion code to: "Dynamic Mean-Variance Allocation under Regime-Switching
-Jump-Diffusions with Absorbing Barriers" (Sepp, 2026).
+Companion code to: "Dynamic Mean-Variance Portfolio Allocation under Regime-Switching
+Jump-Diffusions with Absorbing Barriers and Distribution Matching" (Sepp, 2026).
 
 Solves the forward Kolmogorov (Fokker-Planck) equation for the transition
 density of a two-state regime-switching process with exponential jumps
