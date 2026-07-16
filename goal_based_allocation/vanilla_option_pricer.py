@@ -79,8 +79,15 @@ from enum import Enum
 from typing import Optional, Tuple, Union
 
 # project
-from .laplace_inversion import laplace_invert_abate_whitt
-from .regime_switch_paper import RegimeSwitchParams
+try:
+    from .laplace_inversion import laplace_invert_abate_whitt
+    from .regime_switch_paper import RegimeSwitchParams
+except ImportError:  # direct module execution: python vanilla_option_pricer.py
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # prefer local sources
+    from goal_based_allocation.laplace_inversion import laplace_invert_abate_whitt
+    from goal_based_allocation.regime_switch_paper import RegimeSwitchParams
 
 
 # ==============================================================================

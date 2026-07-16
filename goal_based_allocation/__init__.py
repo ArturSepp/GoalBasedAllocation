@@ -13,6 +13,7 @@ riccati_solver : Riccati ODE system for MV-optimal allocation.
 client_solver : Client profile specification and calibration.
 mandate_utils : Portfolio mandate construction from individual assets.
 opportunity_set : Investment opportunity set and two-step client framework.
+variance_swap : Closed-form variance-swap strikes and jump-cumulant decomposition.
 vanilla_option_pricer : Laplace-transform vanilla option pricing under regime switching.
 """
 
@@ -37,6 +38,19 @@ from .vanilla_option_pricer import (
     Regime,
     price_vanilla,
     implied_vol,
+)
+from .variance_swap import (
+    VarianceConvention,
+    VarianceDecomposition,
+    VarianceRiskPremium,
+    SizePremiumCalibration,
+    variance_swap_strike,
+    decompose_variance,
+    occupation_times,
+    jump_skew_gap,
+    variance_risk_premium,
+    implied_crash_size_from_var_swap,
+    skew_overidentification_test,
 )
 
 __version__ = "0.2.0"
