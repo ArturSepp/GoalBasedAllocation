@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+title: "GoalBasedAllocation: A Python package for dynamic mean-variance portfolio allocation under regime-switching jump-diffusions"
+authors:
+  - family-names: Sepp
+    given-names: Artur
+repository-code: "https://github.com/ArturSepp/GoalBasedAllocation"
+url: "https://pypi.org/project/goal-based-allocation/"
+license: MIT
+version: 0.2.0
+date-released: "2026-07-15"
+keywords:
+  - goal-based-investing
+  - regime-switching
+  - jump-diffusion
+  - mean-variance
+  - laplace-transform
+  - asset-allocation
+  - quantitative-finance
+  - python
+preferred-citation:
+  type: article
+  title: "Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching"
+  authors:
+  - family-names: Sepp
+    given-names: Artur
+  year: 2026
+  url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579"
