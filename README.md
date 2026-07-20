@@ -1,32 +1,17 @@
-# GoalBasedAllocation
+# GoalBasedAllocation (`goal-based-allocation`)
 
-<p align="center">
-  <em>Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions<br>with Absorbing Barriers and Distribution Matching</em>
-</p>
+**Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching**
 
-<p align="center">
-  <a href="https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml">
-    <img src="https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml/badge.svg" alt="Tests">
-  </a>
-  <a href="https://github.com/ArturSepp/GoalBasedAllocation/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT">
-  </a>
-  <a href="https://pypi.org/project/goal-based-allocation/">
-    <img src="https://img.shields.io/pypi/v/goal-based-allocation.svg" alt="PyPI">
-  </a>
-  <a href="https://pypi.org/project/goal-based-allocation/">
-    <img src="https://img.shields.io/pypi/pyversions/goal-based-allocation.svg" alt="Python">
-  </a>
-  <a href="https://pepy.tech/project/goal-based-allocation">
-    <img src="https://pepy.tech/badge/goal-based-allocation" alt="Downloads">
-  </a>
-</p>
+[![PyPI](https://img.shields.io/pypi/v/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
+[![Python](https://img.shields.io/pypi/pyversions/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Tests](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml/badge.svg)](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml)
+[![Downloads](https://static.pepy.tech/badge/goal-based-allocation)](https://pepy.tech/project/goal-based-allocation)
+[![Monthly](https://static.pepy.tech/badge/goal-based-allocation/month)](https://pepy.tech/project/goal-based-allocation)
 
-Companion code to:
+**Paper:** companion code to Sepp, A. (2026), *Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching* — [SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579). See [Citation](#citation) for BibTeX.
 
-> **Sepp, A. (2026). Dynamic Mean-Variance Portfolio Allocation under Regime-Switching
-> Jump-Diffusions with Absorbing Barriers and Distribution Matching.**
-> [SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579)
+---
 
 ## Overview
 
@@ -68,6 +53,12 @@ simulation is needed for pricing; MC is used only for validation.
 - Vanilla option pricing under the same regime-switching jump-diffusion via one Laplace inversion (calls/puts, both regimes, joint strikes)
 - Monte Carlo simulator for validation of all analytical results
 - Integration tests and all paper figures reproducible from a single command
+
+## When to use it — and when not
+
+Use `goal-based-allocation` to design goal-based mandates under regime switching: survival and shortfall probabilities against a wealth floor, MV-optimal allocation intensities and glide paths, terminal wealth distributions, investment opportunity sets for client advice, and regime-switching vanilla option pricing on the same Laplace engine — all analytically, with Monte Carlo reserved for validation.
+
+The model is deliberately parsimonious: two regimes, exponential jumps at transitions, and multi-asset mandates reduced to a single effective asset via portfolio aggregation. For discrete rolling multi-asset optimisation with weight constraints and transaction costs, use [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios).
 
 ## Model
 
@@ -394,16 +385,22 @@ jump sizes via deterministic numerical integration (`portfolio_eta_quadrature`).
 Buy-and-hold benchmark moments are computed exactly via the 2×2 matrix exponential
 of Proposition B.7.
 
-## Related Packages
+## Ecosystem
 
-| Package | Description |
+This package is part of an open-source Python stack for quantitative finance — full catalogue at [github.com/ArturSepp](https://github.com/ArturSepp):
+
+| Package | Purpose |
 |---|---|
-| [OptimalPortfolios](https://github.com/ArturSepp/OptimalPortfolios) | Optimal portfolio construction and backtesting |
-| [StochVolModels](https://github.com/ArturSepp/StochVolModels) | Stochastic volatility models for options pricing |
-| [QuantInvestStrats](https://github.com/ArturSepp/QuantInvestStrats) | Quantitative investment strategies and analytics |
-| [BloombergFetch](https://github.com/ArturSepp/BloombergFetch) | Bloomberg data API wrapper |
-| [VanillaOptionPricers](https://github.com/ArturSepp/VanillaOptionPricers) | Vanilla option pricing models |
-| [factorlasso](https://github.com/ArturSepp/factorlasso) | Factor model estimation with LASSO |
+| [`qis`](https://github.com/ArturSepp/QuantInvestStrats) | Performance analytics, factsheets, and visualisation |
+| [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios) | Portfolio construction and backtesting |
+| [`factorlasso`](https://github.com/ArturSepp/factorlasso) | Sparse factor models and factor covariance estimation |
+| [`bbg-fetch`](https://github.com/ArturSepp/BloombergFetch) | Bloomberg data fetching |
+| [`trendfollowing`](https://github.com/ArturSepp/TrendFollowingSystems) | Trend-following systems: closed-form theory and replication |
+| [`goal-based-allocation`](https://github.com/ArturSepp/GoalBasedAllocation) *(this package)* | Dynamic MV allocation under regime-switching jump-diffusions |
+| [`stochvolmodels`](https://github.com/ArturSepp/StochVolModels) | Stochastic volatility pricing analytics |
+| [`vanilla-option-pricers`](https://github.com/ArturSepp/VanillaOptionPricers) | Vectorised vanilla option pricers and implied volatility fitters |
+
+Dependency links within the stack: `optimalportfolios` builds on `qis` and `factorlasso`; `trendfollowing` builds on `qis`.
 
 ## Citation
 
