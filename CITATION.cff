@@ -5,6 +5,7 @@ title: "GoalBasedAllocation: A Python package for dynamic mean-variance portfoli
 authors:
   - family-names: Sepp
     given-names: Artur
+    orcid: "https://orcid.org/0000-0002-7038-1748"
 repository-code: "https://github.com/ArturSepp/GoalBasedAllocation"
 url: "https://pypi.org/project/goal-based-allocation/"
 license: MIT
@@ -25,5 +26,6 @@ preferred-citation:
   authors:
   - family-names: Sepp
     given-names: Artur
+    orcid: "https://orcid.org/0000-0002-7038-1748"
   year: 2026
   url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579"
