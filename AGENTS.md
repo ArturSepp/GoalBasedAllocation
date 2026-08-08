@@ -93,6 +93,65 @@ CI runs 3.10 - 3.12 via `.github/workflows/tests.yml`.
   to make a test pass; investigate the discrepancy instead.
 - Do not commit generated figures.
 
+<!-- ===== SHARED AGENT CORE (standalone variant) — begin =====
+     Generated from SHARED_AGENT_CORE.md in the maintainer's project knowledge. Do not hand-edit
+     between these markers — propose the change to the maintainer instead. Variants: builder
+     (qis) / consumer / standalone. Last synced 2026-08-08, agent core v1.2. -->
+
+## Domain invariants
+
+- Conventions are stated, never implied: rate conventions, annualisation, units of wealth and
+  return. One convention per concept across the stack — if this package and a sibling disagree,
+  that is a bug to report, not a difference to accommodate.
+
+## Dependency surface
+
+This package is standalone: it imports nothing from the stack, and its runtime surface — numpy,
+scipy, matplotlib — is a design constraint, not a preference. Ask before adding any dependency.
+
+**Never invent a symbol.** If a function, class, or keyword argument is not in the export
+surface of this package or of a dependency, it does not exist. Check in one line —
+`python -c "import goal_based_allocation as g; print([n for n in dir(g) if not n.startswith('_')])"`
+— and say a symbol is missing rather than producing code that calls it.
+
+## Verification loop
+
+- Plan → patch → verify. Name the verification command and its result when proposing a patch.
+- A second pass is mandatory where a plausible patch can be numerically wrong and still run
+  clean: Laplace inversion, the Riccati system, densities and moments. The Monte Carlo
+  simulator is the reference computed a different way — verify against it and say so.
+- Prove a new test fails before trusting that it passes: reintroduce the defect, watch it fail,
+  restore.
+
+## Escalation and scope
+
+- Stop and propose before proceeding when a change would exceed roughly five files, alter a
+  public signature, or touch a numerical path.
+- Never change numerical results, random seeds, or computed values unless the change is the
+  request.
+- A public-signature change carries a `CHANGELOG.md` entry and a version bump in the same
+  change. Removing a keyword argument from a function taking `**kwargs` is a silent break — the
+  caller's keyword is swallowed and nothing raises. Treat it as breaking.
+- Do not refactor beyond the requested scope. Propose the wider change; do not perform it.
+
+## Concurrent sessions
+
+More than one agent or session may work on this checkout at the same time, so a file can change
+between your read of it and your write.
+
+- Re-read a file from disk immediately before editing it. Never write a file from an earlier
+  read: a whole-file write from a stale copy silently reverts another session's work.
+- Prefer minimal anchored edits over whole-file replacement. If the on-disk content is not what
+  you expected, stop and reconcile your change onto the current content rather than overwrite.
+
+## Roadmap execution
+
+Feature roadmaps live at the repository root as `ROADMAP_<feature>.md`. An execution request
+names the file and the stage. A stage is complete when its stated verification command passes;
+its out-of-scope list is binding.
+
+<!-- ===== SHARED AGENT CORE — end ===== -->
+
 ## Replication contract
 
 `paper_code/` reproduces the figures of Sepp (2026). Any change to the Laplace
