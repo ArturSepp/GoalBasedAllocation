@@ -9,10 +9,11 @@ The path supplied in the adaptation request,
 does not exist as of 2026-08-19; the portfolio master above is the source used by the existing
 TrendFollowingSystems and BloombergFetch adaptations.
 
-Status: local implementation completed through U5 on 2026-08-19. U0, U1, M1, M2, D1, and the
-local portions of U2, U3a, U4a, U4b, U5, and U6 pass. Gate B used the roadmap's default defer
-decision, so U7 is skipped. Gate A, deployed U3b evidence, U8 release, and U9 measurement remain
-pending and require external settings, public deployment, or explicit release approval.
+Status: implementation, deployment, and release completed through U8 on 2026-08-19. Gate A and
+deployed U3b evidence pass; version 0.3.0 is public as a wheel and sdist on PyPI and as tag/release
+`v0.3.0` on GitHub. Gate B used the roadmap's default defer decision, so U7 is skipped. U9
+measurement remains pending; task-attached checkpoints are scheduled for September, October, and
+November 2026 in Europe/Zurich.
 
 ## Outcome
 
@@ -873,6 +874,10 @@ Initial entry:
 2026-08-19 · U5 · working tree · PASS-LOCAL · dated primary-source comparison guide complete
 2026-08-19 · Gate B · working tree · SKIPPED · hosted notebook deferred by default decision
 2026-08-19 · U7 · working tree · SKIPPED · no notebook because Gate B deferred it
+2026-08-19 · Gate A · a547d14 · PASS · Pages/About aligned; Search Console verified; sitemap submitted
+2026-08-19 · U3b · a547d14 · PASS · priority pages are 200, canonical, crawlable, and in sitemap
+2026-08-19 · U8 · a547d14/v0.3.0 · PASS · PyPI wheel/sdist, tag, release, docs, and U6 align
+2026-08-19 · U9 scheduling · task heartbeat · PASS · Sep/Oct/Nov 18 at 09:00 Europe/Zurich
 ```
 
 ## Definition of complete
