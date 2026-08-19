@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file. The format is
 based on [Keep a Changelog](https://keepachangelog.com/), and the project
 follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Moved the installable package from `goal_based_allocation/` to
+  `src/goal_based_allocation/` without changing the import name or numerical code.
+- Renamed the repository-only research root from `paper_code/` to `papers/`. Existing
+  GitHub source and image URLs containing `paper_code/` must use the new path.
+- Added an output-free installed-wheel quickstart, artifact-provenance CI, and a gated
+  Sphinx/MyST documentation site with task guides and a checked public API catalogue.
+- Adopted SPDX license metadata and raised the build-backend floor to setuptools 77;
+  runtime dependencies are unchanged.
+
 ## [0.2.0] - 2026-07-15
 
 ### Added
@@ -28,7 +40,7 @@ follows [Semantic Versioning](https://semver.org/).
 - Repository reorganised: the core library remains in `goal_based_allocation/`;
   the 2026 paper (LaTeX source, compiled PDF, figures, and
   `generate_paper_figures.py`) is now self-contained under
-  `paper_code/goal_based_allocation_2026/`.
+  `papers/goal_based_allocation_2026/`.
 - `generate_paper_figures.py` now defaults its output directory to the paper's
   own `figures/` folder, independent of the working directory.
 - The `regime_switch_smile` example draws its parameters from the paper's equity

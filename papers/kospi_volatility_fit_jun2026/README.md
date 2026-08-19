@@ -244,7 +244,7 @@ Requires `goal-based-allocation` installed (this repo) plus `numpy`, `scipy`,
 `pandas`, `matplotlib`.
 
 ```bash
-cd paper_code/kospi_volatility_fit_jun2026
+cd papers/kospi_volatility_fit_jun2026
 python run_analysis.py                 # full term structure + 3-tenor figure
 ```
 

@@ -1,6 +1,8 @@
 # GoalBasedAllocation (`goal-based-allocation`)
 
-**Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching**
+Analytical dynamic mean-variance allocation and terminal-wealth risk under
+regime-switching jump-diffusions in Python for quantitative researchers and
+wealth-management model developers.
 
 [![PyPI](https://img.shields.io/pypi/v/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
 [![Python](https://img.shields.io/pypi/pyversions/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
@@ -18,6 +20,12 @@
 This package provides a **fully analytical Laplace-transform framework** for dynamic
 mean-variance (MV) portfolio allocation under a two-state regime-switching model
 with exponential jumps at regime transitions and an absorbing wealth floor.
+
+It models two regimes and multi-asset mandates aggregated to one effective risky
+asset. It is not a discrete constrained multi-asset optimiser, trading engine, or
+production portfolio-management system; use
+[`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios) for rolling
+multi-asset construction, constraints, transaction costs, and backtesting.
 
 The MV-optimal strategy takes the form
 
@@ -140,20 +148,21 @@ Requires Python >= 3.10 with NumPy >= 1.24, SciPy >= 1.10, and Matplotlib >= 3.7
 
 ```
 GoalBasedAllocation/
-├── goal_based_allocation/          # Core library
-│   ├── regime_switch_paper.py      # Laplace framework: density, survival, overshoot, BH moments
-│   ├── riccati_solver.py           # Riccati ODE system + MC simulator
-│   ├── laplace_inversion.py        # Abate-Whitt & Stehfest numerical inversion
-│   ├── client_solver.py            # Effective asset construction, portfolio eta quadrature
-│   ├── mandate_utils.py            # Portfolio mandate construction from assets
-│   ├── opportunity_set.py          # Investment opportunity set & advisor framework
-│   └── vanilla_option_pricer.py    # Laplace-transform vanilla option pricing (regime switching)
+├── src/
+│   └── goal_based_allocation/      # Core library
+│       ├── regime_switch_paper.py  # Density, survival, overshoot, BH moments
+│       ├── riccati_solver.py       # Riccati ODE system + MC simulator
+│       ├── laplace_inversion.py    # Abate-Whitt & Stehfest numerical inversion
+│       ├── client_solver.py        # Effective asset construction, portfolio eta quadrature
+│       ├── mandate_utils.py        # Portfolio mandate construction from assets
+│       ├── opportunity_set.py      # Investment opportunity set & advisor framework
+│       └── vanilla_option_pricer.py # Regime-switching vanilla option pricing
 ├── examples/                       # Minimal, self-contained illustrations
 │   ├── wealth_process_simulation.py
 │   ├── terminal_wealth_distribution.py
 │   ├── investment_opportunity_set.py
 │   └── regime_switch_smile.py      # Vol smile + Fourier/MC reference pricers
-├── paper_code/
+├── papers/
 │   └── goal_based_allocation_2026/ # Self-contained paper: LaTeX, PDF, figures
 │       ├── goal_based_allocation_2026.tex
 │       ├── generate_paper_figures.py   # All 10 figures + integration tests
@@ -292,13 +301,17 @@ Fourier and Monte Carlo cross-checks.
 
 ## Reproducing Paper Results
 
-All figures and integration tests can be reproduced with a single command:
+The `papers/` projects are available from a GitHub clone and are intentionally not
+included in PyPI distributions. From a clone, the main paper's integration tests and
+figures can be reproduced with the commands below. The current `--test` mode runs the
+tests and then generates all figures; use `--outdir` to keep verification output away
+from tracked figures.
 
 ```bash
-cd paper_code/goal_based_allocation_2026
+cd papers/goal_based_allocation_2026
 
-# Run integration tests (9 assertions)
-python generate_paper_figures.py --test
+# Run 9 integration assertions, then generate figures into a temporary directory
+python generate_paper_figures.py --test --outdir my_verification_figures/
 
 # Generate all figures only (writes to ./figures/)
 python generate_paper_figures.py
@@ -342,8 +355,8 @@ The `--test` flag runs 7 tests with 9 assertions covering:
 ### Selected figures
 
 <p align="center">
-  <img src="paper_code/goal_based_allocation_2026/figures/mandate_density_overlay_c0.png" width="48%" />
-  <img src="paper_code/goal_based_allocation_2026/figures/mandate_comparison.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/figures/mandate_density_overlay_c0.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/figures/mandate_comparison.png" width="48%" />
 </p>
 
 <p align="center">
@@ -352,8 +365,8 @@ The `--test` flag runs 7 tests with 9 assertions covering:
 </p>
 
 <p align="center">
-  <img src="paper_code/goal_based_allocation_2026/figures/path_dynamics_balanced.png" width="48%" />
-  <img src="paper_code/goal_based_allocation_2026/figures/opportunity_set_c0.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/figures/path_dynamics_balanced.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/figures/opportunity_set_c0.png" width="48%" />
 </p>
 
 <p align="center">

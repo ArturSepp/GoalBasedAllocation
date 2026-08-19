@@ -1,13 +1,13 @@
 [build-system]
-requires = ["setuptools>=64", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "goal-based-allocation"
 version = "0.2.0"
-description = "Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching"
+description = "Analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.10"
 authors = [
     {name = "Artur Sepp"},
@@ -21,12 +21,14 @@ keywords = [
     "laplace-transform",
     "option-pricing",
     "quantitative-finance",
+    "asset-allocation",
+    "wealth-management",
+    "absorbing-barrier",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Financial and Insurance Industry",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -42,6 +44,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest", "black", "ruff"]
+docs = ["sphinx>=7", "myst-parser>=2", "sphinx-sitemap>=2"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -53,6 +56,12 @@ markers = [
 Homepage = "https://github.com/ArturSepp/GoalBasedAllocation"
 Repository = "https://github.com/ArturSepp/GoalBasedAllocation"
 Issues = "https://github.com/ArturSepp/GoalBasedAllocation/issues"
+Changelog = "https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CHANGELOG.md"
+Paper = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["goal_based_allocation*"]

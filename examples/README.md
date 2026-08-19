@@ -1,8 +1,14 @@
 # Examples
 
-Minimal, self-contained illustrations of the core objects in the paper. Each
-script uses only the public API of `goal_based_allocation`, runs in a few
-seconds, and saves a single PNG next to itself.
+Minimal, self-contained illustrations of the core objects in the paper. The
+plotting scripts use the public API of `goal_based_allocation` and save one PNG.
+The getting-started script is output-free and is tested against built artifacts.
+
+For a first installation check that writes no files, run:
+
+```bash
+python examples/getting_started/quickstart.py
+```
 
 ```bash
 python examples/wealth_process_simulation.py
@@ -13,6 +19,7 @@ python examples/regime_switch_smile.py
 
 | Script | Paper figure | What it shows |
 |---|---|---|
+| `getting_started/quickstart.py` | — | Output-free balanced mandate, terminal-wealth risk, and exact buy-and-hold benchmark. |
 | `wealth_process_simulation.py` | Figure 1 | MV-optimal wealth paths (survived vs stopped), target `Π*(t)`, expected wealth, and the absorbing floor `L_t`, for the balanced mandate. |
 | `terminal_wealth_distribution.py` | Figure 2 | Terminal wealth density decomposed into survived density, floor atom, and jump-overshoot density, overlaid with a Monte Carlo histogram. |
 | `investment_opportunity_set.py` | Figure 4 | The one-parameter opportunity set: efficient frontier (implied return vs volatility) and the terminal wealth quantile fan vs implied return. |

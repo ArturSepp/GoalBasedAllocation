@@ -36,3 +36,40 @@ jobs:
         env:
           MPLBACKEND: Agg
         run: pytest -q
+
+  artifacts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Build candidate distributions
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+          python scripts/check_dist_contents.py dist/*
+
+      - name: Test wheel outside the checkout
+        run: |
+          python -m venv "$RUNNER_TEMP/gba-wheel"
+          "$RUNNER_TEMP/gba-wheel/bin/python" -m pip install dist/*.whl
+          cp examples/getting_started/quickstart.py "$RUNNER_TEMP/quickstart.py"
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/gba-wheel/bin/python" quickstart.py
+          "$RUNNER_TEMP/gba-wheel/bin/python" -m pip check
+
+      - name: Test source distribution outside the checkout
+        run: |
+          python -m venv "$RUNNER_TEMP/gba-sdist"
+          "$RUNNER_TEMP/gba-sdist/bin/python" -m pip install "$GITHUB_WORKSPACE"/dist/*.tar.gz
+          cp "$GITHUB_WORKSPACE/examples/getting_started/quickstart.py" "$RUNNER_TEMP/sdist-quickstart.py"
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/gba-sdist/bin/python" sdist-quickstart.py
+          "$RUNNER_TEMP/gba-sdist/bin/python" -m pip check

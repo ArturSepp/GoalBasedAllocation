@@ -43,7 +43,7 @@ sibling package, say so rather than reimplementing it here.
 ## Repository layout
 
 ```
-goal_based_allocation/
+src/goal_based_allocation/
   laplace_inversion.py     Laplace transform inversion machinery
   riccati_solver.py        Riccati ODE system for the MV-optimal policy
   client_solver.py         mandate-level solver
@@ -52,9 +52,9 @@ goal_based_allocation/
   vanilla_option_pricer.py option pricing under the regime-switching model
   variance_swap.py         variance swap analytics
   regime_switch_paper.py   paper-facing entry points
-tests/       4 test modules (top-level, test_*.py)
-paper_code/  scripts reproducing the paper figures
-examples/    runnable examples
+tests/     top-level test modules (test_*.py)
+papers/    paper replication and research projects
+examples/  runnable examples
 ```
 
 ## Commands
@@ -64,11 +64,16 @@ pip install -e ".[dev]"
 pytest -q                    # as CI runs it
 pytest -m "not slow"         # skip Monte Carlo cross-checks
 pytest tests/test_framework.py -v
+python examples/getting_started/quickstart.py
+python -m sphinx -W --keep-going -b html docs docs/_build/html
+python -m build
+python scripts/check_dist_contents.py dist/*
 ```
 
 The `slow` pytest marker is declared for slower tests such as Monte Carlo cross-checks.
-Runtime dependencies are numpy, scipy and matplotlib only. Supported Python is >= 3.10;
-CI runs 3.10 - 3.12 via `.github/workflows/tests.yml`.
+Runtime dependencies are numpy, scipy and matplotlib only. Documentation dependencies live in
+the `docs` extra. Supported Python is >= 3.10; CI runs 3.10 - 3.12 and separately tests built
+wheel/sdist artifacts outside the checkout.
 
 ## Conventions
 
@@ -154,17 +159,19 @@ its out-of-scope list is binding.
 
 ## Replication contract
 
-`paper_code/` reproduces the figures of Sepp (2026). Any change to the Laplace
-inversion, the Riccati solver, or the mandate aggregation requires re-running those
-scripts and confirming the figures and reported values are unchanged.
+`papers/` reproduces the figures of Sepp (2026) and contains repository-only research.
+Any change to the Laplace inversion, the Riccati solver, or the mandate aggregation requires
+re-running those scripts and confirming the figures and reported values are unchanged. The main
+paper's `--test` mode also generates figures; use a temporary `--outdir` for verification.
 
 ## Release checklist
 
-A release touches three version locations. All three must agree:
+A release touches four version locations. All four must agree:
 
 1. `version` in `pyproject.toml`
-2. `version` and `date-released` in `CITATION.cff`
-3. the software BibTeX entry in `README.md` (if it pins a version)
+2. `__version__` in `src/goal_based_allocation/__init__.py`
+3. `version` and `date-released` in `CITATION.cff`
+4. the software BibTeX entry in `README.md` (if it pins a version)
 
 Then: commit, tag `v<version>`, build and publish to PyPI, and cut a GitHub Release
 with the same tag. Do not bump versions as part of an unrelated change, and do not
