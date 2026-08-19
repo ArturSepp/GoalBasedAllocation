@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "goal-based-allocation"
-version = "0.2.0"
+version = "0.3.0"
 description = "Analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions"
 readme = "README.md"
 license = "MIT"
@@ -56,6 +56,7 @@ markers = [
 Homepage = "https://github.com/ArturSepp/GoalBasedAllocation"
 Repository = "https://github.com/ArturSepp/GoalBasedAllocation"
 Issues = "https://github.com/ArturSepp/GoalBasedAllocation/issues"
+Documentation = "https://artursepp.github.io/GoalBasedAllocation/"
 Changelog = "https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CHANGELOG.md"
 Paper = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579"
 

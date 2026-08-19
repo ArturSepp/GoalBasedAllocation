@@ -6,6 +6,8 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-19
+
 ### Changed
 - Moved the installable package from `goal_based_allocation/` to
   `src/goal_based_allocation/` without changing the import name or numerical code.
@@ -15,6 +17,8 @@ follows [Semantic Versioning](https://semver.org/).
   Sphinx/MyST documentation site with task guides and a checked public API catalogue.
 - Adopted SPDX license metadata and raised the build-backend floor to setuptools 77;
   runtime dependencies are unchanged.
+- Published task-oriented Sphinx documentation on GitHub Pages and added its canonical
+  project URL to package metadata.
 
 ## [0.2.0] - 2026-07-15
 

@@ -11,6 +11,8 @@ wealth-management model developers.
 [![Downloads](https://static.pepy.tech/badge/goal-based-allocation)](https://pepy.tech/project/goal-based-allocation)
 [![Monthly](https://static.pepy.tech/badge/goal-based-allocation/month)](https://pepy.tech/project/goal-based-allocation)
 
+**Documentation:** [artursepp.github.io/GoalBasedAllocation](https://artursepp.github.io/GoalBasedAllocation/)
+
 **Paper:** companion code to Sepp, A. (2026), *Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching* — [SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579). See [Citation](#citation) for BibTeX.
 
 ---
@@ -439,7 +441,7 @@ If you use this work in your research, please cite both the paper and the softwa
   title        = {{GoalBasedAllocation}: A {Python} package for dynamic mean-variance
                   portfolio allocation under regime-switching jump-diffusions},
   year         = {2026},
-  note         = {Version 0.2.0},
+  note         = {Version 0.3.0},
   howpublished = {\url{https://github.com/ArturSepp/GoalBasedAllocation}}
 }
 ```

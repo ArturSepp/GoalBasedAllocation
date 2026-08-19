@@ -19,7 +19,7 @@ normally completes in under 15 seconds and writes no files.
 :caption: examples/getting_started/quickstart.py
 ```
 
-Expected output at version 0.2.0 (minor platform differences affect only trailing digits):
+Expected output at version 0.3.0 (minor platform differences affect only trailing digits):
 
 ```text
 GoalBasedAllocation quickstart

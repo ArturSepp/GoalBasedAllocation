@@ -396,7 +396,7 @@ import goal_based_allocation as gba
 
 package_file = Path(gba.__file__).resolve()
 assert "GoalBasedAllocation" not in str(package_file)
-assert gba.__version__ == "0.2.0"  # replace only at an explicitly approved release stage
+assert gba.__version__ == "0.3.0"  # approved release version
 
 eq = gba.create_paper_assets()["equity"]
 values = [gba.compute_survival(t, eq.x0, eq) for t in (1.0, 2.0, 5.0, 10.0)]

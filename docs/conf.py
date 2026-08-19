@@ -21,6 +21,6 @@ html_theme = "sphinxdoc"
 html_title = "GoalBasedAllocation documentation"
 html_short_title = "GoalBasedAllocation"
 html_baseurl = "https://artursepp.github.io/GoalBasedAllocation/"
-html_extra_path = ["robots.txt"]
+html_extra_path = ["robots.txt", "googleccb1e876a2b4bf72.html"]
 
 sitemap_url_scheme = "{link}"

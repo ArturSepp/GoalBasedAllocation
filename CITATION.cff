@@ -9,8 +9,8 @@ authors:
 repository-code: "https://github.com/ArturSepp/GoalBasedAllocation"
 url: "https://pypi.org/project/goal-based-allocation/"
 license: MIT
-version: 0.2.0
-date-released: "2026-07-15"
+version: 0.3.0
+date-released: "2026-08-19"
 keywords:
   - goal-based-investing
   - regime-switching

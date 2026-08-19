@@ -53,4 +53,4 @@ from .variance_swap import (
     skew_overidentification_test,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"

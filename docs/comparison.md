@@ -6,7 +6,7 @@ when this page is updated.
 
 | Project | Primary documented workflow | Choose it when |
 |---|---|---|
-| GoalBasedAllocation 0.2.0 | analytical continuous-time MV policy, absorbing wealth floor, terminal distribution under two-regime jumps | the research question is survival, floor risk, glide paths, or mandate distributions under this published model |
+| GoalBasedAllocation 0.3.0 | analytical continuous-time MV policy, absorbing wealth floor, terminal distribution under two-regime jumps | the research question is survival, floor risk, glide paths, or mandate distributions under this published model |
 | [optimalportfolios 6.6.0](https://github.com/ArturSepp/OptimalPortfolios) | rolling multi-asset construction/backtesting with optimisers, constraints, covariance/factor inputs, and drift-aware workflows | the task is asset-level portfolio weights, constraints, transaction costs, or historical backtesting |
 | [PyPortfolioOpt 1.5.4](https://pyportfolioopt.readthedocs.io/en/latest/UserGuide.html) | expected-return/risk estimation and modular static optimisers including mean-variance, Black-Litterman, and HRP | a compact, accessible single-period allocation/prototyping workflow is the priority |
 | [Riskfolio-Lib 7.3](https://riskfolio-lib.readthedocs.io/en/latest/riskfoliolib/portfolio.html) | convex portfolio optimisation across many risk measures, risk parity, factor, Black-Litterman, and related models | broad risk-measure/model coverage and weight/risk-contribution constraints are required |
