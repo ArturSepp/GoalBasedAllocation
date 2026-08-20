@@ -28,3 +28,14 @@ html_baseurl = os.environ.get(
 html_extra_path = ["robots.txt", "googleccb1e876a2b4bf72.html"]
 
 sitemap_url_scheme = "{link}"
+
+
+def _use_root_canonical(app, pagename, templatename, context, doctree) -> None:
+    """Use the HTTPS site root, rather than index.html, as the landing canonical."""
+    if pagename == "index":
+        context["pageurl"] = app.config.html_baseurl
+
+
+def setup(app) -> None:
+    """Register documentation build hooks."""
+    app.connect("html-page-context", _use_root_canonical)
