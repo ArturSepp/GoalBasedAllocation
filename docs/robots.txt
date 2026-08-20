@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://artursepp.github.io/GoalBasedAllocation/sitemap.xml
+Sitemap: https://goalbasedallocation.readthedocs.io/en/latest/sitemap.xml
