@@ -15,6 +15,9 @@ extensions = [
 ]
 
 myst_enable_extensions = ["colon_fence", "deflist", "dollarmath"]
+myst_html_meta = {
+    "google-site-verification": "WJen7v3RzYStpnJNMjZL5X35cuWl__U-MBvZtgN65-g",
+}
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
