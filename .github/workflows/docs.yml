@@ -1,58 +1,85 @@
-name: docs
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-  workflow_dispatch:
+# SHARED CI CORE v1.0 — T1 — synced 2026-08-22
+name: Documentation
 
 permissions:
   contents: read
 
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/docs.yml
+      - docs/**
+      - examples/**
+      - src/goal_based_allocation/**
+      - CHANGELOG.md
+      - CITATION.cff
+      - pyproject.toml
+      - README.md
+      - uv.lock
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/docs.yml
+      - docs/**
+      - examples/**
+      - src/goal_based_allocation/**
+      - CHANGELOG.md
+      - CITATION.cff
+      - pyproject.toml
+      - README.md
+      - uv.lock
+  workflow_dispatch:
+
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  MPLBACKEND: Agg
 
 jobs:
-  build:
+  docs:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: pyproject.toml
+    - name: Install uv and Python
+      uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      with:
+        python-version: "3.12"
 
-      - name: Install package and documentation dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[docs]"
+    - name: Sync documentation environment
+      run: uv sync --locked --extra docs
 
-      - name: Build documentation
-        run: python -m sphinx -W --keep-going -b html docs docs/_build/html
+    - name: Build HTML with warnings as errors
+      run: uv run --no-sync python -m sphinx -E -W --keep-going -b html docs docs/_build/html
 
-      - name: Upload Pages artifact
-        if: github.event_name != 'pull_request' && vars.ENABLE_PAGES == 'true'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/_build/html
+    - name: Check documentation links
+      run: uv run --no-sync python -m sphinx -E -W -b linkcheck docs docs/_build/linkcheck
+
+    # P5 has not yet authorized retiring GitHub Pages. Preserve the existing conditional
+    # deployment after the canonical documentation gate succeeds.
+    - name: Upload Pages artifact
+      if: github.event_name != 'pull_request' && vars.ENABLE_PAGES == 'true'
+      uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+      with:
+        path: docs/_build/html
 
   deploy:
     if: github.event_name != 'pull_request' && vars.ENABLE_PAGES == 'true'
-    needs: build
+    needs: docs
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       pages: write
       id-token: write
-
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

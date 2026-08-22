@@ -61,20 +61,21 @@ examples/  runnable examples
 ## Commands
 
 ```bash
-pip install -e ".[dev]"
-pytest -q                    # as CI runs it
-pytest -m "not slow"         # skip Monte Carlo cross-checks
-pytest tests/test_framework.py -v
-python examples/getting_started/quickstart.py
-python -m sphinx -W --keep-going -b html docs docs/_build/html
-python -m build
-python scripts/check_dist_contents.py dist/*
+uv sync --locked --group test
+uv run --no-sync pytest -q                    # as CI runs it
+uv run --no-sync pytest -m "not slow"         # skip Monte Carlo cross-checks
+uv run --no-sync pytest tests/test_framework.py -v
+uv run --no-sync python examples/getting_started/quickstart.py
+uv run --locked --only-group lint ruff check .
+uv run --no-sync python -m sphinx -E -W --keep-going -b html docs docs/_build/html
+uv build
+uv run --no-project python scripts/check_dist_contents.py dist/*
 ```
 
 The `slow` pytest marker is declared for slower tests such as Monte Carlo cross-checks.
 Runtime dependencies are numpy, scipy and matplotlib only. Documentation dependencies live in
-the `docs` extra. Supported Python is >= 3.10; CI runs 3.10 - 3.12 and separately tests built
-wheel/sdist artifacts outside the checkout.
+the `docs` extra. Supported Python is >= 3.10; CI runs 3.10 - 3.14 under Linux and Python 3.12
+under Windows and macOS, then tests built wheel/sdist artifacts outside the checkout.
 
 ## Conventions
 

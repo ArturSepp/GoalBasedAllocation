@@ -21,6 +21,11 @@ myst_html_meta = {
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+# SSRN serves the live paper page to browsers but rejects automated link-check requests.
+linkcheck_ignore = [
+    r"https://papers\.ssrn\.com/sol3/papers\.cfm\?abstract_id=6534579",
+]
+
 html_theme = "sphinxdoc"
 html_title = "GoalBasedAllocation documentation"
 html_short_title = "GoalBasedAllocation"

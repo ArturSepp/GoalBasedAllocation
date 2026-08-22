@@ -1,0 +1,51 @@
+name: Feature request
+description: Propose a focused addition within the analytical allocation model
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Allocation or research task
+      description: Describe the task before proposing an API.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_gap
+    attributes:
+      label: Current limitation
+      description: Explain why the existing analytical API and examples do not cover it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: State rate, annualisation, wealth, floor, regime, jump, and horizon conventions.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Survival, density, or moments
+        - MV-optimal policy or Riccati system
+        - Mandates or opportunity sets
+        - Vanilla option or variance-swap analytics
+        - Documentation or deterministic example
+        - Packaging or developer tooling
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Project boundary
+      options:
+        - label: This preserves the published model specification and analytical implementation.
+          required: true
+        - label: This does not require a runtime dependency beyond NumPy, SciPy, and Matplotlib.
+          required: true

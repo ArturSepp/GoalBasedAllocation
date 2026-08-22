@@ -6,6 +6,10 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Removed
+- Retired the contributor-facing `dev` extra in favor of PEP 735 dependency groups:
+  `test` for pytest and `lint` for Black and Ruff. The `docs` extra remains available.
+
 ## [0.3.1] - 2026-08-22
 
 ### Changed

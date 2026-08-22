@@ -1,15 +1,15 @@
 # GoalBasedAllocation (`goal-based-allocation`)
 
+[![PyPI](https://img.shields.io/pypi/v/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
+[![Python](https://img.shields.io/pypi/pyversions/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
+[![License](https://img.shields.io/github/license/ArturSepp/GoalBasedAllocation.svg?style=flat-square)](LICENSE)
+[![CI](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/ci.yml)
+[![Docs](https://readthedocs.org/projects/goalbasedallocation/badge/?version=latest)](https://goalbasedallocation.readthedocs.io/en/latest/)
+[![Downloads](https://static.pepy.tech/badge/goal-based-allocation)](https://pepy.tech/project/goal-based-allocation)
+
 Analytical dynamic mean-variance allocation and terminal-wealth risk under
 regime-switching jump-diffusions in Python for quantitative researchers and
 wealth-management model developers.
-
-[![PyPI](https://img.shields.io/pypi/v/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
-[![Python](https://img.shields.io/pypi/pyversions/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tests](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml/badge.svg)](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/tests.yml)
-[![Downloads](https://static.pepy.tech/badge/goal-based-allocation)](https://pepy.tech/project/goal-based-allocation)
-[![Monthly](https://static.pepy.tech/badge/goal-based-allocation/month)](https://pepy.tech/project/goal-based-allocation)
 
 **Documentation:** [artursepp.github.io/GoalBasedAllocation](https://artursepp.github.io/GoalBasedAllocation/)
 
