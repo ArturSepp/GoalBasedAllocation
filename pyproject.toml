@@ -67,3 +67,64 @@ package-dir = {"" = "src"}
 where = ["src"]
 include = ["goal_based_allocation*"]
 exclude = ["goal_based_allocation.run*"]
+
+# `papers/` reproduces published code and is left exactly as-is.
+[tool.ruff]
+line-length = 100
+exclude = ["papers"]
+
+[tool.ruff.lint]
+# The stack's scientific-import convention is intentionally not isort's grouping convention.
+select = ["E", "F", "W"]
+extend-select = ["TID251", "TID253", "ICN"]
+# Existing numerical modules contain long equations and messages; do not expand this waiver.
+extend-ignore = ["E501"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# A1: this package is a standalone leaf and imports no other package in the OSS stack.
+"qis".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"optimalportfolios".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"factorlasso".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"bbg_fetch".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"trendfollowing".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"stochvolmodels".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"vanilla_option_pricers".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"privateassets".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+
+[tool.ruff.lint.flake8-tidy-imports]
+# A3: optional libraries stay behind guarded local imports, never package import time.
+banned-module-level-imports = [
+    "pandas",
+    "pandas_datareader",
+    "plotly",
+    "pyarrow",
+    "pybloqs",
+    "psycopg2",
+    "sklearn",
+    "sqlalchemy",
+    "statsmodels",
+    "yfinance",
+    "yaml",
+]
+
+[tool.ruff.lint.flake8-import-conventions.aliases]
+# This replaces Ruff's default alias map; matplotlib is legitimately `plt` in runners.
+numpy = "np"
+pandas = "pd"
+
+[tool.ruff.lint.per-file-ignores]
+# The package root intentionally re-exports the documented public API.
+"src/goal_based_allocation/__init__.py" = ["F401"]
+# Narrow waivers record pre-existing style debt in published numerical modules. New files must
+# pass the full configured rules, and these lists must not be expanded to make a change green.
+"src/goal_based_allocation/client_solver.py" = [
+    "E701", "E702", "E722", "F401", "F541", "F841", "W293",
+]
+"src/goal_based_allocation/laplace_inversion.py" = ["W293"]
+"src/goal_based_allocation/mandate_utils.py" = ["E702", "F841"]
+"src/goal_based_allocation/opportunity_set.py" = [
+    "E701", "E702", "E722", "E741", "W293",
+]
+"src/goal_based_allocation/regime_switch_paper.py" = ["F841"]
+"src/goal_based_allocation/riccati_solver.py" = ["E701", "E702", "F401", "F841"]
+"src/goal_based_allocation/vanilla_option_pricer.py" = ["F401", "W292"]
