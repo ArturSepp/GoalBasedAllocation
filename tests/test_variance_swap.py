@@ -227,7 +227,3 @@ class TestVarianceSwap(unittest.TestCase):
         premium_skew = ivs[:, 0] - ivs[:, 1]
         assert np.all(premium_skew > 0.0)
         assert premium_skew[0] > premium_skew[1] > premium_skew[2]
-
-
-if __name__ == '__main__':
-    unittest.main()

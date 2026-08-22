@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "goal-based-allocation"
-version = "0.3.0"
+version = "0.3.1"
 description = "Analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions"
 readme = "README.md"
 license = "MIT"
@@ -66,3 +66,4 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["goal_based_allocation*"]
+exclude = ["goal_based_allocation.run*"]

@@ -9,6 +9,8 @@ import zipfile
 from pathlib import Path
 
 PROHIBITED_ROOTS = (".idea/", "agents/", "paper_code/", "papers/")
+PROHIBITED_PACKAGE_ROOTS = ("goal_based_allocation/run/",)
+PROHIBITED_SOURCE_ROOTS = ("src/goal_based_allocation/run/",)
 
 
 def _expand_paths(arguments: list[str]) -> list[Path]:
@@ -26,7 +28,9 @@ def _check_wheel(path: Path) -> None:
     assert names.count("goal_based_allocation/__init__.py") == 1
     assert any(name.endswith(".dist-info/METADATA") for name in names)
     for name in names:
-        assert not name.startswith(("tests/", "examples/", *PROHIBITED_ROOTS)), name
+        assert not name.startswith(
+            ("tests/", "examples/", *PROHIBITED_ROOTS, *PROHIBITED_PACKAGE_ROOTS)
+        ), name
         assert name.startswith("goal_based_allocation/") or ".dist-info/" in name, name
 
 
@@ -45,7 +49,7 @@ def _check_sdist(path: Path) -> None:
     for required in ("LICENSE", "README.md", "pyproject.toml"):
         assert required in names, required
     for name in names:
-        assert not name.startswith(PROHIBITED_ROOTS), name
+        assert not name.startswith((*PROHIBITED_ROOTS, *PROHIBITED_SOURCE_ROOTS)), name
 
 
 def main(arguments: list[str]) -> int:

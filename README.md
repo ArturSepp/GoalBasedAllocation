@@ -158,7 +158,8 @@ GoalBasedAllocation/
 │       ├── client_solver.py        # Effective asset construction, portfolio eta quadrature
 │       ├── mandate_utils.py        # Portfolio mandate construction from assets
 │       ├── opportunity_set.py      # Investment opportunity set & advisor framework
-│       └── vanilla_option_pricer.py # Regime-switching vanilla option pricing
+│       ├── vanilla_option_pricer.py # Regime-switching vanilla option pricing
+│       └── run/                     # Source-only development runners (*_local.py)
 ├── examples/                       # Minimal, self-contained illustrations
 │   ├── wealth_process_simulation.py
 │   ├── terminal_wealth_distribution.py
@@ -185,6 +186,10 @@ GoalBasedAllocation/
 | `mandate_utils` | Named mandates (Income, Conservative, Balanced, Growth) | `mandate_effective_asset` |
 | `opportunity_set` | Two-step advisor framework: opportunity set + client profile | `AdvisorSpec`, `compute_opportunity_point`, `build_opportunity_set` |
 | `vanilla_option_pricer` | Laplace-transform vanilla option pricing under regime switching | `RiskNeutralParams`, `price_vanilla`, `implied_vol` |
+
+Component development checks live under `src/goal_based_allocation/run/` as
+`<subject>_local.py`. Each runner exposes `Locals` and `run_local(local=...)`; these files are
+excluded from built distributions. Automated checks remain in the top-level `tests/` directory.
 
 ## Quick Start
 
@@ -441,7 +446,7 @@ If you use this work in your research, please cite both the paper and the softwa
   title        = {{GoalBasedAllocation}: A {Python} package for dynamic mean-variance
                   portfolio allocation under regime-switching jump-diffusions},
   year         = {2026},
-  note         = {Version 0.3.0},
+  note         = {Version 0.3.1},
   howpublished = {\url{https://github.com/ArturSepp/GoalBasedAllocation}}
 }
 ```

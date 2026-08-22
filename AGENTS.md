@@ -52,6 +52,7 @@ src/goal_based_allocation/
   vanilla_option_pricer.py option pricing under the regime-switching model
   variance_swap.py         variance swap analytics
   regime_switch_paper.py   paper-facing entry points
+  run/                     source-only component runners (*_local.py; no __init__.py)
 tests/     top-level test modules (test_*.py)
 papers/    paper replication and research projects
 examples/  runnable examples
@@ -78,6 +79,9 @@ wheel/sdist artifacts outside the checkout.
 ## Conventions
 
 - Test files are named `test_*.py` and live in the top-level `tests/` directory.
+- Component development runners live in `src/goal_based_allocation/run/<subject>_local.py`,
+  expose `Locals` and `run_local(local=...)`, and have no `__init__.py`. Never import them from
+  production modules or public `__init__.py`; wheel and sdist builds exclude the entire directory.
 - Mark slow tests with `@pytest.mark.slow` rather than deleting or skipping them.
 - Dataclasses carry model parameters and results throughout the package — extend the
   existing containers rather than passing loose tuples.

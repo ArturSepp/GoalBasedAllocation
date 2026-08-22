@@ -6,6 +6,12 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-08-22
+
+### Changed
+- Separated source development runners from production and pytest code under the source-only
+  `goal_based_allocation/run/*_local.py` convention, using `Locals` and `run_local(local=...)`.
+
 ## [0.3.0] - 2026-08-19
 
 ### Changed
