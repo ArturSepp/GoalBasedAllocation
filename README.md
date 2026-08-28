@@ -1,27 +1,34 @@
-# GoalBasedAllocation (`goal-based-allocation`)
+# goal-based-allocation
+
+**Semi-analytical dynamic mean-variance allocation and terminal-wealth risk under
+regime-switching jump-diffusions for quantitative researchers and wealth-management model
+developers.**
+
+The package models two regimes and an absorbing wealth floor; it is not a discrete constrained
+multi-asset optimiser, trading engine, or production portfolio-management system.
+
+**Install:** `pip install goal-based-allocation` · **Import:** `goal_based_allocation` · **Status:** Beta
 
 [![PyPI](https://img.shields.io/pypi/v/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
 [![Python](https://img.shields.io/pypi/pyversions/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
-[![License](https://img.shields.io/github/license/ArturSepp/GoalBasedAllocation.svg?style=flat-square)](LICENSE)
 [![CI](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/ci.yml)
 [![Docs](https://readthedocs.org/projects/goalbasedallocation/badge/?version=latest)](https://goalbasedallocation.readthedocs.io/en/latest/)
+[![License](https://img.shields.io/github/license/ArturSepp/GoalBasedAllocation.svg?style=flat-square)](LICENSE)
 [![Downloads](https://static.pepy.tech/badge/goal-based-allocation)](https://pepy.tech/project/goal-based-allocation)
+[![Monthly](https://static.pepy.tech/badge/goal-based-allocation/month)](https://pepy.tech/project/goal-based-allocation)
 
-Analytical dynamic mean-variance allocation and terminal-wealth risk under
-regime-switching jump-diffusions in Python for quantitative researchers and
-wealth-management model developers.
-
-**Documentation:** [artursepp.github.io/GoalBasedAllocation](https://artursepp.github.io/GoalBasedAllocation/)
+**Documentation:** [goalbasedallocation.readthedocs.io](https://goalbasedallocation.readthedocs.io/en/latest/)
 
 **Paper:** companion code to Sepp, A. (2026), *Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching* — [SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579). See [Citation](#citation) for BibTeX.
 
 ---
 
-## Overview
+## Why goal-based-allocation
 
-This package provides a **fully analytical Laplace-transform framework** for dynamic
+This package provides a **semi-analytical Laplace-transform framework** for dynamic
 mean-variance (MV) portfolio allocation under a two-state regime-switching model
-with exponential jumps at regime transitions and an absorbing wealth floor.
+with exponential jumps at regime transitions and an absorbing wealth floor. The transforms are
+analytical; their inversion and the Riccati system are solved numerically.
 
 It models two regimes and multi-asset mandates aggregated to one effective risky
 asset. It is not a discrete constrained multi-asset optimiser, trading engine, or
@@ -51,7 +58,7 @@ All three components are computed semi-analytically using the Abate-Whitt (1995)
 Euler acceleration method for numerical Laplace inversion. No Monte Carlo
 simulation is needed for pricing; MC is used only for validation.
 
-### Key features
+### Key differentiators
 
 - Analytical survival probability, conditional moments, and tilted survival via Laplace transforms
 - Riccati ODE system for the MV-optimal policy with regime-dependent coefficients
@@ -61,12 +68,16 @@ simulation is needed for pricing; MC is used only for validation.
 - Expected allocation glide paths with variance bands
 - Investment opportunity set construction for client-facing portfolio advice
 - Vanilla option pricing under the same regime-switching jump-diffusion via one Laplace inversion (calls/puts, both regimes, joint strikes)
-- Monte Carlo simulator for validation of all analytical results
+- Monte Carlo simulator for independent validation of the semi-analytical results
 - Integration tests and all paper figures reproducible from a single command
 
 ## When to use it — and when not
 
-Use `goal-based-allocation` to design goal-based mandates under regime switching: survival and shortfall probabilities against a wealth floor, MV-optimal allocation intensities and glide paths, terminal wealth distributions, investment opportunity sets for client advice, and regime-switching vanilla option pricing on the same Laplace engine — all analytically, with Monte Carlo reserved for validation.
+Use `goal-based-allocation` to design goal-based mandates under regime switching: survival and
+shortfall probabilities against a wealth floor, MV-optimal allocation intensities and glide paths,
+terminal wealth distributions, investment opportunity sets for client advice, and regime-switching
+vanilla option pricing on the same Laplace engine. Analytical transforms and deterministic
+numerical inversion produce the results; Monte Carlo is reserved for validation.
 
 The model is deliberately parsimonious: two regimes, exponential jumps at transitions, and multi-asset mandates reduced to a single effective asset via portfolio aggregation. For discrete rolling multi-asset optimisation with weight constraints and transaction costs, use [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios).
 
@@ -191,7 +202,14 @@ Component development checks live under `src/goal_based_allocation/run/` as
 `<subject>_local.py`. Each runner exposes `Locals` and `run_local(local=...)`; these files are
 excluded from built distributions. Automated checks remain in the top-level `tests/` directory.
 
-## Quick Start
+## Five-minute quickstart
+
+The tested [getting-started script](examples/getting_started/quickstart.py) runs offline from a
+source checkout and exercises the same public API used below:
+
+```console
+python examples/getting_started/quickstart.py
+```
 
 ### 1. Compute survival probability for a single asset
 
@@ -415,16 +433,27 @@ This package is part of an open-source Python stack for quantitative finance —
 | [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios) | Portfolio construction and backtesting |
 | [`factorlasso`](https://github.com/ArturSepp/factorlasso) | Sparse factor models and factor covariance estimation |
 | [`bbg-fetch`](https://github.com/ArturSepp/BloombergFetch) | Bloomberg data fetching |
+| [`option-chain-analytics`](https://github.com/ArturSepp/OptionChainAnalytics) | Point-in-time option-chain normalisation and reconstruction |
 | [`trendfollowing`](https://github.com/ArturSepp/TrendFollowingSystems) | Trend-following systems: closed-form theory and replication |
+| [`privateassets`](https://github.com/ArturSepp/privateassets) | Private-asset return analytics |
 | [`goal-based-allocation`](https://github.com/ArturSepp/GoalBasedAllocation) *(this package)* | Dynamic MV allocation under regime-switching jump-diffusions |
 | [`stochvolmodels`](https://github.com/ArturSepp/StochVolModels) | Stochastic volatility pricing analytics |
 | [`vanilla-option-pricers`](https://github.com/ArturSepp/VanillaOptionPricers) | Vectorised vanilla option pricers and implied volatility fitters |
 
-Dependency links within the stack: `optimalportfolios` builds on `qis` and `factorlasso`; `trendfollowing` builds on `qis`.
+`goal-based-allocation` is standalone within this stack: its runtime dependencies are NumPy, SciPy,
+and Matplotlib. The [ArturSepp profile](https://github.com/ArturSepp) is the canonical
+ten-package catalogue.
+
+## Feedback & contributing
+
+- [Report a reproducible bug](https://github.com/ArturSepp/GoalBasedAllocation/issues/new?template=bug_report.yml), including the package version, Python/platform, parameters, and expected versus actual result.
+- [Request a feature](https://github.com/ArturSepp/GoalBasedAllocation/issues/new?template=feature_request.yml), explaining which replication result or parameterisation is unclear, the current workaround, and the smallest useful API.
+- Read [CONTRIBUTING.md](CONTRIBUTING.md) for development commands, numerical-validation rules, and pull-request guidance.
 
 ## Citation
 
-If you use this work in your research, please cite both the paper and the software.
+If you use this work in your research, please cite both the paper and the software. Machine-readable
+metadata is available in [`CITATION.cff`](CITATION.cff).
 
 **Paper:**
 
