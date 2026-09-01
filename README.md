@@ -470,10 +470,10 @@ metadata is available in [`CITATION.cff`](CITATION.cff).
 ```bibtex
 @misc{SeppGBA2026,
   author       = {Sepp, Artur},
-  title        = {{GoalBasedAllocation}: A {Python} package for dynamic mean-variance
+  title        = {goal-based-allocation: A {Python} package for dynamic mean-variance
                   portfolio allocation under regime-switching jump-diffusions},
   year         = {2026},
-  note         = {Version 0.3.1},
+  version      = {0.3.1},
   howpublished = {\url{https://github.com/ArturSepp/GoalBasedAllocation}}
 }
 ```
