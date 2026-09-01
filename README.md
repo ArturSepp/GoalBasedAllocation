@@ -1,8 +1,6 @@
 # goal-based-allocation
 
-**Semi-analytical dynamic mean-variance allocation and terminal-wealth risk under
-regime-switching jump-diffusions for quantitative researchers and wealth-management model
-developers.**
+**Semi-analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions**
 
 The package models two regimes and an absorbing wealth floor; it is not a discrete constrained
 multi-asset optimiser, trading engine, or production portfolio-management system.
