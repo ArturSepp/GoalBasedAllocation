@@ -3,7 +3,7 @@
 import os
 from importlib.metadata import version as package_version
 
-project = "GoalBasedAllocation"
+project = "goal-based-allocation"
 author = "Artur Sepp"
 copyright = "2026, Artur Sepp"
 release = package_version("goal-based-allocation")
@@ -26,8 +26,8 @@ linkcheck_ignore = [
     r"https://papers\.ssrn\.com/sol3/papers\.cfm\?abstract_id=6534579",
 ]
 
-html_theme = "sphinxdoc"
-html_title = "GoalBasedAllocation documentation"
+html_theme = "furo"
+html_title = "goal-based-allocation - goal-based allocation under regime-switching jump-diffusions"
 html_short_title = "GoalBasedAllocation"
 html_baseurl = os.environ.get(
     "READTHEDOCS_CANONICAL_URL",

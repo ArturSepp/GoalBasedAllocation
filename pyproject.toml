@@ -45,7 +45,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-docs = ["sphinx>=7", "myst-parser>=2", "sphinx-sitemap>=2"]
+docs = ["furo>=2024.8.6", "sphinx>=7", "myst-parser>=2", "sphinx-sitemap>=2"]
 
 [dependency-groups]
 test = ["pytest"]
