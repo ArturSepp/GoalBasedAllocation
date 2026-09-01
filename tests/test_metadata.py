@@ -18,7 +18,7 @@ def test_version_surfaces_are_consistent():
     version = match.group(1)
     assert goal_based_allocation.__version__ == version
     assert f"version: {version}" in citation
-    assert f"Version {version}" in readme
+    assert f"version      = {{{version}}}" in readme
 
 
 def test_core_metadata_uses_canonical_identity():
@@ -26,7 +26,7 @@ def test_core_metadata_uses_canonical_identity():
 
     assert 'name = "goal-based-allocation"' in pyproject
     assert 'license = "MIT"' in pyproject
-    assert 'description = "Analytical dynamic mean-variance allocation' in pyproject
+    assert 'description = "Semi-analytical dynamic mean-variance allocation' in pyproject
     assert 'Repository = "https://github.com/ArturSepp/GoalBasedAllocation"' in pyproject
     paper_url = 'Paper = "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579"'
     assert paper_url in pyproject
