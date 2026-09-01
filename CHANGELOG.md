@@ -6,6 +6,9 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Raised the minimum supported NumPy version from 1.24 to 2.0.
+
 ### Removed
 - Retired the contributor-facing `dev` extra in favor of PEP 735 dependency groups:
   `test` for pytest and `lint` for Black and Ruff. The `docs` extra remains available.

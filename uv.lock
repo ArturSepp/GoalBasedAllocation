@@ -560,7 +560,7 @@ test = [
 requires-dist = [
     { name = "matplotlib", specifier = ">=3.7" },
     { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=2" },
-    { name = "numpy", specifier = ">=1.24" },
+    { name = "numpy", specifier = ">=2.0" },
     { name = "scipy", specifier = ">=1.10" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=7" },
     { name = "sphinx-sitemap", marker = "extra == 'docs'", specifier = ">=2" },

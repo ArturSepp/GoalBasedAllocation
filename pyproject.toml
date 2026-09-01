@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "goal-based-allocation"
 version = "0.3.1"
-description = "Analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions"
+description = "Semi-analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
@@ -39,7 +39,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Mathematics",
 ]
 dependencies = [
-    "numpy>=1.24",
+    "numpy>=2.0",
     "scipy>=1.10",
     "matplotlib>=3.7",
 ]
