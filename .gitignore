@@ -13,3 +13,6 @@ venv/
 agents/
 docs/_build/
 # figures/*.png  # keep figures tracked for README display
+
+# Personal IDE configuration
+.idea/

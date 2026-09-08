@@ -1,8 +1,9 @@
-# GoalBasedAllocation
+# goal-based-allocation
 
-`goal-based-allocation` provides analytical dynamic mean-variance allocation and
-terminal-wealth risk under regime-switching jump-diffusions for quantitative researchers and
-wealth-management model developers.
+<a id="goalbasedallocation"></a>
+
+Semi-analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching
+jump-diffusions.
 
 It solves a two-regime model with exponential jumps at regime transitions and an absorbing wealth
 floor. Multi-asset mandates are aggregated to one effective risky asset. Monte Carlo is used to

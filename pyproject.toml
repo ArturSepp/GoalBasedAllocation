@@ -4,10 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "goal-based-allocation"
-version = "0.3.1"
+version = "0.4.0"
 description = "Semi-analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions"
 readme = "README.md"
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 authors = [
     {name = "Artur Sepp"},
@@ -41,14 +42,14 @@ classifiers = [
 dependencies = [
     "numpy>=2.0",
     "scipy>=1.10",
-    "matplotlib>=3.7",
+    "matplotlib>=3.8.4",
 ]
 
 [project.optional-dependencies]
 docs = ["furo>=2024.8.6", "sphinx>=7", "myst-parser>=2", "sphinx-sitemap>=2"]
 
 [dependency-groups]
-test = ["pytest"]
+test = ["pytest>=7.0"]
 lint = ["black", "ruff==0.16.2"]
 
 [tool.pytest.ini_options]
@@ -95,6 +96,7 @@ extend-ignore = ["E501"]
 "stochvolmodels".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
 "vanilla_option_pricers".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
 "privateassets".msg = "A1: goal-based-allocation is standalone and must not depend on stack packages."
+"option_chain_analytics".msg = "A1: goal-based-allocation has no declared dependency on option_chain_analytics."
 
 [tool.ruff.lint.flake8-tidy-imports]
 # A3: optional libraries stay behind guarded local imports, never package import time.

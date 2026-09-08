@@ -1,4 +1,4 @@
-# SHARED CI CORE v1.0 — T1 — synced 2026-08-22
+# SHARED CI CORE v1.2 — T1 — synced 2026-09-08
 name: Documentation
 
 permissions:
@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/docs.yml
+      - .github/scripts/*docs_redirects.py
       - docs/**
       - examples/**
       - src/goal_based_allocation/**
@@ -21,6 +22,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/docs.yml
+      - .github/scripts/*docs_redirects.py
       - docs/**
       - examples/**
       - src/goal_based_allocation/**
@@ -54,19 +56,29 @@ jobs:
     - name: Sync documentation environment
       run: uv sync --locked --extra docs
 
+    - name: Verify redirect path and fragment handling
+      run: uv run --no-sync python .github/scripts/test_docs_redirects.py
+
     - name: Build HTML with warnings as errors
       run: uv run --no-sync python -m sphinx -E -W --keep-going -b html docs docs/_build/html
 
     - name: Check documentation links
       run: uv run --no-sync python -m sphinx -E -W -b linkcheck docs docs/_build/linkcheck
 
-    # P5 has not yet authorized retiring GitHub Pages. Preserve the existing conditional
-    # deployment after the canonical documentation gate succeeds.
+    # Publish only redirects on GitHub Pages; Read the Docs serves the full site.
+    - name: Build legacy documentation redirects
+      run: >-
+        uv run --no-sync python .github/scripts/build_docs_redirects.py
+        --source docs/_build/html
+        --output docs/_build/redirects
+        --base-url https://goalbasedallocation.readthedocs.io/en/latest/
+        --project-prefix /GoalBasedAllocation/
+
     - name: Upload Pages artifact
       if: github.event_name != 'pull_request' && vars.ENABLE_PAGES == 'true'
       uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
       with:
-        path: docs/_build/html
+        path: docs/_build/redirects
 
   deploy:
     if: github.event_name != 'pull_request' && vars.ENABLE_PAGES == 'true'
