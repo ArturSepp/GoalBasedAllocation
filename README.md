@@ -352,7 +352,7 @@ The `--test` flag runs 7 tests with 9 assertions covering:
 
 | Test | Description | Tolerance |
 |---|---|---|
-| 1 | Unbounded density normalization (with and without jumps) | < 1e-4 |
+| 1 | Unbounded density normalisation (with and without jumps) | < 1e-4 |
 | 2 | Barrier density vs analytical survival consistency | < 1e-4 |
 | 3 | Survival probability monotonicity across horizons | -- |
 | 4 | Three-asset survival comparison | -- |
@@ -421,6 +421,24 @@ jump sizes via deterministic numerical integration (`portfolio_eta_quadrature`).
 Buy-and-hold benchmark moments are computed exactly via the 2×2 matrix exponential
 of Proposition B.7.
 
+## Key References
+
+- Sepp, A., Ossa, I., and Kastenholz, M. (2026). Robust optimization of strategic and
+  tactical asset allocation for multi-asset portfolios. *Journal of Portfolio Management*, 52(4), 86-120.
+- Sepp, A., Hansen, E., and Kastenholz, M. (2026). Capital market assumptions and strategic
+  asset allocation using multi-asset tradable factors. Under revision at the
+  *Journal of Portfolio Management*.
+- Sepp, A. (2004). Analytical pricing of double-barrier options under a double-exponential
+  jump-diffusion process. *International Journal of Theoretical and Applied Finance*, 7(2), 151-175.
+- Sepp, A. (2006). Extended CreditGrades model with stochastic volatility and jumps.
+  *Wilmott Magazine*, September, 50-62.
+- Lipton, A. (2001). *Mathematical Methods for Foreign Exchange*. World Scientific.
+- Lipton, A. (2001). Assets with jumps. *Risk*, 14(9), 149-153.
+- Cont, R. and Tankov, P. (2009). Constant proportion portfolio insurance in the presence
+  of jumps in asset prices. *Mathematical Finance*, 19(3), 379-401.
+- Abate, J. and Whitt, W. (1995). Numerical inversion of Laplace transforms of probability
+  distributions. *ORSA Journal on Computing*, 7(1), 36-43.
+
 ## Ecosystem
 
 This package is part of an open-source Python stack for quantitative finance — full catalogue at [github.com/ArturSepp](https://github.com/ArturSepp):
@@ -473,28 +491,10 @@ metadata is available in [`CITATION.cff`](CITATION.cff).
   title        = {goal-based-allocation: A {Python} package for dynamic mean-variance
                   portfolio allocation under regime-switching jump-diffusions},
   year         = {2026},
-  version      = {0.3.1},
+  version      = {0.4.0},
   howpublished = {\url{https://github.com/ArturSepp/GoalBasedAllocation}}
 }
 ```
-
-## Key References
-
-- Sepp, A., Ossa, I., and Kastenholz, M. (2026). Robust optimization of strategic and
-  tactical asset allocation for multi-asset portfolios. *Journal of Portfolio Management*, 52(4), 86-120.
-- Sepp, A., Hansen, E., and Kastenholz, M. (2026). Capital market assumptions and strategic
-  asset allocation using multi-asset tradable factors. Under revision at the
-  *Journal of Portfolio Management*.
-- Sepp, A. (2004). Analytical pricing of double-barrier options under a double-exponential
-  jump-diffusion process. *International Journal of Theoretical and Applied Finance*, 7(2), 151-175.
-- Sepp, A. (2006). Extended CreditGrades model with stochastic volatility and jumps.
-  *Wilmott Magazine*, September, 50-62.
-- Lipton, A. (2001). *Mathematical Methods for Foreign Exchange*. World Scientific.
-- Lipton, A. (2001). Assets with jumps. *Risk*, 14(9), 149-153.
-- Cont, R. and Tankov, P. (2009). Constant proportion portfolio insurance in the presence
-  of jumps in asset prices. *Mathematical Finance*, 19(3), 379-401.
-- Abate, J. and Whitt, W. (1995). Numerical inversion of Laplace transforms of probability
-  distributions. *ORSA Journal on Computing*, 7(1), 36-43.
 
 ## License
 

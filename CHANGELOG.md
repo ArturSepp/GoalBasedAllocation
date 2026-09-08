@@ -6,12 +6,39 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-08
+
+### Added
+
+- Added explicit stack dependency and optional-import boundary checks, including
+  isolated maintainer adapters, plus a fresh Python 3.10 lowest-direct dependency CI lane.
+
+- Added tag-driven PyPI Trusted Publishing with release-identity and distribution
+  validation; creating a GitHub Release remains optional.
+
 ### Changed
+
 - Raised the minimum supported NumPy version from 1.24 to 2.0.
 
+- Aligned package summaries, software citations, README navigation, and documentation
+  landing pages with the canonical package identity and Read the Docs documentation.
+
+- Replaced the legacy GitHub Pages documentation build with redirects to Read the Docs.
+
+- Declared pytest 7.0 as the minimum test-tool version so the fresh lowest-dependency
+  job does not select an incompatible legacy pytest release.
+
 ### Removed
+
 - Retired the contributor-facing `dev` extra in favor of PEP 735 dependency groups:
   `test` for pytest and `lint` for Black and Ruff. The `docs` extra remains available.
+
+### Fixed
+
+- Raised the Matplotlib runtime floor to 3.8.4: the previously allowed 3.7 wheels fail to
+  import with the minimum supported NumPy 2.0, while 3.8.4 wheels support its ABI.
+
+- Explicitly included `LICENSE` in distribution license metadata.
 
 ## [0.3.1] - 2026-08-22
 

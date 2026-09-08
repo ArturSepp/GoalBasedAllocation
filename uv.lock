@@ -567,7 +567,7 @@ wheels = [
 
 [[package]]
 name = "goal-based-allocation"
-version = "0.3.1"
+version = "0.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib", version = "3.10.9", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -603,7 +603,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "furo", marker = "extra == 'docs'", specifier = ">=2024.8.6" },
-    { name = "matplotlib", specifier = ">=3.7" },
+    { name = "matplotlib", specifier = ">=3.8.4" },
     { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=2" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "scipy", specifier = ">=1.10" },
@@ -617,7 +617,7 @@ lint = [
     { name = "black" },
     { name = "ruff", specifier = "==0.16.2" },
 ]
-test = [{ name = "pytest" }]
+test = [{ name = "pytest", specifier = ">=7.0" }]
 
 [[package]]
 name = "idna"

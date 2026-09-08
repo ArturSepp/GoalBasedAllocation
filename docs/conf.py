@@ -1,12 +1,15 @@
 """Sphinx configuration for GoalBasedAllocation."""
 
 import os
-from importlib.metadata import version as package_version
+import tomllib
+from pathlib import Path
 
 project = "goal-based-allocation"
 author = "Artur Sepp"
 copyright = "2026, Artur Sepp"
-release = package_version("goal-based-allocation")
+release = tomllib.loads(
+    (Path(__file__).resolve().parents[1] / "pyproject.toml").read_text(encoding="utf-8")
+)["project"]["version"]
 version = release
 
 extensions = [
