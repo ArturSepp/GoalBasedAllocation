@@ -10,7 +10,7 @@ build/
 venv/
 .pytest_cache/
 .ruff_cache/
-agents/
+/agents/
 docs/_build/
 # figures/*.png  # keep figures tracked for README display
 
