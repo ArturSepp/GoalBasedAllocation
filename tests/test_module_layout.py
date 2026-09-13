@@ -8,6 +8,7 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 PACKAGE_ROOT = REPOSITORY_ROOT / "src" / "goal_based_allocation"
 TESTS_ROOT = REPOSITORY_ROOT / "tests"
+REPOSITORY_RUNNER_ROOTS = (REPOSITORY_ROOT / "examples", REPOSITORY_ROOT / "papers")
 EXPECTED_RUNNERS = {
     "run/client_solver_local.py",
     "run/laplace_inversion_local.py",
@@ -176,6 +177,47 @@ def test_production_modules_do_not_own_development_dispatchers() -> None:
             failures.append(f"{relative}: owns an executable development runner")
         if _imports_run(path):
             failures.append(f"{relative}: imports development-only run code")
+    assert not failures, failures
+
+
+def test_repository_dispatchers_use_current_names() -> None:
+    """Enum-dispatched examples and paper analyses use ``Locals`` and ``run_local``."""
+    dispatcher_modules = []
+    failures = []
+    for root in REPOSITORY_RUNNER_ROOTS:
+        for path in sorted(root.rglob("*.py")):
+            tree = _tree(path)
+            definitions = {
+                node.name: node
+                for node in tree.body
+                if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef))
+            }
+            names = {node.id for node in ast.walk(tree) if isinstance(node, ast.Name)}
+            legacy_names = sorted(LEGACY_DISPATCHERS & (definitions.keys() | names))
+            if not (legacy_names or {"Locals", "run_local"} & definitions.keys()):
+                continue
+            relative = path.relative_to(REPOSITORY_ROOT).as_posix()
+            dispatcher_modules.append(relative)
+            if legacy_names:
+                failures.append(f"{relative}: retains {', '.join(legacy_names)}")
+                continue
+            if not {"Locals", "run_local"} <= definitions.keys():
+                failures.append(f"{relative}: expected Locals plus run_local")
+                continue
+            dispatcher = definitions["run_local"]
+            args = dispatcher.args.args
+            annotation = args[0].annotation if args else None
+            if (
+                not args
+                or args[0].arg != "local"
+                or not isinstance(annotation, ast.Name)
+                or annotation.id != "Locals"
+            ):
+                failures.append(f"{relative}: expected run_local(local: Locals)")
+            if not _main_calls_run_local_directly(path):
+                failures.append(f"{relative}: main guard must contain only run_local(local=Locals.*)")
+
+    assert len(dispatcher_modules) == 2
     assert not failures, failures
 
 

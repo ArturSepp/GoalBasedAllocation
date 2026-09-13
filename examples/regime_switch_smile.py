@@ -10,7 +10,7 @@ bundles two reference pricers used only for validation:
     when the damping violates E[S^(1+alpha)] < inf);
   * ``price_vanilla_mc`` - a Monte Carlo pricer with exact regime holding times.
 
-Run with a ``UnitTests`` case; the default draws the smile and saves
+Run with a ``Locals`` case; the default draws the smile and saves
 ``regime_switch_smile.png`` next to this script.
 
     python examples/regime_switch_smile.py
@@ -147,7 +147,7 @@ def price_vanilla_mc(params: RiskNeutralParams,
 # DEMO, CHECKS AND TESTS
 # ==============================================================================
 
-class UnitTests(Enum):
+class Locals(Enum):
     DEMO_PRICES = 1
     DEMO_SMILE = 2
     CHECK_PUT_CALL_PARITY = 3
@@ -176,13 +176,13 @@ def paper_params(asset: str = 'equity', rate: float = 0.02) -> RiskNeutralParams
                              rate=rate)
 
 
-def run_local_test(unit_test: UnitTests) -> None:
+def run_local(local: Locals) -> None:
 
     params = paper_params()
     spot, ttm = 100.0, 10.0
     strikes = np.array([80.0, 100.0, 120.0, 150.0, 200.0])
 
-    if unit_test == UnitTests.DEMO_PRICES:
+    if local == Locals.DEMO_PRICES:
         print(f"eta_0={params.eta_0:.4f}  eta_1={params.eta_1:.4f}  "
               f"finite jump variance: {params.has_finite_jump_variance}")
         print(f"max Carr-Madan damping: {params.max_carr_madan_damping():.2f}\n")
@@ -197,7 +197,7 @@ def run_local_test(unit_test: UnitTests) -> None:
                 body = "  ".join(f"K={k:.0f}: {v:8.4f}" for k, v in zip(strikes, px))
                 print(f"{regime.name:>6} {opt.value:>4}: {body}")
 
-    elif unit_test == UnitTests.DEMO_SMILE:
+    elif local == Locals.DEMO_SMILE:
         import matplotlib.pyplot as plt
         ref_vol = 0.20   # representative vol for sizing the strike grid
         fig, axs = plt.subplots(1, 2, figsize=(12, 4.5), tight_layout=True)
@@ -222,7 +222,7 @@ def run_local_test(unit_test: UnitTests) -> None:
         plt.savefig(out, dpi=120)
         print(f"saved {out}")
 
-    elif unit_test == UnitTests.CHECK_PUT_CALL_PARITY:
+    elif local == Locals.CHECK_PUT_CALL_PARITY:
         for regime in (Regime.GROWTH, Regime.STRESS):
             call = price_vanilla(params, spot, strikes, ttm, regime, OptionType.CALL)
             put = price_vanilla(params, spot, strikes, ttm, regime, OptionType.PUT)
@@ -232,7 +232,7 @@ def run_local_test(unit_test: UnitTests) -> None:
             assert err < 1e-5, f"put-call parity violated in regime {regime.name}"
         print("PASS")
 
-    elif unit_test == UnitTests.CHECK_BLACK_SCHOLES_LIMIT:
+    elif local == Locals.CHECK_BLACK_SCHOLES_LIMIT:
         from scipy.stats import norm
         flat = RiskNeutralParams(sigma_0=0.20, sigma_1=0.20,
                                  lambda_01=0.01, lambda_10=0.01,
@@ -249,7 +249,7 @@ def run_local_test(unit_test: UnitTests) -> None:
         assert err < 1e-3, "does not collapse to Black-Scholes"
         print("PASS")
 
-    elif unit_test == UnitTests.TEST_MONTE_CARLO:
+    elif local == Locals.TEST_MONTE_CARLO:
         for regime in (Regime.GROWTH, Regime.STRESS):
             lap = price_vanilla(params, spot, strikes, ttm, regime, OptionType.CALL)
             mc, se = price_vanilla_mc(params, spot, strikes, ttm, regime,
@@ -262,7 +262,7 @@ def run_local_test(unit_test: UnitTests) -> None:
                 assert abs(z) < 4.0, f"Laplace disagrees with MC at K={k}"
         print("\nPASS")
 
-    elif unit_test == UnitTests.TEST_FOURIER_CROSSCHECK:
+    elif local == Locals.TEST_FOURIER_CROSSCHECK:
         print(f"{'T':>6} {'K':>6} {'Laplace':>11} {'Fourier':>11} {'diff':>11}")
         for tenor in (0.5, 1.0, 5.0, 10.0, 20.0):
             for k in (80.0, 120.0, 200.0):
@@ -272,7 +272,7 @@ def run_local_test(unit_test: UnitTests) -> None:
                 assert abs(lap - fou) < 1e-4, "Laplace and Fourier disagree"
         print("PASS")
 
-    elif unit_test == UnitTests.TEST_FOURIER_FAILURE:
+    elif local == Locals.TEST_FOURIER_FAILURE:
         # eta_10 = 2.5 (rate) -> eta_1 = 0.4 -> Carr-Madan needs alpha < 1.5
         bad = RiskNeutralParams.from_rates(sigma_0=0.18, sigma_1=0.28,
                                            lambda_01=0.10, lambda_10=1.0,
@@ -300,4 +300,4 @@ def run_local_test(unit_test: UnitTests) -> None:
 
 
 if __name__ == '__main__':
-    run_local_test(unit_test=UnitTests.DEMO_SMILE)
+    run_local(local=Locals.DEMO_SMILE)

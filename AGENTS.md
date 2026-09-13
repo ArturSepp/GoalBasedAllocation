@@ -100,6 +100,8 @@ under Windows and macOS, then tests built wheel/sdist artifacts outside the chec
 - Component development runners live in `src/goal_based_allocation/run/<subject>_local.py`,
   expose `Locals` and `run_local(local=...)`, and have no `__init__.py`. Never import them from
   production modules or public `__init__.py`; wheel and sdist builds exclude the entire directory.
+- Enum-dispatched root examples and paper analyses use the same `Locals` and
+  `run_local(local=...)` names, with one explicit selection in the `__main__` guard.
 - Mark slow tests with `@pytest.mark.slow` rather than deleting or skipping them.
 - Dataclasses carry model parameters and results throughout the package — extend the
   existing containers rather than passing loose tuples.

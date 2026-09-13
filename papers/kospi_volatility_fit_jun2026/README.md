@@ -251,12 +251,12 @@ python run_analysis.py                 # full term structure + 3-tenor figure
 Or drive individual cases via the dispatcher:
 
 ```python
-from run_analysis import LocalTest, run_local_test
-run_local_test(LocalTest.SLICE_ONE)      # one clean slice + parity check
-run_local_test(LocalTest.MIXTURE)        # mixture baseline + RND moments
-run_local_test(LocalTest.REGIME_SWITCH)  # shipped RS model, both regimes
-run_local_test(LocalTest.TERM_STRUCTURE) # three-tenor diagnostics + figure
-run_local_test(LocalTest.BVOL_CHECK)     # BVOL grid vs listed bid/ask
+from run_analysis import Locals, run_local
+run_local(local=Locals.SLICE_ONE)      # one clean slice + parity check
+run_local(local=Locals.MIXTURE)        # mixture baseline + RND moments
+run_local(local=Locals.REGIME_SWITCH)  # shipped RS model, both regimes
+run_local(local=Locals.TERM_STRUCTURE) # three-tenor diagnostics + figure
+run_local(local=Locals.BVOL_CHECK)     # BVOL grid vs listed bid/ask
 ```
 
 ### Module map
@@ -267,7 +267,7 @@ run_local_test(LocalTest.BVOL_CHECK)     # BVOL grid vs listed bid/ask
 | `regime_switch_calibration.py` | calibrate the shipped `RiskNeutralParams` to a slice, both regimes |
 | `term_structure.py` | per-tenor diagnostics, three-tenor table and figure |
 | `bvol_interpolation_check.py` | BVOL fitted grid vs listed bid/ask, per strike |
-| `run_analysis.py` | `LocalTest` enum + `run_local_test` dispatcher |
+| `run_analysis.py` | `Locals` enum + `run_local` dispatcher |
 
 ## 8. Caveats
 
