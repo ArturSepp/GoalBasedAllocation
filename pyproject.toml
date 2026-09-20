@@ -51,6 +51,7 @@ docs = ["furo>=2024.8.6", "sphinx>=7", "myst-parser>=2", "sphinx-sitemap>=2"]
 [dependency-groups]
 test = ["pytest>=7.0"]
 lint = ["black", "ruff==0.16.2"]
+audit = ["pip-audit==2.10.1"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
