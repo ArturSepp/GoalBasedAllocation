@@ -1,3 +1,11 @@
+---
+myst:
+  html_meta:
+    description: >-
+      The papers and research projects of goal-based-allocation: the companion manuscript with its
+      figure and integration script, the KOSPI volatility study, and the output policy.
+---
+
 # Papers and research projects
 
 *Author: [Artur Sepp](https://github.com/ArturSepp)*
@@ -17,6 +25,9 @@ Matching* ([SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=65
 
 Use the temporary-output command in [validation](validation.md). The `--test` mode also generates
 figures; it is not a read-only test switch.
+
+The [handbook](index.md) cites statement, equation, table and figure numbers of this manuscript, and
+displays five of its approved figures with the `--figure` option that produces each.
 
 ## KOSPI volatility study
 

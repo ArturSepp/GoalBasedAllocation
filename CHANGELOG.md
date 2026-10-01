@@ -6,6 +6,15 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Added the goal-based allocation handbook to the documentation: eleven methodology chapters in
+  the layout of the qis and optimalportfolios handbooks, each with a convention card, concise
+  proofs, Insight and Pitfall callouts, and worked examples executed by
+  `tests/test_documentation_examples.py`, plus a single bibliography, a notation page, a
+  documentation standard and an API reference generated from the docstrings. The former
+  `user-guide/` pages redirect to their chapters. No package code changed.
+
 ## [0.4.0] - 2026-09-08
 
 ### Added

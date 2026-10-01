@@ -136,7 +136,7 @@ $w_{\text{eq}} = g(1-w)$, $w_{\text{pe}} = (1-g)(1-w)$.
 | Growth | 3.68% | 254 | 144 | 61.9 | 73.8% | 5.01% | 117.6 |
 
 Floor protection cost ranges from 6bp (income) to 117bp (growth). BH moments
-are exact under the RS-JD model via 2×2 matrix exponential (Proposition B.7).
+are exact under the RS-JD model via 2×2 matrix exponential (Proposition A.1).
 
 ## Installation
 
@@ -236,12 +236,13 @@ assets = create_paper_assets()
 eq = assets['equity']
 T = 10.0
 
-# Solve Riccati ODE for target return of 4%
+# Solve the Riccati system. target_return fixes the present value of the target,
+# Pi*(0) = Pi0 * exp(0.04 * T); it is not the expected terminal wealth (see below).
 ell, ric = find_ell(eq, T, target_return=0.04, r=0.02, c=0.02)
 gap = gap_process_asset(ric)
 
 # Terminal targets
-PiT = ric.derived_at_tau(0)['Pi_star'][0]   # target wealth at T
+PiT = ric.derived_at_tau(0)['Pi_star'][0]   # target wealth at T, equal to ell / 2
 L_T = eq.pi_floor                            # floor at T (with r=c)
 B_T = PiT - L_T                              # buffer
 
@@ -261,6 +262,14 @@ print(f"Overshoot mass = {np.trapezoid(f_ov, d_ov):.4f}")
 print(f"Floor atom = {1 - S - np.trapezoid(f_ov, d_ov):.4f}")
 ```
 
+`find_ell` matches `target_return` to $-b(T)/(2a(T))$, the present value of the policy's target,
+$\Pi^{\ast}(0) = \Pi_0 e^{\rho T}$, not to the expected terminal wealth. Here $c = r$, so the target
+grows at $r_c = 0$ and equals $100 e^{0.4} \approx 149.2$ at both ends of the horizon, while the
+expected terminal wealth of the floor-protected strategy is about 106.4. The chapter *The MV-optimal
+policy and the Riccati system* of the [handbook](https://goalbasedallocation.readthedocs.io/en/latest/)
+gives the expected terminal wealth in closed form and the multiplier `ell` for an expected-wealth
+target.
+
 ### 3. Compare MV-optimal vs buy-and-hold
 
 ```python
@@ -273,7 +282,7 @@ from goal_based_allocation.riccati_solver import find_ell, gap_process_asset
 eff = build_effective_asset(w_eq=0.43, w_pe=0.22, k=3.0)
 T, PI0 = 10.0, 100.0
 
-# MV-optimal survival (analytical via Laplace)
+# MV-optimal survival (analytical via Laplace); target_return sets Pi*(0), as above
 ell, ric = find_ell(eff, T, target_return=0.04, r=0.02, c=0.0)
 gap = gap_process_asset(ric)
 S = compute_survival(T, gap.x0, gap)
@@ -416,7 +425,7 @@ and inverted numerically using the Abate-Whitt (1995) Euler acceleration algorit
 asset using portfolio volatility with full correlation structure, and portfolio
 jump sizes via deterministic numerical integration (`portfolio_eta_quadrature`).
 Buy-and-hold benchmark moments are computed exactly via the 2×2 matrix exponential
-of Proposition B.7.
+of Proposition A.1.
 
 ## Key References
 
@@ -430,7 +439,7 @@ of Proposition B.7.
 - Sepp, A. (2006). Extended CreditGrades model with stochastic volatility and jumps.
   *Wilmott Magazine*, September, 50-62.
 - Lipton, A. (2001). *Mathematical Methods for Foreign Exchange*. World Scientific.
-- Lipton, A. (2001). Assets with jumps. *Risk*, 14(9), 149-153.
+- Lipton, A. (2002). Assets with jumps. *Risk*, 15(9), 149-153.
 - Cont, R. and Tankov, P. (2009). Constant proportion portfolio insurance in the presence
   of jumps in asset prices. *Mathematical Finance*, 19(3), 379-401.
 - Abate, J. and Whitt, W. (1995). Numerical inversion of Laplace transforms of probability
