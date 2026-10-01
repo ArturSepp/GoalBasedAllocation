@@ -5,8 +5,8 @@ Generate all figures and run integration tests for the paper:
 Jump-Diffusions with Absorbing Barriers and Distribution Matching" (Sepp, 2026).
 
 Usage:
-    python -m paper_figures.generate_paper_figures [--outdir figures/] [--figure N]
-    python -m paper_figures.generate_paper_figures --test
+    python papers/goal_based_allocation_2026/replication/generate_paper_figures.py [--outdir ABSOLUTE_EXTERNAL_PATH] [--figure N]
+    python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --test
 
 Seeds for reproducibility:
     Survived path: 370
@@ -18,7 +18,7 @@ import numpy as np
 import matplotlib; matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-from pathlib import Path
+from gba_paths import figure_directory
 
 from goal_based_allocation import (
     create_paper_assets, create_paper_mandates,
@@ -609,7 +609,7 @@ def figure_mandate_comparison(filename, outdir, n_paths=N_PATHS_MC):
 # Integration Tests
 # ============================================================
 
-def local_integration_tests():
+def local_integration_tests(outdir=None):
     """Run all integration tests for the package.
 
     Tests the core Laplace framework, Riccati solver, gap process,
@@ -726,8 +726,7 @@ def local_integration_tests():
     print("GENERATING ALL FIGURES")
     print(f"{'=' * 70}")
 
-    outdir = Path('figures')
-    outdir.mkdir(exist_ok=True)
+    outdir = figure_directory(outdir)
     _generate_all_figures(outdir)
 
     print(f"\n{'=' * 70}")
@@ -787,19 +786,19 @@ def main():
         description='Generate paper figures and run integration tests')
     parser.add_argument('--outdir', type=str, default=None,
                         help='Output directory for figures '
-                             '(default: the figures/ folder next to this script)')
+                             '(default: the external local runtime)')
     parser.add_argument('--figure', type=int, default=None,
                         help='Generate only figure N (1-10)')
     parser.add_argument('--test', action='store_true',
                         help='Run integration tests and generate all figures')
     args = parser.parse_args()
 
+    outdir = figure_directory(args.outdir)
     if args.test:
-        local_integration_tests()
+        _, failed = local_integration_tests(outdir=outdir)
+        if failed:
+            raise SystemExit(1)
         return
-
-    outdir = Path(args.outdir) if args.outdir else (Path(__file__).resolve().parent / 'figures')
-    outdir.mkdir(exist_ok=True)
 
     if args.figure is not None:
         # Build dict but don't execute; run only the requested figure

@@ -16,7 +16,8 @@ In scope:
 Open an issue before writing code that changes the model specification, public signatures,
 dependency floors, runtime dependencies, Laplace contours, quadrature nodes, ODE tolerances, or
 paper-facing results. Do not replace analytical routines with Monte Carlo implementations, add a
-pandas/DataFrame layer, edit `papers/`, or submit generated figures.
+pandas/DataFrame layer or submit unapproved generated figures. Paper changes follow
+`papers/AGENTS.md` and must preserve the published numerical contract.
 
 ## Reporting a bug
 
@@ -55,7 +56,8 @@ and retain the `docs` extra for Read the Docs.
 - Verify analytical changes against a separately implemented Monte Carlo or analytical check.
 - Do not adjust numerical tolerances or expected values merely to make a test pass.
 - Keep runtime dependencies to NumPy, SciPy, and Matplotlib.
-- Do not edit `papers/` or commit generated figures, private data, local paths, or environments.
+- Follow `papers/AGENTS.md` for paper changes. Do not commit unapproved generated
+  figures, private data, machine-specific paths, or environments.
 - Run the relevant test, lint, documentation, and artifact checks before submitting.
 - Do not bump package or citation versions; releases are handled separately.
 

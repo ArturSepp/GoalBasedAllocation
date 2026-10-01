@@ -27,10 +27,11 @@ from vol_surface_utils import (ChainMeta, PriceSource, VolSlice, read_chain,
 from regime_switch_calibration import calibrate_regime_switch, StartRegime
 # qis / project
 from goal_based_allocation import RiskNeutralParams, implied_vol
+from kospi_paths import figure_directory
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(_HERE, 'data')
-FIG_DIR = os.path.join(_HERE, 'figures')
+FIG_DIR = str(figure_directory())
 
 # expiry file, label, days, and the price source that is cleanest at that tenor
 TENORS = [

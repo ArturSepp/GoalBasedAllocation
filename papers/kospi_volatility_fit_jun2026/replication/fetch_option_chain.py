@@ -8,6 +8,7 @@ strikes either by num_strikes_per_side (an ATM window) or by an explicit strike_
 """
 # packages
 import numpy as np
+from kospi_paths import output_root
 # bbg
 from bbg_fetch.option_chain import run, OptionPriceSource
 
@@ -25,4 +26,7 @@ if __name__ == '__main__':
     print(f"\nspot={result.spot:.2f}  year_fraction={result.year_fraction:.4f}")
     print(f"forward={result.forward:.2f}  rate={result.rate:.4%}  "
           f"r2={result.r2:.4f}  num_strikes_used={result.num_strikes_used}")
-    result.to_csv('kospi2.csv')
+    destination = output_root() / 'data' / 'kospi2.csv'
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    result.to_csv(str(destination))
+    print(f'Saved new snapshot to {destination}')

@@ -73,6 +73,20 @@ OCA never imports StochVolModels or the private SigmaStrats consumer. Exact
 maintainer-tool exceptions are recorded in `.github/stack-policy.json`; they do
 not authorise adding those dependencies to core or importing them at package root.
 
+## Paper workspace policy (GBA override)
+
+- Follow `papers/AGENTS.md` for the six-section layout and exact publication policy.
+  Existing main-paper and KOSPI assets stay tracked; new assets require approval.
+- Paper-specific records belong in ignored `papers/<paper_id>/agents/`, overriding
+  the generated shared core's root-only location. Repository-wide records stay in
+  root `agents/`. Paper tests belong in `replication/tests/`; package tests stay put.
+- Preserve published manuscript and static input bytes. New figures, fetched data,
+  caches and builds go outside the checkout and OneDrive, using the prescribed
+  external Python and `Enter-AgentRepo.ps1` runtime configuration.
+- Check `.github/scripts/check_paper_policy.py` against the actual index before
+  committing, and use `--worktree` for an unstaged preview. Check both distributions
+  with `scripts/check_dist_contents.py`.
+
 ## Repository layout
 
 ```
@@ -136,7 +150,8 @@ under Windows and macOS, then tests built wheel/sdist artifacts outside the chec
   single effective asset after mandate aggregation) — it is the published model.
 - Do not adjust Laplace inversion contours, quadrature nodes, or ODE solver tolerances
   to make a test pass; investigate the discrepancy instead.
-- Do not commit generated figures.
+- Do not commit new generated figures without an explicit publication decision.
+  Existing approved manuscript/study images are exact exceptions in the paper policy.
 
 <!-- ===== SHARED AGENT CORE (standalone variant) — begin =====
      Generated from SHARED_AGENT_CORE.md in the maintainer's project knowledge. Do not hand-edit
@@ -205,7 +220,8 @@ command passes; its out-of-scope list is binding.
 `papers/` reproduces the figures of Sepp (2026) and contains repository-only research.
 Any change to the Laplace inversion, the Riccati solver, or the mandate aggregation requires
 re-running those scripts and confirming the figures and reported values are unchanged. The main
-paper's `--test` mode also generates figures; use a temporary `--outdir` for verification.
+paper's `--test` mode also generates figures; output uses the external local runtime
+or an explicit absolute external `--outdir`, including in test mode.
 
 ## Release checklist
 

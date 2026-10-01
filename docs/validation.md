@@ -1,5 +1,10 @@
 # Validation and numerical evidence
 
+*Author: [Artur Sepp](https://github.com/ArturSepp)*
+
+Project: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
+
 Analytical and semi-analytical calculations are the implementation. Independent Monte Carlo and
 alternative transforms are validators.
 
@@ -26,12 +31,12 @@ four-standard-error envelope rather than forcing a deterministic price match.
 From a development install at repository root:
 
 ```bash
-python papers/goal_based_allocation_2026/generate_paper_figures.py \
-  --test --outdir temporary_paper_output/
+python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --test
 ```
 
-The current CLI runs nine assertions and then generates the ten figures. Always use a temporary
-output directory for verification. The assertions cover density normalization, barrier-density
+The current CLI runs nine assertions and then generates the ten figures. Output defaults to the external local runtime.
+An explicit `--outdir` must be absolute and outside the checkout and OneDrive;
+test mode honors the same destination. The assertions cover density normalization, barrier-density
 and analytical-survival consistency, horizon monotonicity, asset comparisons, Riccati initial
 conditions, a 100K-path Monte Carlo survival comparison, and Table 1 inputs.
 

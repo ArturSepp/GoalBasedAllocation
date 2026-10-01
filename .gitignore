@@ -16,3 +16,19 @@ docs/_build/
 
 # Personal IDE configuration
 .idea/
+
+# Paper publication contract: exact existing assets only.
+/papers/*
+!/papers/AGENTS.md
+!/papers/README.md
+!/papers/goal_based_allocation_2026/
+!/papers/kospi_volatility_fit_jun2026/
+/papers/**/drafts/
+/papers/**/private/
+/papers/**/agents/
+/papers/**/paper/**
+/papers/**/presentations/**
+/papers/**/replication/data/**
+/papers/**/replication/data/local/
+/papers/**/replication/results/
+/papers/**/replication/outputs/

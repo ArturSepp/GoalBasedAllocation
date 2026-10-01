@@ -1,0 +1,22 @@
+# Exact existing publication exceptions; new assets need approval.
+/*
+!/.gitignore
+!/README.md
+!/paper/
+!/replication/
+!/presentations/
+!/paper/figures/
+!/replication/data/bvol_moneyness_grid_20260724.csv
+!/replication/data/kospi2_20260813_20d.csv
+!/replication/data/kospi2_20260910_48d.csv
+!/replication/data/kospi2_20261008_76d.csv
+!/paper/figures/kospi2_frown_vs_traded.png
+!/paper/figures/kospi2_interpolation_misleading.png
+!/paper/figures/kospi2_model_fit_by_regime.png
+!/paper/figures/kospi2_skew_vs_frown.png
+!/paper/figures/kospi2_term_structure.png
+!/paper/figures/kospi2_term_structure_3tenor.png
+!/paper/figures/kospi2_three_views.png
+!/paper/figures/kospi2_traded_vs_bvol_simple.png
+!/replication/data/README.md
+!/replication/data/sha256.json

@@ -1,9 +1,18 @@
-# Track only the LaTeX source, the compiled PDF, the figures, and the
-# figure-generation script. Everything else (LaTeX build artifacts, etc.) is ignored.
-*
-!.gitignore
-!*.tex
-!*.pdf
-!generate_paper_figures.py
-!figures/
-!figures/**
+# Exact existing publication exceptions; new assets need approval.
+/*
+!/.gitignore
+!/README.md
+!/paper/
+!/replication/
+!/presentations/
+!/paper/figures/
+!/paper/goal_based_allocation_2026.pdf
+!/paper/goal_based_allocation_2026.tex
+!/paper/figures/mandate_comparison.png
+!/paper/figures/mandate_density_overlay_c0.png
+!/paper/figures/opportunity_set_c0.png
+!/paper/figures/opportunity_set_c25.png
+!/paper/figures/path_dynamics_balanced.png
+!/paper/figures/risky_allocation_subplots_c0.png
+!/replication/data/README.md
+!/replication/data/sha256.json

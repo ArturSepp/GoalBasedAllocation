@@ -1,1 +1,3 @@
 prune src/goal_based_allocation/run
+prune papers
+prune agents

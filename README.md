@@ -175,10 +175,10 @@ GoalBasedAllocation/
 │   ├── investment_opportunity_set.py
 │   └── regime_switch_smile.py      # Vol smile + Fourier/MC reference pricers
 ├── papers/
-│   └── goal_based_allocation_2026/ # Self-contained paper: LaTeX, PDF, figures
-│       ├── goal_based_allocation_2026.tex
-│       ├── generate_paper_figures.py   # All 10 figures + integration tests
-│       └── figures/
+│   └── goal_based_allocation_2026/
+│       ├── paper/                    # Current LaTeX, PDF and approved figures
+│       ├── replication/              # Producer, static inputs and paper tests
+│       └── drafts/, presentations/, private/, agents/  # Local sections
 ├── pyproject.toml
 ├── LICENSE
 └── README.md
@@ -331,20 +331,17 @@ tests and then generates all figures; use `--outdir` to keep verification output
 from tracked figures.
 
 ```bash
-cd papers/goal_based_allocation_2026
-
-# Run 9 integration assertions, then generate figures into a temporary directory
-python generate_paper_figures.py --test --outdir my_verification_figures/
-
-# Generate all figures only (writes to ./figures/)
-python generate_paper_figures.py
-
-# Generate a single figure
-python generate_paper_figures.py --figure 10
-
-# Custom output directory
-python generate_paper_figures.py --outdir my_figures/
+# Run from the repository root; output defaults to the external local runtime.
+python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --test
+python papers/goal_based_allocation_2026/replication/generate_paper_figures.py
+python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --figure 10
 ```
+
+The main manuscript, PDF and approved figures now live in `paper/`; research code
+and static inputs live in `replication/`. See the [paper index](papers/README.md).
+An optional `--outdir` must be absolute and outside the checkout and OneDrive;
+it applies to both normal generation and `--test`.
+
 
 ### Integration tests
 
@@ -378,8 +375,8 @@ The `--test` flag runs 7 tests with 9 assertions covering:
 ### Selected figures
 
 <p align="center">
-  <img src="papers/goal_based_allocation_2026/figures/mandate_density_overlay_c0.png" width="48%" />
-  <img src="papers/goal_based_allocation_2026/figures/mandate_comparison.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/paper/figures/mandate_density_overlay_c0.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/paper/figures/mandate_comparison.png" width="48%" />
 </p>
 
 <p align="center">
@@ -388,8 +385,8 @@ The `--test` flag runs 7 tests with 9 assertions covering:
 </p>
 
 <p align="center">
-  <img src="papers/goal_based_allocation_2026/figures/path_dynamics_balanced.png" width="48%" />
-  <img src="papers/goal_based_allocation_2026/figures/opportunity_set_c0.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/paper/figures/path_dynamics_balanced.png" width="48%" />
+  <img src="papers/goal_based_allocation_2026/paper/figures/opportunity_set_c0.png" width="48%" />
 </p>
 
 <p align="center">

@@ -1,5 +1,10 @@
 # KOSPI 200 volatility fit — the "Korean frown" case (July 2026)
 
+*Author: [Artur Sepp](https://github.com/ArturSepp)*
+
+Project: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
+
 A calibration study of the stressed KOSPI 200 option surface, fitting the shipped
 `GoalBasedAllocation` regime-switching jump-diffusion to real Bloomberg option chains
 across three expiries, and testing whether the widely-circulated "Korean frown" is a
@@ -35,16 +40,16 @@ right after a shock.
 
 ## 2. Data
 
-Three option chains fetched via `bbg-fetch` (`data/fetch_option_chain.py`), reference
+Three option chains fetched via `bbg-fetch` (`replication/fetch_option_chain.py`), reference
 2026-07-24, spot 1055.58, plus the BVOL moneyness grid transcribed from the Option
 Monitor screenshot.
 
 | file | expiry | tenor | forward | rate (recovered) | r_eff = ln(F/S)/T | parity r² |
 |---|---|---|---|---|---|---|
-| `data/kospi2_20260813_20d.csv` | 13-Aug-2026 | 20d (0.055y) | 1053.11 | 16.47%* | −4.27% | 0.9996 |
-| `data/kospi2_20260910_48d.csv` | 10-Sep-2026 | 48d (0.132y) | 1059.73 | 3.14% | +2.99% | 0.99987 |
-| `data/kospi2_20261008_76d.csv` | 08-Oct-2026 | 76d (0.208y) | 1049.75 | 2.35% | −2.66% | 0.99992 |
-| `data/bvol_moneyness_grid_20260724.csv` | — | 1W–2Y × 80–120% | — | — | — | — |
+| `replication/data/kospi2_20260813_20d.csv` | 13-Aug-2026 | 20d (0.055y) | 1053.11 | 16.47%* | −4.27% | 0.9996 |
+| `replication/data/kospi2_20260910_48d.csv` | 10-Sep-2026 | 48d (0.132y) | 1059.73 | 3.14% | +2.99% | 0.99987 |
+| `replication/data/kospi2_20261008_76d.csv` | 08-Oct-2026 | 76d (0.208y) | 1049.75 | 2.35% | −2.66% | 0.99992 |
+| `replication/data/bvol_moneyness_grid_20260724.csv` | — | 1W–2Y × 80–120% | — | — | — | — |
 
 \* the 20d recovered rate is the ill-conditioned parity funding leg (disc ≈ 1 at 20
 days); it is irrelevant to the vol shape. The forward is well identified at every tenor.
@@ -198,7 +203,7 @@ from regime 1 it is the upward recovery (1→0). A put skew needs a pending down
 can only be produced from regime 0 — which here calibrates to ~60% diffusion vol, i.e. a
 high-vol state braced for a crash, not a calm one.
 
-`figures/kospi2_model_fit_by_regime.png` prices the *same* calibrated parameters from each
+`paper/figures/kospi2_model_fit_by_regime.png` prices the *same* calibrated parameters from each
 starting regime against the market bid/ask. From regime 0 the model reproduces the market
 put skew and sits inside the bid/ask — this is the fit. From regime 1 the same parameters
 give a different, non-fitting shape: flat at 76d (there λ₁₀ ≈ 0, so from stress the chain
@@ -229,14 +234,14 @@ downside-skewed market. (Reproduce with `term_structure.plot_model_fit_by_regime
 
 | file | shows |
 |---|---|
-| `figures/kospi2_skew_vs_frown.png` | 48d slice + mixture/RS fits, and the real skew vs the digitised frown |
-| `figures/kospi2_term_structure.png` | 48d vs 76d skew flattening; frown-depth vs the §6 prediction |
-| `figures/kospi2_term_structure_3tenor.png` | 3-tenor: fanning skew, frown depth vs prediction, kurtosis decay |
-| `figures/kospi2_traded_vs_bvol_simple.png` | traded mid + bid/ask vs nearest BVOL tenor, per maturity |
-| `figures/kospi2_three_views.png` | the fitted BVOL curve vs the OMON grid vs listed quotes at ~3M |
-| `figures/kospi2_frown_vs_traded.png` | the frown = liquid skew + extrapolated wings; deep-put sign flip |
-| `figures/kospi2_interpolation_misleading.png` | interpolated surface vs actual bid/ask; off-grid wings; wide 3M market |
-| `figures/kospi2_model_fit_by_regime.png` | model fit vs market bid/ask, smile viewed from regime 0 (growth) vs regime 1 (stress) |
+| `paper/figures/kospi2_skew_vs_frown.png` | 48d slice + mixture/RS fits, and the real skew vs the digitised frown |
+| `paper/figures/kospi2_term_structure.png` | 48d vs 76d skew flattening; frown-depth vs the §6 prediction |
+| `paper/figures/kospi2_term_structure_3tenor.png` | 3-tenor: fanning skew, frown depth vs prediction, kurtosis decay |
+| `paper/figures/kospi2_traded_vs_bvol_simple.png` | traded mid + bid/ask vs nearest BVOL tenor, per maturity |
+| `paper/figures/kospi2_three_views.png` | the fitted BVOL curve vs the OMON grid vs listed quotes at ~3M |
+| `paper/figures/kospi2_frown_vs_traded.png` | the frown = liquid skew + extrapolated wings; deep-put sign flip |
+| `paper/figures/kospi2_interpolation_misleading.png` | interpolated surface vs actual bid/ask; off-grid wings; wide 3M market |
+| `paper/figures/kospi2_model_fit_by_regime.png` | model fit vs market bid/ask, smile viewed from regime 0 (growth) vs regime 1 (stress) |
 
 ## 7. How to run
 
@@ -244,7 +249,7 @@ Requires `goal-based-allocation` installed (this repo) plus `numpy`, `scipy`,
 `pandas`, `matplotlib`.
 
 ```bash
-cd papers/kospi_volatility_fit_jun2026
+cd papers/kospi_volatility_fit_jun2026/replication
 python run_analysis.py                 # full term structure + 3-tenor figure
 ```
 
@@ -258,6 +263,10 @@ run_local(local=Locals.REGIME_SWITCH)  # shipped RS model, both regimes
 run_local(local=Locals.TERM_STRUCTURE) # three-tenor diagnostics + figure
 run_local(local=Locals.BVOL_CHECK)     # BVOL grid vs listed bid/ask
 ```
+
+New output uses the external local runtime; set `GBA_PAPER_OUTPUT_PATH` to an
+absolute external parent to override it. Existing publication figures stay under
+`paper/figures/`. The following modules now live in `replication/`.
 
 ### Module map
 

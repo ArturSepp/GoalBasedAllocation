@@ -74,7 +74,7 @@ where = ["src"]
 include = ["goal_based_allocation*"]
 exclude = ["goal_based_allocation.run*"]
 
-# `papers/` reproduces published code and is left exactly as-is.
+# Historical paper numerical style stays outside package lint; workspace policy is checked separately.
 [tool.ruff]
 line-length = 100
 exclude = ["papers"]

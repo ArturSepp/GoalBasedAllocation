@@ -29,8 +29,8 @@ def test_research_projects_use_papers_root():
     papers = REPOSITORY_ROOT / "papers"
 
     assert not (REPOSITORY_ROOT / "paper_code").exists()
-    assert (papers / "goal_based_allocation_2026" / "generate_paper_figures.py").is_file()
-    assert (papers / "kospi_volatility_fit_jun2026" / "run_analysis.py").is_file()
+    assert (papers / "goal_based_allocation_2026" / "replication" / "generate_paper_figures.py").is_file()
+    assert (papers / "kospi_volatility_fit_jun2026" / "replication" / "run_analysis.py").is_file()
 
 
 def test_public_path_references_use_papers_root():
