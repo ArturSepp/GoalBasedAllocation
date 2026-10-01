@@ -1,35 +1,18 @@
+---
+orphan: true
+myst:
+  html_meta:
+    description: >-
+      European option pricing under regime switching. This page moved to the goal-based-allocation handbook.
+    "http-equiv=refresh": "0; url=../european_options.html"
+---
+
 # European option pricing under regime switching
 
-Option pricing is a secondary workflow that reuses the package's two-regime jump-diffusion and
-Laplace inversion. It supports European calls and puts, both starting regimes, scalar or joint
-strike arrays, and Black-Scholes implied volatility.
+*Author: [Artur Sepp](https://github.com/ArturSepp)*
 
-## Public entry points
+Project: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
-- `RiskNeutralParams` defines diffusion volatilities, transition intensities, jump parameters,
-  and the continuously compounded rate.
-- `RiskNeutralParams.from_rates` accepts exponential jump **rates**. The reciprocal is the mean
-  magnitude.
-- `Regime` and `OptionType` avoid ambiguous regime/payoff strings.
-- `price_vanilla` prices all supplied strikes through one maturity inversion.
-- `implied_vol` maps prices to Black-Scholes implied volatility.
-
-The source example
-[`examples/regime_switch_smile.py`](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/examples/regime_switch_smile.py)
-compares the Laplace price with independent Fourier and Monte Carlo references.
-
-## Boundary
-
-This is not a general exotic-pricing library. It does not add path-dependent payoffs, a market
-data/calibration service, or alternative stochastic-volatility models. For conventional vanilla
-option models and fitters, see
-[`vanilla-option-pricers`](https://github.com/ArturSepp/VanillaOptionPricers); for stochastic
-volatility analytics, see [`stochvolmodels`](https://github.com/ArturSepp/StochVolModels).
-
-## Validation
-
-Tests cover put-call parity, Black-Scholes limits, strike monotonicity, scalar/array consistency,
-input validation, Fourier agreement, and a seeded Monte Carlo cross-check. See
-[validation](../validation.md) for the role of each reference.
-
-API: [vanilla option pricer](../api/index.md).
+This guide is now part of the [goal-based allocation handbook](../index.md). Its content moved to
+[European options under regime switching](../european_options.md) and [variance swaps and the crash-size premium](../variance_swaps.md). This address is kept so that existing links keep working.

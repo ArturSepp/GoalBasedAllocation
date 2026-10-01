@@ -1,4 +1,17 @@
+---
+myst:
+  html_meta:
+    description: >-
+      Appropriate uses and intentional non-goals of goal-based-allocation: the published
+      two-regime model with an absorbing floor, and the workflows that belong to other packages.
+---
+
 # Model boundaries
+
+*Author: [Artur Sepp](https://github.com/ArturSepp)*
+
+Project: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 ## Appropriate uses
 

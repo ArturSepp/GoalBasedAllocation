@@ -1,4 +1,17 @@
+---
+myst:
+  html_meta:
+    description: >-
+      A dated workflow comparison of goal-based-allocation with optimalportfolios, PyPortfolioOpt,
+      Riskfolio-Lib and CVXPortfolio, from their official documentation.
+---
+
 # Choosing the appropriate portfolio workflow
+
+*Author: [Artur Sepp](https://github.com/ArturSepp)*
+
+Project: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 Observed 2026-08-19 from each project's official documentation. This is a workflow comparison,
 not a performance ranking. Versions identify the documentation inspected and should be refreshed
