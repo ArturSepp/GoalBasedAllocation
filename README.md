@@ -439,7 +439,7 @@ of Proposition A.1.
 - Sepp, A. (2006). Extended CreditGrades model with stochastic volatility and jumps.
   *Wilmott Magazine*, September, 50-62.
 - Lipton, A. (2001). *Mathematical Methods for Foreign Exchange*. World Scientific.
-- Lipton, A. (2001). Assets with jumps. *Risk*, 14(9), 149-153.
+- Lipton, A. (2002). Assets with jumps. *Risk*, 15(9), 149-153.
 - Cont, R. and Tankov, P. (2009). Constant proportion portfolio insurance in the presence
   of jumps in asset prices. *Mathematical Finance*, 19(3), 379-401.
 - Abate, J. and Whitt, W. (1995). Numerical inversion of Laplace transforms of probability
