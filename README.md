@@ -265,10 +265,10 @@ print(f"Floor atom = {1 - S - np.trapezoid(f_ov, d_ov):.4f}")
 `find_ell` matches `target_return` to $-b(T)/(2a(T))$, the present value of the policy's target,
 $\Pi^{\ast}(0) = \Pi_0 e^{\rho T}$, not to the expected terminal wealth. Here $c = r$, so the target
 grows at $r_c = 0$ and equals $100 e^{0.4} \approx 149.2$ at both ends of the horizon, while the
-expected terminal wealth of the floor-protected strategy is about 106.4. The
-[policy chapter](https://goalbasedallocation.readthedocs.io/en/latest/mv_optimal_policy.html) of the
-handbook gives the expected terminal wealth in closed form and the multiplier `ell` for an
-expected-wealth target.
+expected terminal wealth of the floor-protected strategy is about 106.4. The chapter *The MV-optimal
+policy and the Riccati system* of the [handbook](https://goalbasedallocation.readthedocs.io/en/latest/)
+gives the expected terminal wealth in closed form and the multiplier `ell` for an expected-wealth
+target.
 
 ### 3. Compare MV-optimal vs buy-and-hold
 
