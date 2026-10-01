@@ -6,6 +6,10 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-01
+
+Documentation release: no package code changed.
+
 ### Added
 
 - Added the goal-based allocation handbook to the documentation: eleven methodology chapters in
@@ -13,7 +17,14 @@ follows [Semantic Versioning](https://semver.org/).
   proofs, Insight and Pitfall callouts, and worked examples executed by
   `tests/test_documentation_examples.py`, plus a single bibliography, a notation page, a
   documentation standard and an API reference generated from the docstrings. The former
-  `user-guide/` pages redirect to their chapters. No package code changed.
+  `user-guide/` pages redirect to their chapters.
+
+### Fixed
+
+- The README quickstart no longer describes the `target_return` of `find_ell` as a target
+  return: it fixes the present value of the policy's target, not the expected terminal wealth.
+- Corrected README references: the buy-and-hold moments are Proposition A.1 of the manuscript,
+  and Lipton's "Assets with jumps" appeared in *Risk* in 2002, volume 15.
 
 ## [0.4.0] - 2026-09-08
 
