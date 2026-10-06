@@ -3,13 +3,19 @@
 The handbook conventions are recorded in ``docs/documentation_standard.md``; this module enforces
 the mechanical ones: page metadata and attribution, the eight sections and the convention card of a
 methodology chapter, the callout labels, the single bibliography, the API page and the coverage of
-every public export by a chapter.
+every public export by a chapter. A small Sphinx build checks the page titles, robots tags and
+sitemap that the site configuration produces.
 """
 
 import importlib
 import inspect
 import re
+import subprocess
+import sys
+from html.parser import HTMLParser
 from pathlib import Path
+
+import pytest
 
 import goal_based_allocation
 
@@ -230,3 +236,90 @@ def test_legacy_user_guide_pages_redirect_to_chapters():
         assert text.startswith("---\norphan: true\n"), relative
         assert f'"http-equiv=refresh": "0; url=../{target}.html"' in text, relative
         assert (DOCS / f"{target}.md").is_file(), target
+
+
+def test_site_build_shortens_titles_and_keeps_redirect_stubs_out_of_the_index(
+    monkeypatch, tmp_path
+):
+    # Furo would end every title with the full html_title, and the redirect stubs, the noindex
+    # search page and the general index would be offered to search engines in the sitemap.
+    for module in ("sphinx", "furo", "myst_parser", "sphinx_sitemap"):
+        pytest.importorskip(module)
+    monkeypatch.delenv("READTHEDOCS_CANONICAL_URL", raising=False)
+    source = tmp_path / "source"
+    (source / "user-guide").mkdir(parents=True)
+    (source / "conf.py").write_text(
+        "import runpy\n"
+        f"_site = runpy.run_path({str(DOCS / 'conf.py')!r})\n"
+        "extensions = ['myst_parser', 'sphinx.ext.autodoc', 'sphinx_sitemap']\n"
+        "html_theme = 'furo'\n"
+        f"templates_path = [{str(DOCS / '_templates')!r}]\n"
+        "for _key in ('project', 'html_title', 'html_baseurl', 'sitemap_url_scheme',\n"
+        "             'sitemap_excludes'):\n"
+        "    if _key in _site:\n"
+        "        globals()[_key] = _site[_key]\n"
+        "setup = _site['setup']\n",
+        encoding="utf-8",
+    )
+    front_matter = "---\nmyst:\n  html_meta:\n    description: {}\n---\n\n"
+    (source / "index.md").write_text(
+        front_matter.format("The handbook.") + "# Home\n\n```{toctree}\nchapter\n```\n",
+        encoding="utf-8",
+    )
+    (source / "chapter.md").write_text(
+        front_matter.format("A chapter.") + "# The regime-switching jump-diffusion\n\nText.\n",
+        encoding="utf-8",
+    )
+    (source / "user-guide" / "old.md").write_text(
+        "---\norphan: true\nmyst:\n  html_meta:\n    description: A moved page.\n"
+        '    "http-equiv=refresh": "0; url=../chapter.html"\n---\n\n# A moved page\n\nMoved.\n',
+        encoding="utf-8",
+    )
+    output = tmp_path / "html"
+    result = subprocess.run(
+        [sys.executable, "-m", "sphinx", "-W", "-q", "-b", "html", str(source), str(output)],
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+    class Head(HTMLParser):
+        """Collect the title text and the robots and description tags of a page head."""
+
+        def __init__(self):
+            super().__init__()
+            self.robots, self.descriptions = [], []
+
+        def handle_starttag(self, tag, attrs):
+            attrs = dict(attrs)
+            if tag == "meta" and attrs.get("name") == "robots":
+                self.robots.append(attrs["content"])
+            if tag == "meta" and attrs.get("name") == "description":
+                self.descriptions.append(attrs["content"])
+
+    def head(name):
+        """Parse the head of a built page and return its titles and tag collector."""
+        html = (output / f"{name}.html").read_text(encoding="utf-8").split("</head>")[0]
+        parser = Head()
+        parser.feed(html)
+        return re.findall(r"<title>(.*?)</title>", html), parser
+
+    project = "goal-based-allocation"
+    titles, index = head("index")
+    assert titles == ["goal-based-allocation - goal-based allocation under regime-switching "
+                      "jump-diffusions"]
+    assert index.robots == []
+    titles, chapter = head("chapter")
+    assert titles == [f"The regime-switching jump-diffusion - {project}"]
+    assert chapter.robots == []
+    titles, stub = head("user-guide/old")
+    assert titles == [f"A moved page - {project}"]
+    assert stub.robots == ["noindex, follow"]
+    assert stub.descriptions == ["A moved page."]
+    sitemap = (output / "sitemap.xml").read_text(encoding="utf-8")
+    base = "https://goalbasedallocation.readthedocs.io/en/latest/"
+    assert sorted(re.findall(r"<loc>(.*?)</loc>", sitemap)) == [
+        f"{base}chapter.html",
+        f"{base}index.html",
+    ]

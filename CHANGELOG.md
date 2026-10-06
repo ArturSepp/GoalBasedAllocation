@@ -6,6 +6,14 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Documentation pages other than the homepage are titled `<page title> - goal-based-allocation`
+  rather than ending with the full site title, which search results cut off.
+- The former `user-guide/` pages, which redirect to their chapters, carry a `noindex, follow`
+  robots tag and are left out of the sitemap with the noindex search page and the general index.
+  No signature or computed value changes.
+
 ## [0.4.1] - 2026-10-01
 
 Documentation release: no package code changed.

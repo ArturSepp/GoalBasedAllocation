@@ -85,6 +85,14 @@ html_theme_options = {
 }
 
 sitemap_url_scheme = "{link}"
+# The search page is marked noindex, the general index only lists links to other pages, and the
+# user-guide pages redirect to the handbook chapters that replaced them.
+sitemap_excludes = ["search.html", "genindex.html", "user-guide/*"]
+
+# The former user-guide addresses stay on the site so that existing links keep working, but they
+# only redirect to their chapters, so search engines are asked to follow them and not index them.
+NOINDEX_PREFIXES = ("user-guide/",)
+ROBOTS_NOINDEX = '<meta name="robots" content="noindex, follow">\n'
 
 # Packages whose versions the footer names, with their usual spelling.
 BUILD_PACKAGES = {
@@ -174,7 +182,17 @@ def _use_root_canonical(app, pagename, templatename, context, doctree) -> None:
         context["pageurl"] = app.config.html_baseurl
 
 
+def _keep_redirect_stubs_out_of_the_index(app, pagename, templatename, context, doctree) -> None:
+    """Append a ``noindex, follow`` robots tag to the redirect stubs of the former user guide.
+
+    Appending to ``metatags`` keeps the description and refresh tags from the page's front matter.
+    """
+    if pagename.startswith(NOINDEX_PREFIXES):
+        context["metatags"] = (context.get("metatags") or "") + ROBOTS_NOINDEX
+
+
 def setup(app) -> None:
     """Register documentation build hooks."""
     app.connect("autodoc-process-docstring", _literal_formula_blocks)
     app.connect("html-page-context", _use_root_canonical)
+    app.connect("html-page-context", _keep_redirect_stubs_out_of_the_index)
