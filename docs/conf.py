@@ -12,6 +12,7 @@ examples of every chapter.
 """
 
 import os
+import re
 import sys
 import tomllib
 from pathlib import Path
@@ -71,9 +72,29 @@ linkcheck_ignore = [
 html_theme = "furo"
 html_title = "goal-based-allocation - goal-based allocation under regime-switching jump-diffusions"
 html_short_title = "GoalBasedAllocation"
-html_baseurl = os.environ.get(
-    "READTHEDOCS_CANONICAL_URL",
-    "https://goalbasedallocation.readthedocs.io/en/latest/",
+
+
+def _consolidate_stable(url: str) -> str:
+    """Return the canonical base URL with the moving ``stable`` alias replaced by ``latest``.
+
+    Read the Docs builds ``stable`` from the newest release tag and ``latest`` from ``main``, so
+    both serve the same pages. Left alone, each copy names itself canonical and search engines see
+    every page twice. Numbered versions keep their own canonical URL.
+
+    Args:
+        url: Canonical base URL that Read the Docs passes to the build.
+
+    Returns:
+        The same URL, with ``/en/stable`` replaced by ``/en/latest`` on a Read the Docs host.
+    """
+    return re.sub(r"(\.readthedocs\.io/en/)stable(/|$)", r"\1latest\2", url)
+
+
+html_baseurl = _consolidate_stable(
+    os.environ.get(
+        "READTHEDOCS_CANONICAL_URL",
+        "https://goalbasedallocation.readthedocs.io/en/latest/",
+    )
 )
 html_extra_path = ["robots.txt", "googleccb1e876a2b4bf72.html"]
 html_static_path = ["_static"]

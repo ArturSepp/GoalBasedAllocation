@@ -12,7 +12,9 @@ follows [Semantic Versioning](https://semver.org/).
   rather than ending with the full site title, which search results cut off.
 - The former `user-guide/` pages, which redirect to their chapters, carry a `noindex, follow`
   robots tag and are left out of the sitemap with the noindex search page and the general index.
-  No signature or computed value changes.
+- Documentation pages built for the `stable` version name their `latest` address as canonical,
+  so search engines no longer see each page twice. Numbered versions keep their own canonical
+  address. No signature or computed value changes.
 
 ## [0.4.1] - 2026-10-01
 

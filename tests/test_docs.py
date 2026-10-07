@@ -10,6 +10,7 @@ sitemap that the site configuration produces.
 import importlib
 import inspect
 import re
+import runpy
 import subprocess
 import sys
 from html.parser import HTMLParser
@@ -236,6 +237,30 @@ def test_legacy_user_guide_pages_redirect_to_chapters():
         assert text.startswith("---\norphan: true\n"), relative
         assert f'"http-equiv=refresh": "0; url=../{target}.html"' in text, relative
         assert (DOCS / f"{target}.md").is_file(), target
+
+
+@pytest.mark.parametrize(
+    ("service_url", "canonical_url"),
+    [
+        # stable and latest serve the same pages, so both name latest as canonical
+        (
+            "https://goalbasedallocation.readthedocs.io/en/stable/",
+            "https://goalbasedallocation.readthedocs.io/en/latest/",
+        ),
+        (
+            "https://goalbasedallocation.readthedocs.io/en/latest/",
+            "https://goalbasedallocation.readthedocs.io/en/latest/",
+        ),
+        (
+            "https://goalbasedallocation.readthedocs.io/en/0.4.1/",
+            "https://goalbasedallocation.readthedocs.io/en/0.4.1/",
+        ),
+    ],
+)
+def test_stable_builds_name_latest_as_canonical(monkeypatch, service_url, canonical_url):
+    pytest.importorskip("tomllib", reason="docs/conf.py reads pyproject.toml with tomllib")
+    monkeypatch.setenv("READTHEDOCS_CANONICAL_URL", service_url)
+    assert runpy.run_path(str(DOCS / "conf.py"))["html_baseurl"] == canonical_url
 
 
 def test_site_build_shortens_titles_and_keeps_redirect_stubs_out_of_the_index(
