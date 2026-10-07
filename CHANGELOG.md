@@ -6,6 +6,8 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-10-07
+
 ### Fixed
 
 - Documentation pages other than the homepage are titled `<page title> - goal-based-allocation`
