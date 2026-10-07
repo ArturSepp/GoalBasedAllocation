@@ -12,6 +12,7 @@ examples of every chapter.
 """
 
 import os
+import re
 import sys
 import tomllib
 from pathlib import Path
@@ -71,9 +72,29 @@ linkcheck_ignore = [
 html_theme = "furo"
 html_title = "goal-based-allocation - goal-based allocation under regime-switching jump-diffusions"
 html_short_title = "GoalBasedAllocation"
-html_baseurl = os.environ.get(
-    "READTHEDOCS_CANONICAL_URL",
-    "https://goalbasedallocation.readthedocs.io/en/latest/",
+
+
+def _consolidate_stable(url: str) -> str:
+    """Return the canonical base URL with the moving ``stable`` alias replaced by ``latest``.
+
+    Read the Docs builds ``stable`` from the newest release tag and ``latest`` from ``main``, so
+    both serve the same pages. Left alone, each copy names itself canonical and search engines see
+    every page twice. Numbered versions keep their own canonical URL.
+
+    Args:
+        url: Canonical base URL that Read the Docs passes to the build.
+
+    Returns:
+        The same URL, with ``/en/stable`` replaced by ``/en/latest`` on a Read the Docs host.
+    """
+    return re.sub(r"(\.readthedocs\.io/en/)stable(/|$)", r"\1latest\2", url)
+
+
+html_baseurl = _consolidate_stable(
+    os.environ.get(
+        "READTHEDOCS_CANONICAL_URL",
+        "https://goalbasedallocation.readthedocs.io/en/latest/",
+    )
 )
 html_extra_path = ["robots.txt", "googleccb1e876a2b4bf72.html"]
 html_static_path = ["_static"]
@@ -85,6 +106,14 @@ html_theme_options = {
 }
 
 sitemap_url_scheme = "{link}"
+# The search page is marked noindex, the general index only lists links to other pages, and the
+# user-guide pages redirect to the handbook chapters that replaced them.
+sitemap_excludes = ["search.html", "genindex.html", "user-guide/*"]
+
+# The former user-guide addresses stay on the site so that existing links keep working, but they
+# only redirect to their chapters, so search engines are asked to follow them and not index them.
+NOINDEX_PREFIXES = ("user-guide/",)
+ROBOTS_NOINDEX = '<meta name="robots" content="noindex, follow">\n'
 
 # Packages whose versions the footer names, with their usual spelling.
 BUILD_PACKAGES = {
@@ -174,7 +203,17 @@ def _use_root_canonical(app, pagename, templatename, context, doctree) -> None:
         context["pageurl"] = app.config.html_baseurl
 
 
+def _keep_redirect_stubs_out_of_the_index(app, pagename, templatename, context, doctree) -> None:
+    """Append a ``noindex, follow`` robots tag to the redirect stubs of the former user guide.
+
+    Appending to ``metatags`` keeps the description and refresh tags from the page's front matter.
+    """
+    if pagename.startswith(NOINDEX_PREFIXES):
+        context["metatags"] = (context.get("metatags") or "") + ROBOTS_NOINDEX
+
+
 def setup(app) -> None:
     """Register documentation build hooks."""
     app.connect("autodoc-process-docstring", _literal_formula_blocks)
     app.connect("html-page-context", _use_root_canonical)
+    app.connect("html-page-context", _keep_redirect_stubs_out_of_the_index)
