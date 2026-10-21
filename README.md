@@ -15,9 +15,14 @@ multi-asset optimiser, trading engine, or production portfolio-management system
 [![Downloads](https://static.pepy.tech/badge/goal-based-allocation)](https://pepy.tech/project/goal-based-allocation)
 [![Monthly](https://static.pepy.tech/badge/goal-based-allocation/month)](https://pepy.tech/project/goal-based-allocation)
 
-**Documentation:** [goalbasedallocation.readthedocs.io](https://goalbasedallocation.readthedocs.io/en/latest/)
+**Paper:** companion code to Sepp, A. (2026), *Dynamic Mean-Variance Portfolio Allocation under
+Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching* —
+[SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579). See
+[Statement of need](#statement-of-need) for what the package implements from it and
+[Citation](#citation) for the BibTeX entries.
 
-**Paper:** companion code to Sepp, A. (2026), *Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching* — [SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579). See [Citation](#citation) for BibTeX.
+**Documentation:** [goalbasedallocation.readthedocs.io](https://goalbasedallocation.readthedocs.io/en/latest/) ·
+[getting started](docs/getting-started.md) · [paper index](papers/README.md)
 
 ---
 
@@ -26,35 +31,14 @@ multi-asset optimiser, trading engine, or production portfolio-management system
 This package provides a **semi-analytical Laplace-transform framework** for dynamic
 mean-variance (MV) portfolio allocation under a two-state regime-switching model
 with exponential jumps at regime transitions and an absorbing wealth floor. The transforms are
-analytical; their inversion and the Riccati system are solved numerically.
+analytical; their inversion and the Riccati system are solved numerically. No Monte Carlo
+simulation is needed for pricing; MC is used only for validation.
 
 It models two regimes and multi-asset mandates aggregated to one effective risky
 asset. It is not a discrete constrained multi-asset optimiser, trading engine, or
 production portfolio-management system; use
 [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios) for rolling
 multi-asset construction, constraints, transaction costs, and backtesting.
-
-The MV-optimal strategy takes the form
-
-$$\omega^{\ast}(t) = |\omega^{\ast}_a| \cdot \left(\frac{\Pi^{\ast}(t)}{\Pi_t} - 1\right)$$
-
-where $\Pi^{\ast}(t)$ is the target wealth trajectory derived from the Riccati ODE system,
-and $|\omega^{\ast}_a|$ is the regime-dependent allocation intensity. This produces an
-**endogenous de-risking glide path**: early in the horizon the funding gap is large
-and allocation is aggressive; as the portfolio approaches the target, allocation
-moderates automatically.
-
-The terminal wealth density has three analytically tractable components:
-
-1. **Survived density** — wealth above the floor at horizon, computed via
-   Laplace inversion of the bounded transition density
-2. **Floor atom** — probability mass from diffusion paths hitting the absorbing barrier
-3. **Jump-overshoot density** — wealth below the floor from crash jumps that gap
-   through the barrier, computed via the overshoot distribution
-
-All three components are computed semi-analytically using the Abate-Whitt (1995)
-Euler acceleration method for numerical Laplace inversion. No Monte Carlo
-simulation is needed for pricing; MC is used only for validation.
 
 ### Key differentiators
 
@@ -69,7 +53,7 @@ simulation is needed for pricing; MC is used only for validation.
 - Monte Carlo simulator for independent validation of the semi-analytical results
 - Integration tests and all paper figures reproducible from a single command
 
-## When to use it — and when not
+### When to use it — and when not
 
 Use `goal-based-allocation` to design goal-based mandates under regime switching: survival and
 shortfall probabilities against a wealth floor, MV-optimal allocation intensities and glide paths,
@@ -77,85 +61,71 @@ terminal wealth distributions, investment opportunity sets for client advice, an
 vanilla option pricing on the same Laplace engine. Analytical transforms and deterministic
 numerical inversion produce the results; Monte Carlo is reserved for validation.
 
-The model is deliberately parsimonious: two regimes, exponential jumps at transitions, and multi-asset mandates reduced to a single effective asset via portfolio aggregation. For discrete rolling multi-asset optimisation with weight constraints and transaction costs, use [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios).
-
-## Model
-
-The portfolio wealth $\Pi_t$ follows a regime-switching jump-diffusion
-with two states: **growth** ($i=1$) and **stress** ($i=2$).
-
-### Notation (paper → code)
-
-| Symbol | Name | Code variable |
-|---|---|---|
-| $\bar{\mu}^{[i]}$ | Total expected return (CMA observable) | `mu_growth`, `mu_stress` |
-| $\mu^{[i]} = \bar{\mu}^{[i]} - \lambda \alpha^{[i]}$ | Diffusion drift | `mu_bar` |
-| $r_h = \max(r, c)$ | Hurdle rate | `r_h` |
-| $r_c = r_h - c = \max(0, r-c)$ | Net floor growth rate | `r_c` |
-| $\omega^{\ast}_a = -\tilde{a}^{[i]}/\Sigma^{[i]}$ | Risky allocation coefficient | `w_a` |
-
-### Process specification
-
-| Component | Description |
-|---|---|
-| Diffusion | Regime-dependent drift $\mu^{[i]}$ and volatility $\sigma^{[i]}$ |
-| Jumps | Exponential crash at growth→stress ($\eta^{[1]}$), exponential recovery at stress→growth ($\eta^{[2]}$) |
-| Regime switching | Poisson rates $\lambda^{[12]}$ (crash) and $\lambda^{[21]}$ (recovery) |
-| MV-optimal control | $\omega^{\ast}(t) = \|\omega_a^{\ast}\| \cdot (\Pi^{\ast}(t)/\Pi_t - 1)$, from Riccati system |
-| Absorbing floor | Wealth stopped at $L_t = L_0 \cdot e^{r_c t}$, converting to cash |
-
-### Asset class parameters
-
-| | Bonds | Equity | Private Equity |
-|---|---|---|---|
-| $\bar{\mu}^{[1]}$ / $\bar{\mu}^{[2]}$ | 2.5% / 2.0% | 4.5% / 0.0% | 7.0% / 0.0% |
-| $\sigma^{[1]}$ / $\sigma^{[2]}$ | 6% / 9% | 15% / 22.5% | 20% / 30% |
-| Crash loss / Recovery gain | 8% / 5% | 25% / 15% | 30% / 20% |
-
-Shared: $\lambda^{[12]} = 0.1$, $\lambda^{[21]} = 1.0$, $r = 2\%$, $T = 10$y, $\Pi_0 = 100$.
-
-### Mandate specification
-
-Mandates are defined by bond weight $w$ with equity-PE split $g = 2/3$:
-$w_{\text{eq}} = g(1-w)$, $w_{\text{pe}} = (1-g)(1-w)$.
-
-| Mandate | Weights (Bd/Eq/PE) | $\sigma_g$ / $\sigma_s$ | $\bar{\mu}_g$ / $\bar{\mu}_s$ | $\eta^{[1]}$ |
-|---|---|---|---|---|
-| Income | 100/0/0 | 6.0 / 9.0% | 2.50 / 2.00% | 0.087 |
-| Conservative | 65/23/12 | 7.7 / 11.6% | 3.49 / 1.30% | 0.161 |
-| Balanced | 35/43/22 | 11.1 / 16.7% | 4.34 / 0.70% | 0.233 |
-| Growth | 0/67/33 | 15.8 / 23.8% | 5.33 / 0.00% | 0.334 |
-
-### MV-optimal results ($c=0\%$, $\omega^{\ast}(0)=1$, $q_{dd}=2$)
-
-| Mandate | $r_{\text{impl}}$ | $\Pi^{\ast}_T$ | $\mathbb{E}[\Pi_T]$ | Std | Survival | $r^{\text{BH}}_{\text{impl}}$ | $\text{Std}^{\text{BH}}$ |
-|---|---|---|---|---|---|---|---|
-| Income | 2.39% | 240 | 127 | 24.7 | 85.5% | 2.46% | 30.4 |
-| Conservative | 2.92% | 200 | 134 | 33.7 | 83.2% | 3.33% | 48.3 |
-| Balanced | 3.30% | 221 | 139 | 46.1 | 78.7% | 4.10% | 74.8 |
-| Growth | 3.68% | 254 | 144 | 61.9 | 73.8% | 5.01% | 117.6 |
-
-Floor protection cost ranges from 6bp (income) to 117bp (growth). BH moments
-are exact under the RS-JD model via 2×2 matrix exponential (Proposition A.1).
+The model is deliberately parsimonious: two regimes, exponential jumps at transitions, and
+multi-asset mandates reduced to a single effective asset via portfolio aggregation. For discrete
+rolling multi-asset optimisation with weight constraints, transaction costs and backtesting, use
+`optimalportfolios`.
 
 ## Installation
 
 ```bash
-# From PyPI
 pip install goal-based-allocation
+```
 
-# Or directly from GitHub
-pip install git+https://github.com/ArturSepp/GoalBasedAllocation.git
+Or clone and install in development mode:
 
-# Or clone and install in development mode
+```bash
 git clone https://github.com/ArturSepp/GoalBasedAllocation.git
 cd GoalBasedAllocation
 pip install -e .
 ```
 
-Requires Python >= 3.10 with NumPy >= 1.24, SciPy >= 1.10, and Matplotlib >= 3.7.
+Requires Python >= 3.10 with NumPy >= 1.24, SciPy >= 1.10, and Matplotlib >= 3.7. The package
+is standalone within the stack: these are its only runtime dependencies.
 
-## Package Structure
+## Table of contents
+
+1. [Why goal-based-allocation](#why-goal-based-allocation)
+2. [Installation](#installation)
+3. [Statement of need](#statement-of-need)
+4. [Overview](#overview)
+5. [Five-minute quickstart](#five-minute-quickstart)
+6. [Examples](#examples)
+7. [Testing](#testing)
+8. [Changelog](#changelog)
+9. [Feedback & contributing](#feedback-contributing)
+10. [Citation](#citation)
+11. [Ecosystem](#ecosystem)
+12. [License](#license)
+13. [Disclaimer](#disclaimer)
+
+## Statement of need
+
+A goal-based mandate is a wealth target, a floor the investor cannot fall through, and a horizon.
+Under regime switching with jumps at the transitions, the question of how much risk to take at
+each point of the funding gap, and what terminal-wealth distribution that policy produces, has
+closed-form transforms but no closed-form densities. `goal-based-allocation` is the companion
+code to the paper that derives those transforms and inverts them numerically; every figure and
+table of the paper is reproduced by the package, and the same Laplace engine prices vanilla
+options under the model.
+
+| Paper | Implemented analytics | Where |
+|---|---|---|
+| Sepp, A. (2026), *Dynamic Mean-Variance Portfolio Allocation under Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matching*, [SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579) | The Riccati system for the MV-optimal policy, the Laplace-domain gap process with an absorbing floor, survival and tilted-survival probabilities, the terminal-wealth density decomposition (survived, floor atom, jump overshoot), exact buy-and-hold moments (Proposition A.1), mandate aggregation, investment opportunity sets, and regime-switching vanilla option pricing | `goal_based_allocation`, [`papers/goal_based_allocation_2026/`](papers/goal_based_allocation_2026/), [handbook papers chapter](docs/papers.md) |
+
+The methodological lineage: Sepp, A. (2004), *Analytical pricing of double-barrier options under
+a double-exponential jump-diffusion process*, International Journal of Theoretical and Applied
+Finance 7(2), 151–175; Sepp, A. (2006), *Extended CreditGrades model with stochastic volatility
+and jumps*, Wilmott Magazine, September, 50–62; Lipton, A. (2001), *Mathematical Methods for
+Foreign Exchange*, World Scientific; Lipton, A. (2002), *Assets with jumps*, Risk 15(9), 149–153;
+Cont, R. and Tankov, P. (2009), *Constant proportion portfolio insurance in the presence of jumps
+in asset prices*, Mathematical Finance 19(3), 379–401; Abate, J. and Whitt, W. (1995), *Numerical
+inversion of Laplace transforms of probability distributions*, ORSA Journal on Computing 7(1),
+36–43; and the multi-asset allocation frameworks of Sepp, Ossa and Kastenholz (2026, Journal of
+Portfolio Management 52(4), 86–120) and Sepp, Hansen and Kastenholz (2026, under revision at the
+Journal of Portfolio Management). The [bibliography](docs/bibliography.md) carries the full list.
+
+## Overview
 
 ```
 GoalBasedAllocation/
@@ -170,10 +140,6 @@ GoalBasedAllocation/
 │       ├── vanilla_option_pricer.py # Regime-switching vanilla option pricing
 │       └── run/                     # Source-only development runners (*_local.py)
 ├── examples/                       # Minimal, self-contained illustrations
-│   ├── wealth_process_simulation.py
-│   ├── terminal_wealth_distribution.py
-│   ├── investment_opportunity_set.py
-│   └── regime_switch_smile.py      # Vol smile + Fourier/MC reference pricers
 ├── papers/
 │   └── goal_based_allocation_2026/
 │       ├── paper/                    # Current LaTeX, PDF and approved figures
@@ -184,9 +150,26 @@ GoalBasedAllocation/
 └── README.md
 ```
 
-### Module reference
+The portfolio wealth $\Pi_t$ follows a regime-switching jump-diffusion with two states:
+**growth** ($i=1$) and **stress** ($i=2$). Component development checks live under
+`src/goal_based_allocation/run/` as `<subject>_local.py`; each runner exposes `Locals` and
+`run_local(local=...)`, and these files are excluded from built distributions.
 
-| Module | Description | Key functions |
+### Methods
+
+| Step | Method | Notation (paper → code) | Implementation | Chapter |
+|---|---|---|---|---|
+| Model | Regime-dependent drift $\mu^{[i]}$ and volatility $\sigma^{[i]}$; exponential crash at growth→stress ($\eta^{[1]}$) and recovery at stress→growth ($\eta^{[2]}$); Poisson switching rates $\lambda^{[12]}$ (crash) and $\lambda^{[21]}$ (recovery); absorbing floor $L_t = L_0 e^{r_c t}$ converting to cash | $\bar{\mu}^{[i]}$ → `mu_growth`, `mu_stress`; $\mu^{[i]} = \bar{\mu}^{[i]} - \lambda \alpha^{[i]}$ → `mu_bar`; $r_h = \max(r, c)$ → `r_h`; $r_c = r_h - c$ → `r_c` | `create_paper_assets` | [regime-switching model](docs/regime_switching_model.md) |
+| 1. Riccati ODE system | The pre-commitment MV problem reduces to coupled Riccati ODEs for the value-function coefficients in each regime; the solution yields the allocation intensity $\lvert\omega^{\ast}_a\rvert$ and the target trajectory $\Pi^{\ast}(t)$, and the MV-optimal control $\omega^{\ast}(t) = \lvert\omega^{\ast}_a\rvert \cdot (\Pi^{\ast}(t)/\Pi_t - 1)$ — an endogenous de-risking glide path | $\omega^{\ast}_a = -\tilde{a}^{[i]}/\Sigma^{[i]}$ → `w_a` | `riccati_solver.find_ell`, `gap_process_asset`, `simulate_mv_optimal` | [MV-optimal policy](docs/mv_optimal_policy.md) |
+| 2. Gap process | Under the optimal policy the log-cushion ratio $X_t = \ln(B_t/Z_t)$ is a regime-switching jump-diffusion with an absorbing barrier at zero; its Laplace-domain transition density satisfies a degree-6 characteristic polynomial with three positive and three negative roots | — | `regime_switch_paper.compute_density`, `compute_survival`, `compute_tilted_survival`, `compute_overshoot_density` | [wealth-floor gap process](docs/wealth_floor_gap_process.md), [Laplace barrier framework](docs/laplace_barrier_framework.md) |
+| 3. Laplace inversion | Bounded transition density, survival, tilted-survival moments and overshoot density are inverted numerically with the Abate-Whitt (1995) Euler acceleration; the terminal density has three components — survived density, floor atom, jump-overshoot density | — | `laplace_inversion.laplace_invert_abate_whitt`, `laplace_invert_stehfest` | [Laplace inversion](docs/laplace_inversion.md), [terminal wealth distribution](docs/terminal_wealth_distribution.md) |
+| Portfolio aggregation | Multi-asset mandates reduced to one effective asset using portfolio volatility with full correlation structure and portfolio jump sizes by deterministic quadrature; buy-and-hold moments exact via the 2×2 matrix exponential of Proposition A.1 | mandates by bond weight $w$ with equity-PE split $g = 2/3$ | `client_solver.build_effective_asset`, `portfolio_sigma_unc`, `portfolio_eta_quadrature`, `mandate_utils.mandate_effective_asset`, `regime_switch_paper.bh_moments_rsjd` | [mandate aggregation](docs/mandate_aggregation.md), [buy-and-hold moments](docs/buy_and_hold_moments.md) |
+| Opportunity set | Two-step advisor framework: opportunity set, then client profile | — | `opportunity_set.AdvisorSpec`, `compute_opportunity_point`, `build_opportunity_set` | [investment opportunity set](docs/investment_opportunity_set.md) |
+| Option pricing | Vanilla calls and puts under the same regime-switching jump-diffusion from one Laplace inversion in maturity, all strikes jointly, reusing the characteristic roots of the wealth-floor machinery | rate convention `eta_rate = 1 / eta_mean` | `vanilla_option_pricer.RiskNeutralParams`, `price_vanilla`, `implied_vol` | [European options](docs/european_options.md) |
+
+### Analytics at a glance
+
+| Module | What it computes | Key functions |
 |---|---|---|
 | `regime_switch_paper` | Core Laplace framework for the RS-JD gap process | `compute_density`, `compute_survival`, `compute_tilted_survival`, `compute_overshoot_density`, `bh_moments_rsjd` |
 | `riccati_solver` | Riccati ODE for MV-optimal policy, gap process, MC validation | `find_ell`, `gap_process_asset`, `simulate_mv_optimal` |
@@ -196,9 +179,10 @@ GoalBasedAllocation/
 | `opportunity_set` | Two-step advisor framework: opportunity set + client profile | `AdvisorSpec`, `compute_opportunity_point`, `build_opportunity_set` |
 | `vanilla_option_pricer` | Laplace-transform vanilla option pricing under regime switching | `RiskNeutralParams`, `price_vanilla`, `implied_vol` |
 
-Component development checks live under `src/goal_based_allocation/run/` as
-`<subject>_local.py`. Each runner exposes `Locals` and `run_local(local=...)`; these files are
-excluded from built distributions. Automated checks remain in the top-level `tests/` directory.
+The paper's asset-class parameters, mandate specifications and MV-optimal results are tabulated
+in the handbook chapters [regime-switching model](docs/regime_switching_model.md),
+[mandate aggregation](docs/mandate_aggregation.md) and
+[terminal wealth distribution](docs/terminal_wealth_distribution.md).
 
 ## Five-minute quickstart
 
@@ -209,7 +193,7 @@ source checkout and exercises the same public API used below:
 python examples/getting_started/quickstart.py
 ```
 
-### 1. Compute survival probability for a single asset
+Survival probability for a single asset:
 
 ```python
 from goal_based_allocation import create_paper_assets, compute_survival
@@ -222,7 +206,11 @@ for T in [1, 2, 5, 10]:
     print(f"T={T:2d}y: survival={S:.4f}, stopping={1-S:.4f}")
 ```
 
-### 2. Solve the MV-optimal allocation and compute the terminal wealth density
+## Examples
+
+### Highlighted examples
+
+**Solve the MV-optimal allocation and compute the terminal wealth density.**
 
 ```python
 import numpy as np
@@ -270,7 +258,7 @@ policy and the Riccati system* of the [handbook](https://goalbasedallocation.rea
 gives the expected terminal wealth in closed form and the multiplier `ell` for an expected-wealth
 target.
 
-### 3. Compare MV-optimal vs buy-and-hold
+**Compare MV-optimal vs buy-and-hold.**
 
 ```python
 from goal_based_allocation import (
@@ -293,7 +281,7 @@ bh = bh_moments_rsjd(T, PI0, eff, c=0.0)
 print(f"BH: E={bh['E']:.0f}, Std={bh['Std']:.1f}, r_impl={bh['r_impl']*100:.2f}%")
 ```
 
-### 4. Build an investment opportunity set
+**Build an investment opportunity set.**
 
 ```python
 from goal_based_allocation import AdvisorSpec, build_opportunity_set
@@ -306,7 +294,7 @@ for p in opp:
           f"Surv={p['S']:5.1%}  Median={p['q50']:6.0f}")
 ```
 
-### 5. Price a vanilla option under regime switching
+**Price a vanilla option under regime switching.**
 
 ```python
 import numpy as np
@@ -328,60 +316,10 @@ for k, c, v in zip(strikes, calls, vols):
 
 Prices come from a single Laplace inversion in maturity (Abate-Whitt), so all
 strikes are priced jointly and the same characteristic roots reused by the
-wealth-floor machinery. See `examples/regime_switch_smile.py` for the smile plus
-Fourier and Monte Carlo cross-checks.
+wealth-floor machinery. See [`examples/regime_switch_smile.py`](examples/regime_switch_smile.py)
+for the smile plus Fourier and Monte Carlo cross-checks.
 
-## Reproducing Paper Results
-
-The `papers/` projects are available from a GitHub clone and are intentionally not
-included in PyPI distributions. From a clone, the main paper's integration tests and
-figures can be reproduced with the commands below. The current `--test` mode runs the
-tests and then generates all figures; use `--outdir` to keep verification output away
-from tracked figures.
-
-```bash
-# Run from the repository root; output defaults to the external local runtime.
-python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --test
-python papers/goal_based_allocation_2026/replication/generate_paper_figures.py
-python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --figure 10
-```
-
-The main manuscript, PDF and approved figures now live in `paper/`; research code
-and static inputs live in `replication/`. See the [paper index](papers/README.md).
-An optional `--outdir` must be absolute and outside the checkout and OneDrive;
-it applies to both normal generation and `--test`.
-
-
-### Integration tests
-
-The `--test` flag runs 7 tests with 9 assertions covering:
-
-| Test | Description | Tolerance |
-|---|---|---|
-| 1 | Unbounded density normalisation (with and without jumps) | < 1e-4 |
-| 2 | Barrier density vs analytical survival consistency | < 1e-4 |
-| 3 | Survival probability monotonicity across horizons | -- |
-| 4 | Three-asset survival comparison | -- |
-| 5 | Riccati ODE initial conditions a(0) = [1, 1] | < 1e-6 |
-| 6 | Gap-process survival: analytical vs MC (100K paths) | < 5 pp |
-| 7 | Table 1 parameter validation (3 assets) | exact |
-
-### Figure catalog
-
-| # | Description | File |
-|---|---|---|
-| 1 | Investment opportunity set, c=0% | `opportunity_set_c0.png` |
-| 2 | Investment opportunity set, c=2.5% | `opportunity_set_c25.png` |
-| 3 | Expected allocation glide paths, c=0% | `allocation_paths_c0.png` |
-| 4 | Expected allocation glide paths, c=2.5% | `allocation_paths_c25.png` |
-| 5 | Allocation ±1σ uncertainty bands | `risky_allocation_subplots_c0.png` |
-| 6 | Path dynamics: survived vs stopped | `path_dynamics_balanced.png` |
-| 7 | Three wealth distributions: Growth mandate | `floor_vs_lipton.png` |
-| 8 | Three wealth distributions: Balanced mandate | `floor_vs_lipton_balanced.png` |
-| 9 | MV-optimal vs buy-and-hold density overlay (4 mandates) | `mandate_density_overlay_c0.png` |
-| 10 | Mandate comparison: analytical vs MC (3 mandates) | `mandate_comparison.png` |
-
-### Selected figures
+**Selected paper figures.**
 
 <p align="center">
   <img src="papers/goal_based_allocation_2026/paper/figures/mandate_density_overlay_c0.png" width="48%" />
@@ -403,81 +341,90 @@ The `--test` flag runs 7 tests with 9 assertions covering:
   <em>Right:</em> Investment opportunity set with CDF quantiles.
 </p>
 
-## Methodology
+### Runnable examples
 
-The analytical framework proceeds in three steps:
+Minimal, self-contained illustrations in [`examples/`](examples/) (see [`examples/README.md`](examples/README.md)):
 
-**Step 1: Riccati ODE system.** The pre-commitment MV problem reduces to a
-system of coupled Riccati ODEs for the value function coefficients
-in each regime. The solution yields the optimal allocation
-intensity $|\omega^{\ast}_a|$ and the target wealth trajectory $\Pi^{\ast}(t)$.
+- [`getting_started/quickstart.py`](examples/getting_started/quickstart.py) — the tested
+  first-success script.
+- [`wealth_process_simulation.py`](examples/wealth_process_simulation.py) — Figure 1: simulated
+  wealth paths under the MV-optimal strategy.
+- [`terminal_wealth_distribution.py`](examples/terminal_wealth_distribution.py) — Figure 2:
+  terminal wealth distribution under the MV-optimal strategy.
+- [`investment_opportunity_set.py`](examples/investment_opportunity_set.py) — Figure 4: the
+  investment opportunity set.
+- [`regime_switch_smile.py`](examples/regime_switch_smile.py) — the regime-switching
+  implied-volatility smile, with reference pricers and checks.
 
-**Step 2: Gap process.** Under the optimal policy, the log-cushion ratio
-$X_t = \ln(B_t/Z_t)$ is a regime-switching jump-diffusion with an absorbing
-barrier at zero. Its Laplace-domain transition density satisfies a degree-6
-characteristic polynomial with three positive and three negative roots.
+### From method to implementation
 
-**Step 3: Laplace inversion.** The bounded transition density, survival probability,
-tilted survival moments, and overshoot density are all expressed as Laplace transforms
-and inverted numerically using the Abate-Whitt (1995) Euler acceleration algorithm.
+The `papers/` projects are available from a GitHub clone and are intentionally not
+included in PyPI distributions. From a clone, the main paper's integration tests and
+figures can be reproduced with the commands below. The `--test` mode runs the
+tests and then generates all figures; use `--outdir` to keep verification output away
+from tracked figures (it must be absolute and outside the checkout and OneDrive):
 
-**Portfolio aggregation.** Multi-asset mandates are reduced to a single effective
-asset using portfolio volatility with full correlation structure, and portfolio
-jump sizes via deterministic numerical integration (`portfolio_eta_quadrature`).
-Buy-and-hold benchmark moments are computed exactly via the 2×2 matrix exponential
-of Proposition A.1.
+```bash
+# Run from the repository root; output defaults to the external local runtime.
+python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --test
+python papers/goal_based_allocation_2026/replication/generate_paper_figures.py
+python papers/goal_based_allocation_2026/replication/generate_paper_figures.py --figure 10
+```
 
-## Key References
+The main manuscript, PDF and approved figures live in `paper/`; research code and static inputs
+live in `replication/`. See the [paper index](papers/README.md) and the
+[investment opportunity set](docs/investment_opportunity_set.md) chapter for the figure
+catalogue (ten figures: opportunity sets, allocation glide paths, uncertainty bands, path
+dynamics, wealth distributions, density overlays and the analytical-versus-MC mandate
+comparison).
 
-- Sepp, A., Ossa, I., and Kastenholz, M. (2026). Robust optimization of strategic and
-  tactical asset allocation for multi-asset portfolios. *Journal of Portfolio Management*, 52(4), 86-120.
-- Sepp, A., Hansen, E., and Kastenholz, M. (2026). Capital market assumptions and strategic
-  asset allocation using multi-asset tradable factors. Under revision at the
-  *Journal of Portfolio Management*.
-- Sepp, A. (2004). Analytical pricing of double-barrier options under a double-exponential
-  jump-diffusion process. *International Journal of Theoretical and Applied Finance*, 7(2), 151-175.
-- Sepp, A. (2006). Extended CreditGrades model with stochastic volatility and jumps.
-  *Wilmott Magazine*, September, 50-62.
-- Lipton, A. (2001). *Mathematical Methods for Foreign Exchange*. World Scientific.
-- Lipton, A. (2002). Assets with jumps. *Risk*, 15(9), 149-153.
-- Cont, R. and Tankov, P. (2009). Constant proportion portfolio insurance in the presence
-  of jumps in asset prices. *Mathematical Finance*, 19(3), 379-401.
-- Abate, J. and Whitt, W. (1995). Numerical inversion of Laplace transforms of probability
-  distributions. *ORSA Journal on Computing*, 7(1), 36-43.
+## Testing
 
-## Ecosystem
+```bash
+uv sync --locked --group test
+uv run --no-sync pytest
+uv run --locked --only-group lint ruff check .
+```
 
-This package is part of an open-source Python stack for quantitative finance — full catalogue at [github.com/ArturSepp](https://github.com/ArturSepp):
+Automated checks live in the top-level `tests/` directory. The paper's `--test` mode runs 7
+integration tests with 9 assertions:
 
-| Package | Purpose |
-|---|---|
-| [`qis`](https://github.com/ArturSepp/QuantInvestStrats) | Performance analytics, factsheets, and visualisation |
-| [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios) | Portfolio construction and backtesting |
-| [`factorlasso`](https://github.com/ArturSepp/factorlasso) | Sparse factor models and factor covariance estimation |
-| [`bbg-fetch`](https://github.com/ArturSepp/BloombergFetch) | Bloomberg data fetching |
-| [`option-chain-analytics`](https://github.com/ArturSepp/OptionChainAnalytics) | Point-in-time option-chain normalisation and reconstruction |
-| [`trendfollowing`](https://github.com/ArturSepp/TrendFollowingSystems) | Trend-following systems: closed-form theory and replication |
-| [`privateassets`](https://github.com/ArturSepp/privateassets) | Private-asset return analytics |
-| [`goal-based-allocation`](https://github.com/ArturSepp/GoalBasedAllocation) *(this package)* | Dynamic MV allocation under regime-switching jump-diffusions |
-| [`stochvolmodels`](https://github.com/ArturSepp/StochVolModels) | Stochastic volatility pricing analytics |
-| [`vanilla-option-pricers`](https://github.com/ArturSepp/VanillaOptionPricers) | Vectorised vanilla option pricers and implied volatility fitters |
+| Test | Description | Tolerance |
+|---|---|---|
+| 1 | Unbounded density normalisation (with and without jumps) | < 1e-4 |
+| 2 | Barrier density vs analytical survival consistency | < 1e-4 |
+| 3 | Survival probability monotonicity across horizons | -- |
+| 4 | Three-asset survival comparison | -- |
+| 5 | Riccati ODE initial conditions a(0) = [1, 1] | < 1e-6 |
+| 6 | Gap-process survival: analytical vs MC (100K paths) | < 5 pp |
+| 7 | Table 1 parameter validation (3 assets) | exact |
 
-`goal-based-allocation` is standalone within this stack: its runtime dependencies are NumPy, SciPy,
-and Matplotlib. The [ArturSepp profile](https://github.com/ArturSepp) is the canonical
-ten-package catalogue.
+## Changelog
 
-## Feedback & contributing
+Release history is maintained in [CHANGELOG.md](CHANGELOG.md).
 
-- [Report a reproducible bug](https://github.com/ArturSepp/GoalBasedAllocation/issues/new?template=bug_report.yml), including the package version, Python/platform, parameters, and expected versus actual result.
-- [Request a feature](https://github.com/ArturSepp/GoalBasedAllocation/issues/new?template=feature_request.yml), explaining which replication result or parameterisation is unclear, the current workaround, and the smallest useful API.
-- Read [CONTRIBUTING.md](CONTRIBUTING.md) for development commands, numerical-validation rules, and pull-request guidance.
+## Feedback & contributing <a name="feedback-contributing"></a>
+
+- **Bug:** [report a reproducible bug](https://github.com/ArturSepp/GoalBasedAllocation/issues/new?template=bug_report.yml), including the package version, Python/platform, parameters, and expected versus actual result.
+- **Feature:** [request a feature](https://github.com/ArturSepp/GoalBasedAllocation/issues/new?template=feature_request.yml), explaining which replication result or parameterisation is unclear, the current workaround, and the smallest useful API.
+- **Question or methodology:** search or open an [issue](https://github.com/ArturSepp/GoalBasedAllocation/issues) and name the paper section, mandate, or convention involved.
+- **Contribution:** read [CONTRIBUTING.md](CONTRIBUTING.md) for development commands, numerical-validation rules, and pull-request guidance.
 
 ## Citation
 
-If you use this work in your research, please cite both the paper and the software. Machine-readable
+If you use this work in your research, please cite both the software and the paper. Machine-readable
 metadata is available in [`CITATION.cff`](CITATION.cff).
 
-**Paper:**
+```bibtex
+@software{SeppGBA2026,
+  author       = {Sepp, Artur},
+  title        = {goal-based-allocation: A {Python} package for dynamic mean-variance
+                  portfolio allocation under regime-switching jump-diffusions},
+  year         = {2026},
+  version      = {0.4.2},
+  url          = {https://github.com/ArturSepp/GoalBasedAllocation}
+}
+```
 
 ```bibtex
 @article{Sepp2026GoalBased,
@@ -489,19 +436,34 @@ metadata is available in [`CITATION.cff`](CITATION.cff).
 }
 ```
 
-**Software:**
+## Ecosystem
 
-```bibtex
-@misc{SeppGBA2026,
-  author       = {Sepp, Artur},
-  title        = {goal-based-allocation: A {Python} package for dynamic mean-variance
-                  portfolio allocation under regime-switching jump-diffusions},
-  year         = {2026},
-  version      = {0.4.2},
-  howpublished = {\url{https://github.com/ArturSepp/GoalBasedAllocation}}
-}
-```
+This package is part of an open-source Python stack for quantitative finance. The
+[ArturSepp profile](https://github.com/ArturSepp) is the canonical catalogue:
+
+| Package | Purpose |
+|---|---|
+| [`qis`](https://github.com/ArturSepp/QuantInvestStrats) | Performance analytics, backtesting, and factsheet reporting |
+| [`optimalportfolios`](https://github.com/ArturSepp/OptimalPortfolios) | Portfolio construction and rolling backtesting |
+| [`factorlasso`](https://github.com/ArturSepp/factorlasso) | Sparse factor-model estimation |
+| [`bbg-fetch`](https://github.com/ArturSepp/BloombergFetch) | Bloomberg data in pandas DataFrames |
+| [`option-chain-analytics`](https://github.com/ArturSepp/OptionChainAnalytics) | Point-in-time option-chain data and queries |
+| [`vanilla-option-pricers`](https://github.com/ArturSepp/VanillaOptionPricers) | Numba-vectorised BSM and Bachelier pricing |
+| [`stochvolmodels`](https://github.com/ArturSepp/StochVolModels) | Stochastic-volatility pricing and calibration |
+| [`trendfollowing`](https://github.com/ArturSepp/TrendFollowingSystems) | Closed-form trend-following analytics |
+| [`privateassets`](https://github.com/ArturSepp/privateassets) | Multi-factor PME for private assets |
+| [`goal-based-allocation`](https://github.com/ArturSepp/GoalBasedAllocation) *(this package)* | Goal-based allocation under regime-switching jump-diffusions |
+
+`goal-based-allocation` is standalone within this stack: its runtime dependencies are NumPy, SciPy,
+and Matplotlib.
 
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+## Disclaimer
+
+`goal-based-allocation` is distributed FREE & WITHOUT ANY WARRANTY under the MIT License. See
+[LICENSE](LICENSE) in the release for details. Use the routes in
+[Feedback & contributing](#feedback-contributing) for bugs, feature requests and
+methodology questions.
