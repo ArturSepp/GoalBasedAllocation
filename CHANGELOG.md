@@ -6,6 +6,18 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-22
+
+Documentation-only patch release. Numerical methods, public APIs, dependency requirements and
+computed results are unchanged from 0.5.0.
+
+### Fixed
+
+- Include the updated README and getting-started guide in the release used by Read the Docs
+  stable. Pin installation to 0.5.1 and retain the unchanged, commit-pinned quickstart source.
+- Distinguish released and development installation paths, make the stable documentation channel
+  the README default, and link directly to the contributor guide.
+
 ## [0.5.0] - 2026-10-22
 
 ### Changed

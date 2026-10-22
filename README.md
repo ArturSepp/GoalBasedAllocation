@@ -5,7 +5,7 @@
 The package models two regimes and an absorbing wealth floor; it is not a discrete constrained
 multi-asset optimiser, trading engine, or production portfolio-management system.
 
-**Install:** `pip install "goal-based-allocation==0.5.0"` · **Import:** `goal_based_allocation` · **Status:** Beta
+**Install:** `pip install "goal-based-allocation==0.5.1"` · **Import:** `goal_based_allocation` · **Status:** Beta
 
 [![PyPI](https://img.shields.io/pypi/v/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
 [![Python](https://img.shields.io/pypi/pyversions/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
@@ -21,7 +21,7 @@ Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matchi
 [Statement of need](#statement-of-need) for what the package implements from it and
 [Citation](#citation) for the BibTeX entries.
 
-**Documentation:** [stable 0.5.0](https://goalbasedallocation.readthedocs.io/en/stable/) ·
+**Documentation:** [stable 0.5.1](https://goalbasedallocation.readthedocs.io/en/stable/) ·
 [development (latest)](https://goalbasedallocation.readthedocs.io/en/latest/) ·
 [getting started](docs/getting-started.md) · [paper index](papers/README.md)
 
@@ -70,7 +70,7 @@ rolling multi-asset optimisation with weight constraints, transaction costs and 
 ## Installation
 
 ```bash
-pip install "goal-based-allocation==0.5.0"
+pip install "goal-based-allocation==0.5.1"
 ```
 
 Or clone and install in development mode:
@@ -187,8 +187,8 @@ in the handbook chapters [regime-switching model](docs/regime_switching_model.md
 
 ## Five-minute quickstart
 
-The [0.5.0 getting-started script](https://github.com/ArturSepp/GoalBasedAllocation/blob/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py)
-runs offline with `goal-based-allocation==0.5.0`. Follow the
+The [released getting-started script](https://github.com/ArturSepp/GoalBasedAllocation/blob/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py)
+runs offline with `goal-based-allocation==0.5.1`. Follow the
 [released installation and download workflow](docs/getting-started.md#reproducible-released-workflow),
 then run the downloaded script:
 
@@ -424,7 +424,7 @@ metadata is available in [`CITATION.cff`](CITATION.cff).
   title        = {goal-based-allocation: A {Python} package for dynamic mean-variance
                   portfolio allocation under regime-switching jump-diffusions},
   year         = {2026},
-  version      = {0.5.0},
+  version      = {0.5.1},
   url          = {https://github.com/ArturSepp/GoalBasedAllocation}
 }
 ```

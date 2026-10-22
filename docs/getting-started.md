@@ -20,12 +20,12 @@ its wealth floor, its expected terminal wealth and the exact buy-and-hold benchm
 
 ## Reproducible released workflow
 
-This first-use workflow is verified with **goal-based-allocation 0.5.0** on Python 3.12. The
+This first-use workflow is verified with **goal-based-allocation 0.5.1** on Python 3.12. The
 package requires Python 3.11 or newer. Install core without extras; save and run the
 release-pinned script in a working directory outside synchronized folders:
 
 ```powershell
-python -m pip install "goal-based-allocation==0.5.0"
+python -m pip install "goal-based-allocation==0.5.1"
 python -c "from importlib.metadata import version; import goal_based_allocation as p; print(version('goal-based-allocation')); print(p.__file__)"
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ArturSepp/GoalBasedAllocation/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py' -OutFile quickstart.py
 python quickstart.py
@@ -39,7 +39,7 @@ This small CPU task evaluates one balanced mandate and its analytical buy-and-ho
 
 [Stable documentation](https://goalbasedallocation.readthedocs.io/en/stable/) is the release channel;
 [latest](https://goalbasedallocation.readthedocs.io/en/latest/) follows main and may include unreleased
-changes. The commands above pin both the 0.5.0 package and its quickstart source. The expected
+changes. The commands above pin both the 0.5.1 package and its quickstart source. The expected
 output below is verified against that release.
 
 ## Install
@@ -66,9 +66,9 @@ writes no files; execution time depends on the platform and numerical dependenci
 :caption: examples/getting_started/quickstart.py
 ```
 
-[View the 0.5.0 script on GitHub](https://github.com/ArturSepp/GoalBasedAllocation/blob/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py).
+[View the pinned script on GitHub](https://github.com/ArturSepp/GoalBasedAllocation/blob/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py).
 
-Verified output for 0.5.0 (minor platform differences affect only trailing digits);
+Verified output for 0.5.1 (minor platform differences affect only trailing digits);
 `tests/test_quickstart.py` checks these values:
 
 ```text
