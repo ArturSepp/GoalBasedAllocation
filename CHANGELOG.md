@@ -6,20 +6,13 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-22
+
 ### Changed
 
 - Require Python 3.11 or newer; Python 3.10 is no longer supported. CI tests Python 3.11–3.14
   and uses Python 3.11 for lowest-direct dependency checks. The lockfile no longer selects the
   vulnerable Pillow release retained for Python 3.10.
-
-## [0.5.0.dev0] - 2026-10-17
-
-Development snapshot for the next minor release; not published. Retain the existing October
-2026 runtime, documented default-policy changes and API additions listed below. This snapshot
-changes release identity only: calculations, examples and recorded numerical results are
-unchanged. The published 0.4.2 baseline remains a separate historical version.
-
-### Changed
 
 - `RiccatiSolution.expected_wealth` now returns the expected terminal wealth of the unfloored
   MV-optimal policy, `ell/2 - (ell/2 - Pi0 exp(r_c T)) exp(-Theta)` with the dynamic information
@@ -48,6 +41,8 @@ unchanged. The published 0.4.2 baseline remains a separate historical version.
 
 ### Fixed
 
+- Update locked Pillow to 13.0.0 and certifi to 2026.10.19 to address the reported dependency
+  audit vulnerabilities.
 - `gap_process_asset` mean-matches the recovery jump of the log-gap to the exact jump
   `-ln(1 - w (exp(J) - 1))`, conditional on wealth staying below the target (manuscript Remark 4.5,
   October 2026 revision), through the new `_eta_eff_recovery_quadrature`; `recovery_exit_probability`

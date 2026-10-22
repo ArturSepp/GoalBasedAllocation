@@ -493,7 +493,7 @@ wheels = [
 
 [[package]]
 name = "goal-based-allocation"
-version = "0.5.0.dev0"
+version = "0.5.0"
 source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
