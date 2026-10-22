@@ -9,7 +9,7 @@ description = "Semi-analytical dynamic mean-variance allocation and terminal-wea
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 authors = [
     {name = "Artur Sepp"},
 ]
@@ -31,7 +31,6 @@ classifiers = [
     "Intended Audience :: Financial and Insurance Industry",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",

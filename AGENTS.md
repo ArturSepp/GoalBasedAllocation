@@ -121,7 +121,7 @@ uv run --no-project python scripts/check_dist_contents.py dist/*
 
 The `slow` pytest marker is declared for slower tests such as Monte Carlo cross-checks.
 Runtime dependencies are numpy, scipy and matplotlib only. Documentation dependencies live in
-the `docs` extra. Supported Python is >= 3.10; CI runs 3.10 - 3.14 under Linux and Python 3.12
+the `docs` extra. Supported Python is >= 3.11; CI runs 3.11 - 3.14 under Linux and Python 3.12
 under Windows and macOS, then tests built wheel/sdist artifacts outside the checkout.
 
 ## Conventions

@@ -80,7 +80,7 @@ cd GoalBasedAllocation
 pip install -e .
 ```
 
-Requires Python >= 3.10 with NumPy >= 1.24, SciPy >= 1.10, and Matplotlib >= 3.7. The package
+Requires Python >= 3.11 with NumPy >= 2.0, SciPy >= 1.10, and Matplotlib >= 3.8.4. The package
 is standalone within the stack: these are its only runtime dependencies.
 
 ## Table of contents

@@ -6,6 +6,12 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Require Python 3.11 or newer; Python 3.10 is no longer supported. CI tests Python 3.11–3.14
+  and uses Python 3.11 for lowest-direct dependency checks. The lockfile no longer selects the
+  vulnerable Pillow release retained for Python 3.10.
+
 ## [0.5.0.dev0] - 2026-10-17
 
 Development snapshot for the next minor release; not published. Retain the existing October

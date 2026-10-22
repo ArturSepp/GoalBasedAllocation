@@ -54,7 +54,7 @@ and install the matching checkout outside synchronized folders:
 python -m pip install .
 ```
 
-The core runtime requires Python 3.10 or newer, NumPy, SciPy, and Matplotlib. The released first-use
+The core runtime requires Python 3.11 or newer, NumPy, SciPy, and Matplotlib. The released first-use
 workflow is offline: it needs no credentials, market data, display, or source checkout; the source-specific output below requires a matching checkout.
 
 ## Run one balanced mandate
