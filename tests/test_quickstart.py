@@ -13,8 +13,8 @@ def test_quickstart_runs_without_outputs(capsys, tmp_path, monkeypatch):
     runpy.run_path(str(script), run_name="__main__")
     output = capsys.readouterr().out
 
-    assert "MV-optimal: expected_wealth=139.040" in output
-    assert "survival=78.703%" in output
+    assert "MV-optimal: expected_wealth=139.509" in output
+    assert "survival=79.071%" in output
     assert "buy-and-hold: expected_wealth=150.637" in output
-    assert "floor_protection_cost=7.699%" in output
+    assert "floor_protection_cost=7.387%" in output
     assert list(tmp_path.iterdir()) == []

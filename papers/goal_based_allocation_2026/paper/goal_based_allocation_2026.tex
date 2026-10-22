@@ -166,9 +166,9 @@ S_t = S_{t^-} \exp(J^{[2]}), & \text{at recovery } 2 \to 1,
 \end{equation}
 where $\mu^{[\chi_t]}$ is regime-dependent drift, $\sigma^{[i]} > 0$ is regime-dependent volatility, and the jump sizes have exponential distributions:
 \begin{equation}\label{eq:jump_dist}
-J^{[1]} \sim -\mathrm{Exp}(1/\eta^{[1]}), \quad J^{[2]} \sim +\mathrm{Exp}(1/\eta^{[2]}), \quad \eta^{[1]}, \eta^{[2]} > 0.
+J^{[1]} \sim -\mathrm{Exp}(\eta^{[1]}), \quad J^{[2]} \sim +\mathrm{Exp}(\eta^{[2]}), \quad \eta^{[1]}, \eta^{[2]} > 0,
 \end{equation}
-That is, $J^{[1]} < 0$ a.s.\ (crash jump at onset of stress) and $J^{[2]} > 0$ a.s.\ (recovery jump at return to growth). The densities are
+where $\mathrm{Exp}(\eta)$ denotes the exponential distribution with mean $\eta$. We use this convention throughout, so that $\eta^{[1]}$ and $\eta^{[2]}$ are the mean log-jump sizes. That is, $J^{[1]} < 0$ a.s.\ (crash jump at onset of stress) and $J^{[2]} > 0$ a.s.\ (recovery jump at return to growth). The densities are
 \begin{equation}\label{eq:jump_pdf}
 f^{[1]}(J) = \frac{1}{\eta^{[1]}} e^{J/\eta^{[1]}} \ind_{J < 0}, \qquad f^{[2]}(J) = \frac{1}{\eta^{[2]}} e^{-J/\eta^{[2]}} \ind_{J > 0}.
 \end{equation}
@@ -337,7 +337,7 @@ The optimal allocation in regime~$i$ is
 where $\tilde{a}^{[i]}$, $\tilde{b}^{[i]}$, $\Sigma^{[i]}$ are defined in \eqref{eq:RS_def}. The policy has the Merton--Lipton structure: a regime-dependent effective Merton ratio $\tilde{a}^{[i]}/\Sigma^{[i]}$ modulated by the goal-seeking factor $(\Pi^{*[i]}/\Pi_t - 1)$.
 \end{corollary}
 
-Unlike the single-regime case, the effective Merton ratio and target $\Pi^{*[i]}$ in regime~$i$ depend on the value function coefficients of the other regime through $a^{[j]}$ and $b^{[j]}$ in \eqref{eq:RS_def}. The investor's policy in normal times is influenced by the possibility of a stress transition.
+Unlike the single-regime case, the effective Merton ratio in regime~$i$ depends on the value function coefficient of the other regime through $a^{[j]}$ in \eqref{eq:RS_def}. The target $\Pi^{*[i]}$ does not, because $\tilde{b}^{[i]}/\tilde{a}^{[i]}$ is the same in both regimes (Theorem~\ref{thm:verification}(c)). The investor's policy in normal times is influenced by the possibility of a stress transition.
 
 
 \begin{remark}[Pre-commitment and time-consistency]%
@@ -389,20 +389,27 @@ Let $(a^{[i]}, b^{[i]}, \gamma^{[i]})$ be the solution of the ODE system from Pr
 \begin{enumerate}[label=(\alph*)]
 \item $V^{[i]}(\tau, \Pi) = a^{[i]}(\tau)\Pi^2 + b^{[i]}(\tau)\Pi + \gamma^{[i]}(\tau)$ coincides with the value function \eqref{eq:J_def}.
 \item The feedback policy $\varpi^{*[\chi_t]}_t$ is optimal in $\mathcal{A}$.
-\item The expected terminal wealth under the optimal policy, starting from regime~$i$, is
+\item The linear and constant coefficients follow from the quadratic one. For every $\tau$ and both regimes,
+\begin{equation}\label{eq:b_gamma_identity}
+b^{[i]}(\tau) = -\ell\, e^{-r_c \tau} a^{[i]}(\tau), \qquad \gamma^{[i]}(\tau) = -\frac{\ell^2}{4}\left(1 - e^{-2 r_c \tau} a^{[i]}(\tau)\right),
+\end{equation}
+so that $V^{[i]}(\tau, \Pi) = a^{[i]}(\tau)\big(\Pi - \tfrac{\ell}{2}e^{-r_c\tau}\big)^2 - \tfrac{\ell^2}{4}$ and the target $\Pi^{*[i]}(t) = \tfrac{\ell}{2}e^{-r_c(T-t)}$ is the same in both regimes. Define the regime-conditional dynamic information ratio
+\begin{equation}\label{eq:theta_def}
+\Theta^{[i]}(T) := -\ln a^{[i]}(T) + 2 r_c T.
+\end{equation}
+The expected terminal wealth under the optimal policy, starting from regime~$i$, is
 \begin{equation}\label{eq:expected_wealth}
-\E[\Pi_T \mid \chi_0 = i] = \Pi^{*[i]}(0) = -\frac{b^{[i]}(T)}{2a^{[i]}(T)}.
+\E[\Pi_T \mid \chi_0 = i] = \frac{\ell}{2} - \Big(\frac{\ell}{2} - \Pi_0 e^{r_c T}\Big)\, e^{-\Theta^{[i]}(T)}.
 \end{equation}
-The Lagrange multiplier $\ell$ is determined by the constraint $\E[\Pi_T] = \pi$, giving
+The constraint $\E[\Pi_T] = \pi$ determines the Lagrange multiplier as
 \begin{equation}\label{eq:ell_determination}
-\ell = \frac{2a^{[i]}(T)\pi + \hat{b}^{[i]}(T)}{-\check{b}^{[i]}(T)},
+\frac{\ell}{2} = \Pi_0 e^{r_c T} + \frac{\pi - \Pi_0 e^{r_c T}}{1 - e^{-\Theta^{[i]}(T)}}.
 \end{equation}
-where $b^{[i]}(T) = \hat{b}^{[i]}(T) + \ell\,\check{b}^{[i]}(T)$ decomposes $b^{[i]}$ into the component independent of $\ell$ (from the $a$-driven forcing) and the component proportional to $\ell$ (from the initial condition $b^{[i]}(0) = -\ell$).
 \item The efficient frontier is
 \begin{equation}\label{eq:efficient_frontier}
-\Var[\Pi_T \mid \chi_0 = i] = \frac{(\pi - \Pi_0 e^{r_c T})^2}{e^{\Theta^{[i]}(T)} - 1},
+\Var[\Pi_T \mid \chi_0 = i] = \frac{(\pi - \Pi_0 e^{r_c T})^2}{e^{\Theta^{[i]}(T)} - 1}.
 \end{equation}
-where $\Theta^{[i]}(T) := -\ln a^{[i]}(T) - 2r_c T$ is the regime-conditional dynamic information ratio.
+Without regime switching and transition jumps, $a(T) = e^{(2r_c - \theta^2)T}$ with $\theta = (\mu - r_h)/\sigma$ (Proposition~\ref{prop:single_regime}), so $\Theta(T) = \theta^2 T$ and \eqref{eq:efficient_frontier} is the frontier of \citet{ZhouLi2000}.
 \end{enumerate}
 \end{theorem}
 
@@ -442,14 +449,22 @@ Upon stopping, wealth is invested in cash with net growth rate $r_c=\max(0, r-c)
 We set $L_0 = \Pi_0 e^{-k\,\eta^{[1]}}$ where $k > 0$ is a floor parameter controlling the distance to the barrier in units of expected crash size.  Investor-specific $k$ is determined analytically from the drawdown scale $q_{\mathrm{dd}}$ and portfolio volatility via \eqref{eq:k_from_x25}.
 \end{assumption}
 
+\begin{assumption}[Magnitude policy]\label{ass:magnitude_policy}
+From this section on, the investor follows the policy
+\begin{equation}\label{eq:magnitude_policy}
+\varpi_t = \big|\omega^{*[\chi_t]}_a(\tau)\big| \left(\frac{\Pi^{*}(t)}{\Pi_t} - 1\right), \qquad \omega^{*[i]}_a(\tau) := -\frac{\tilde{a}^{[i]}(\tau)}{\Sigma^{[i]}(\tau)},
+\end{equation}
+which applies the magnitude of the regime-$i$ allocation coefficient of Corollary~\ref{cor:optimal_policy} (denoted $\varpi^{*[i]}_a$ in Proposition~\ref{prop:ode_system}) to the funding gap. In the growth regime $\omega^{*[1]}_a < 0$, and \eqref{eq:magnitude_policy} coincides with the MV-optimal policy \eqref{eq:optimal_w}. In the stress regime the total return $\bar{\mu}^{[2]}$ is at or below the hurdle rate for every mandate in Section~\ref{sec:numerics}, so that $\tilde{a}^{[2]} \leq 0$ and $\omega^{*[2]}_a \geq 0$, and the MV-optimal policy is short the risky asset whenever wealth is below the target. The magnitude policy replaces this short position by a long position of the same size. We believe the replacement is the right trade-off because a wealth mandate cannot short the risky portfolio in a crisis, because the regime is identified only with delay in practice, and because the cost is small. The stress coefficients $|\omega^{*[2]}_a|$ in Table~\ref{tab:mandates} lie between $0.02$ and $0.27$, and in Monte Carlo simulation the magnitude policy lowers the survival probability by at most $0.6$\,pp and the expected terminal wealth by at most $0.6$ relative to the MV-optimal policy for the four mandates. The results of Section~\ref{sec:mv} are unaffected. The frontier \eqref{eq:efficient_frontier} describes the MV-optimal policy, and the stopped-wealth analysis below describes \eqref{eq:magnitude_policy}.
+\end{assumption}
+
 
 \begin{theorem}[Flat-barrier reduction]\label{thm:flat_barrier}
-Define the gap process $Z_t := \Pi^{*[\chi_t]}(t) - \Pi_t$ and the barrier $B_t := \Pi^{*[\chi_t]}(t) - L_t$. Under the constant risk-free rate Assumption~\ref{ass:r_constant}, the log-gap $X_t := \ln(B_t / Z_t)$ satisfies a regime-switching jump-diffusion defined in \ref{def:jump_diffusion}with flat absorbing barrier at $X = 0$ and effective parameters:
+Define the gap process $Z_t := \Pi^{*}(t) - \Pi_t$ and the barrier $B_t := \Pi^{*}(t) - L_t$, where $\Pi^{*}(t) = \tfrac{\ell}{2}e^{-r_c(T-t)}$ is the target common to both regimes (Theorem~\ref{thm:verification}(c)). Under Assumptions~\ref{ass:r_constant} and \ref{ass:magnitude_policy}, the log-gap $X_t := \ln(B_t / Z_t)$ satisfies a regime-switching jump-diffusion defined in \ref{def:jump_diffusion}with flat absorbing barrier at $X = 0$ and effective parameters:
 \begin{align}
 \sigma^{[i]}_{\mathrm{eff}} &= |\omega^*_a|\, \sigma^{[i]}, \label{eq:sigma_eff}\\
 \nu^{[i]}_{\mathrm{eff}} &= |\omega^*_a|\,(\mu^{[i]} - r_h) + \tfrac{1}{2}(\sigma^{[i]}_{\mathrm{eff}})^2, \label{eq:nu_eff}
 \end{align}
-where $\omega^*_a = -\tilde{a}^{[i]}/\Sigma^{[i]}$ is the (approximately constant) risky allocation coefficient from the Riccati system.  The cashless rate $r_c$ cancels identically in the gap drift because both $B$ and $Z$ grow at rate $r_c$.
+where $|\omega^*_a| = |\omega^{*[i]}_a|$ is the (approximately constant) coefficient of the magnitude policy \eqref{eq:magnitude_policy} in regime~$i$.  The cashless rate $r_c$ cancels identically in the gap drift because both $B$ and $Z$ grow at rate $r_c$.
 \end{theorem}
 
 \begin{proof}
@@ -459,14 +474,22 @@ See Appendix~\ref{app:flat_barrier}.
 The flat-barrier property is exact because the change of variables 
 $X_t = \ln(B_t/Z_t)$ maps $\Pi_t = L_t$ to a fixed barrier at $X = 0$ 
 regardless of time-varying $\Pi^*(t)$ and $L_t$. The approximation 
-enters only in the coefficients: $\omega^*_a$ is treated as 
-constant (varies $< 4\%$ over $T = 10$\,y) and 
-$\Pi^{*[1]}(t) \approx \Pi^{*[2]}(t)$ (differ by $O(\lambda^{[12]})$), 
-yielding the stationary parameters required by the Laplace framework. 
-The resulting $1$--$2$\,pp gap between analytical and Monte Carlo 
-survival probabilities (Figure~\ref{fig:mandate_comparison}) confirms 
-the accuracy.
+enters only in the coefficients. The target is the same in both regimes 
+and grows at the rate $r_c$ exactly (Theorem~\ref{thm:verification}(c)), 
+so the single approximation is that $\omega^*_a$ is treated as 
+constant (it varies by $< 4\%$ over $T = 10$\,y), which yields the 
+stationary parameters required by the Laplace framework. 
+The analytical survival probabilities lie within $0.4$\,pp of the 
+Monte Carlo simulation of \eqref{eq:magnitude_policy} for the four 
+mandates of Table~\ref{tab:mandates} (Figure~\ref{fig:mandate_comparison}).
 
+\begin{remark}[Domain of the log-gap]\label{rem:gap_domain}
+The log-gap $X_t = \ln(B_t/Z_t)$ is defined on $\{Z_t > 0\}$, where wealth is below the target. The full-investment constraint \eqref{eq:pi_star_0} gives $Z_0 = \omega_0 \Pi_0 / |\omega^*_a| > 0$. Between transitions $Z_t$ is geometric, and a crash multiplies it by $1 + |\omega^{*[1]}_a|(1 - e^{J^{[1]}}) > 1$, so neither leaves the domain. A recovery multiplies $Z_{t^-}$ by $1 - u$ with $u := |\omega^{*[2]}_a|(e^{J^{[2]}} - 1)$. For $u < 1$ the log-gap jumps by $-\ln(1 - u) > 0$, away from the barrier, and we mean-match this jump to $\mathrm{Exp}(\tilde\eta^{[2]})$ with $\tilde\eta^{[2]} = \E[-\ln(1 - u) \mid u < 1]$. For $u \geq 1$ wealth jumps above the target, the policy is short the risky asset, and the floor cannot be reached unless a second such event occurs. We treat this event as an exit from the domain into a surviving state. It enters the regime-2 generator as a killing term at the rate $\lambda^{[21]} p$, where
+\begin{equation}\label{eq:p_exit}
+p := \Pr(u \geq 1) = \big(1 + 1/|\omega^{*[2]}_a|\big)^{-1/\eta^{[2]}}.
+\end{equation}
+For the mandates in Table~\ref{tab:mandates}, $p$ is at most $4 \times 10^{-6}$, so we omit the killing term in the numerical results. The omission bounds the error in the survival probability by $\lambda^{[21]} p$ times the expected time in stress, below $10^{-5}$.
+\end{remark}
 
 The gap jump at a crash transition ($\chi: 1\to 2$) is
 \begin{equation}\label{eq:gap_jump}
@@ -495,7 +518,7 @@ The allocation coefficient $|\omega^*_a|$ depends on asset parameters $(\mu, \si
 \end{remark}
 
 
-We note that the optimal policy $\varpi^{*[i]}$ is unconstrained: it can be negative (shorting the risky asset when $\Pi > \Pi^*$) or exceed unity (leverage when $\Pi \ll \Pi^*$). In the theoretical development, the unconstrained formulation is essential: the quadratic ansatz (Theorem~\ref{thm:quadratic_ansatz}) relies on the unrestricted first-order condition, and adding portfolio constraints would break the Riccati structure.  The investment opportunity set framework of Section~\ref{sec:opportunity} partially addresses this through the initial allocation constraint $\omega^*(0) = \omega_0 =1.0$, which pins the Lagrange multiplier $\ell$ and limits the initial leverage.  However, the allocation can subsequently exceed $\omega_0$ on paths where wealth declines.
+The optimal policy $\varpi^{*[i]}$ is unconstrained. It can be negative (shorting the risky asset when $\Pi > \Pi^*$, or in the stress regime when $\Pi < \Pi^*$, see Assumption~\ref{ass:magnitude_policy}) or exceed unity (leverage when $\Pi \ll \Pi^*$). In the theoretical development, the unconstrained formulation is essential: the quadratic ansatz (Theorem~\ref{thm:quadratic_ansatz}) relies on the unrestricted first-order condition, and adding portfolio constraints would break the Riccati structure.  The investment opportunity set framework of Section~\ref{sec:opportunity} partially addresses this through the initial allocation constraint $\omega^*(0) = \omega_0 =1.0$, which pins the Lagrange multiplier $\ell$ and limits the initial leverage.  However, the allocation can subsequently exceed $\omega_0$ on paths where wealth declines.
 
 Adding explicit no-short-selling or no-leverage constraints $\varpi \in [0, \bar\varpi]$ would require solving the constrained HJB with state-dependent switching between the interior solution (Riccati region) and the boundary solution (allocation capped at $0$ or $\bar\varpi$).  This is tractable in the single-regime diffusion case \citep{HuShiXu2022} but remains open for the regime-switching jump-diffusion setting.  The practical impact is modest: on survived paths, the goal-seeking mechanism keeps $\varpi^*$ close to $|\omega^*_a|$ for most of the horizon, with excursions beyond this range occurring primarily when wealth deviates substantially from the target.
 
@@ -542,14 +565,14 @@ PDE methods.
 Extending the approach of \citet{BieleckiJinPliskaZhou2005} to the regime-switching jump-diffusion framework---with a positive floor $L > 0$, exponential jumps at transitions, and the resulting overshoot below the floor---is an open problem.  The jump overshoot component (Proposition~\ref{prop:three_components}(c)) is a fundamental obstacle: even with preemptive de-risking near $L$, a crash jump can push wealth below $L$ instantaneously. Thus, the constrained-optimal strategy cannot eliminate floor breaches entirely. This suggests that the qualitative structure of the stopped wealth distribution with three components persists under the constrained-optimal policy, with only the component weights changing.
 
 
-To build intuition for the MV-optimal strategy, we simulate two representative daily paths under the regime-switching model for the balanced mandate introduced in Section \ref{sec:numerics}  with $c = 0\%$, $\omega_0 = 1$, $q_{\mathrm{dd}} = 2$ using respective model and mandate parameters.  Both paths share the same risky portfolio $S_t$ (the underlying regime-switching jump-diffusion), the same expected wealth path $\E[\Pi_t]$ (computed analytically from the Laplace framework), and the same floor $L_t$.  They differ only in the realisation of the Brownian motion and jump timing.
+To build intuition for the goal-seeking strategy under the magnitude policy \eqref{eq:magnitude_policy}, we simulate two representative daily paths under the regime-switching model for the balanced mandate introduced in Section \ref{sec:numerics}  with $c = 0\%$, $\omega_0 = 1$, $q_{\mathrm{dd}} = 2$ using respective model and mandate parameters.  Both paths share the same risky portfolio $S_t$ (the underlying regime-switching jump-diffusion), the same expected wealth path $\E[\Pi_t]$ (computed analytically from the Laplace framework), and the same floor $L_t$.  They differ only in the realisation of the Brownian motion and jump timing.
 
 Figure~\ref{fig:path_dynamics} shows the two scenarios side by side. 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.825\textwidth]{path_dynamics_balanced.png}
-\caption{Simulated daily paths of the MV-optimal strategy for the balanced mandate in Section \ref{sec:numerics} with $c = 0\%$ and $\omega_0 = 1$.  Top: wealth dynamics showing the risky portfolio $S_t$ (orange), managed portfolio wealth $\Pi_t$ (green/red), analytical expected wealth $\E[\Pi_t]$ (black dashed), and floor $L_t$ (red dashed).  Bottom: risky allocation $\omega^*(t)$ as a percentage of portfolio wealth, with the regime-conditional allocation coefficients $|\omega^{*[1]}_a| = 124\%$ (growth, blue dash-dot) and $|\omega^{*[2]}_a| = 24\%$ (stress, red dash-dot) shown as reference levels.  Left: a survived path where $\Pi_T = 167$ exceeds the expected wealth.  Right: a stopped path where a crash jump at $t \approx 3.5$ pushes $\Pi_t$ from $\sim\!100$ through $L_t = 69$ to $64$---a jump overshoot of $5$---after which the portfolio earns the risk-free rate $r = 2\%$ in cash, growing to $\Pi_T = 73$ by $T = 10$.}
+\caption{Simulated daily paths of the magnitude policy \eqref{eq:magnitude_policy} for the balanced mandate in Section \ref{sec:numerics} with $c = 0\%$ and $\omega_0 = 1$.  Top: wealth dynamics showing the risky portfolio $S_t$ (orange), managed portfolio wealth $\Pi_t$ (green/red), analytical expected wealth $\E[\Pi_t]$ (black dashed), and floor $L_t$ (red dashed).  Bottom: risky allocation $\omega^*(t)$ as a percentage of portfolio wealth, with the regime-conditional allocation coefficients $|\omega^{*[1]}_a| = 124\%$ (growth, blue dash-dot) and $|\omega^{*[2]}_a| = 24\%$ (stress, red dash-dot) shown as reference levels.  Left: a survived path where $\Pi_T = 163$ exceeds the expected wealth.  Right: a stopped path where a crash jump at $t \approx 3.5$ pushes $\Pi_t$ from $\sim\!108$ through $L_t = 69$ to $64$ (a jump overshoot of $5$), after which the portfolio earns the risk-free rate $r = 2\%$ in cash, growing to $\Pi_T = 73$ by $T = 10$.}
 \label{fig:path_dynamics}
 \end{figure}
 
@@ -742,7 +765,7 @@ p^{[i]}_L := 1 - Q^{[i|0]}(T), \quad Q^{[i|0]}(T) = \Lp^{-1}\!\left[\hat{Q}^{[i|
 \end{equation}
 where $Q^{[i|0]}$ is the unconditional survival probability from Corollary~\ref{cor:survival}. The floor atom and overshoot together account for $p^{[i]}_L$.
 
-\medskip\noindent\textbf{(c) Overshoot density.} When the gap process $Z$ jumps through the barrier $B$ at a crash transition ($\chi: 1 \to 2$), the overshoot distance $D := \ln(Z_{\tau_L}/B_{\tau_L}) > 0$ is, by the memoryless property of the exponential distribution, conditionally $\mathrm{Exp}(1/\tilde\eta^{[1]})$.
+\medskip\noindent\textbf{(c) Overshoot density.} When the gap process $Z$ jumps through the barrier $B$ at a crash transition ($\chi: 1 \to 2$), the overshoot distance $D := \ln(Z_{\tau_L}/B_{\tau_L}) > 0$ is, by the memoryless property of the exponential distribution, conditionally $\mathrm{Exp}(\tilde\eta^{[1]})$ with mean $\tilde\eta^{[1]}$.
 
 The overshoot density accumulates crash events over $[0,T]$, requiring the time-integrated tilted survival.  Only regime~1 (growth) contributes, since crashes are $1 \to 2$ transitions. In Laplace domain:
 \begin{equation}\label{eq:overshoot_density}
@@ -1062,7 +1085,7 @@ As the benchmark to MV optimal policies, we add a buy-and-hold benchmark which f
 
 \begin{table}[H]
 \centering
-\caption{Mandate parameters and MV-optimal results ($c = 0\%$, 
+\caption{Mandate parameters and results of the magnitude policy \eqref{eq:magnitude_policy} with floor ($c = 0\%$, 
 $\omega^*(0) = 1$, $q_{\mathrm{dd}} = 2$, $g = 2/3$). 
 Portfolio volatility uses the full correlation 
 structure~\eqref{eq:correlation}; jump sizes are computed via numerical 
@@ -1093,15 +1116,15 @@ $\eta^{[1]}_{\mathrm{port}}$ / $\eta^{[2]}_{\mathrm{port}}$
 $L_{0}$ / $x_0$ 
   & 72.1 / 0.327 & 69.6 / 0.363 & 64.7 / 0.435 & 58.6 / 0.534 \\
 \midrule
-\multicolumn{5}{l}{\textit{MV-optimal with floor}} \\
+\multicolumn{5}{l}{\textit{Magnitude policy with floor}} \\
 $|\omega^*_a|$ (growth / stress) 
   & 1.04 / 0.02 & 1.56 / 0.27 & 1.24 / 0.24 & 0.92 / 0.19 \\
 $\Pi^*_T$ & 240 & 200 & 221 & 254 \\
-$\E[\Pi_T]$ & 127 & 134 & 139 & 144 \\
-$\mathrm{Std}[\Pi_T]$ & 24.7 & 33.7 & 46.1 & 61.9 \\
-$\mathrm{Std}[\Pi_T \mid \mathrm{surv}]$ & 18.2 & 19.0 & 24.1 & 31.5 \\
-$r_{\mathrm{impl}}$ & 2.39\% & 2.92\% & 3.30\% & 3.68\% \\
-Survival & 85.5\% & 83.2\% & 78.7\% & 73.8\% \\
+$\E[\Pi_T]$ & 127 & 134 & 140 & 145 \\
+$\mathrm{Std}[\Pi_T]$ & 24.6 & 33.7 & 46.0 & 61.8 \\
+$\mathrm{Std}[\Pi_T \mid \mathrm{surv}]$ & 18.2 & 19.0 & 24.1 & 31.4 \\
+$r_{\mathrm{impl}}$ & 2.39\% & 2.94\% & 3.33\% & 3.73\% \\
+Survival & 85.5\% & 83.4\% & 79.1\% & 74.2\% \\
 \midrule
 \multicolumn{5}{l}{\textit{Buy-and-hold benchmark (no floor)}} \\
 $\E[\Pi_T^{\mathrm{BH}}]$ & 128 & 140 & 151 & 165 \\
@@ -1114,13 +1137,13 @@ $r_{\mathrm{impl}}^{\mathrm{BH}}$ & 2.46\% & 3.33\% & 4.10\% & 5.01\% \\
 
 The floor protection cost, measured by 
 $r_{\mathrm{impl}}^{\mathrm{BH}} - r_{\mathrm{impl}}$, 
-ranges from 6\,bp (income) to 117\,bp (growth), reflecting 
+ranges from 7\,bp (income) to 128\,bp (growth), reflecting 
 the increasing price of downside protection as portfolio risk rises.
 The MV strategy simultaneously reduces unconditional volatility: 
-$\mathrm{Std}[\Pi_T]$ drops from 117.6 to 61.9 for the growth mandate 
-and from 74.8 to 46.1 for balanced, as the floor truncates the left 
+$\mathrm{Std}[\Pi_T]$ drops from 117.6 to 61.8 for the growth mandate 
+and from 74.8 to 46.0 for balanced, as the floor truncates the left 
 tail. Conditional on survival, the reduction is sharper still --- 
-$\mathrm{Std}[\Pi_T \mid \mathrm{surv}]$ is 31.5 for growth versus 
+$\mathrm{Std}[\Pi_T \mid \mathrm{surv}]$ is 31.4 for growth versus 
 117.6 under buy-and-hold --- because survived paths are confined to 
 $(L_T, \Pi^*_T)$ with the goal-seeking mechanism concentrating wealth 
 near the target.
@@ -1144,12 +1167,12 @@ floor protection cost $r_{\mathrm{impl}}^{\mathrm{BH}} - r_{\mathrm{impl}}$.
 \centering
 \includegraphics[width=0.825\textwidth]{mandate_density_overlay_c0.png}
 \caption{Terminal wealth density for four mandates ($c = 0\%$, 
-$\omega^*(0) = 1$, $q_{\mathrm{dd}} = 2$).  Top: MV-optimal strategy 
+$\omega^*(0) = 1$, $q_{\mathrm{dd}} = 2$).  Top: magnitude policy 
 with floor protection---solid lines show the survived density, bounded 
 between $L_T$ and $\Pi^*_T$; dashed lines show the jump-overshoot 
 density below the floor (Component~(c) of 
 Proposition~\ref{prop:three_components}).  Bottom: buy-and-hold 
-benchmark--- densities with wide left tails.  The MV 
+benchmark--- densities with wide left tails.  The floor-protected 
 strategy concentrates probability mass near the target at the cost 
 of capped upside.}
 \label{fig:mandate_density_c0}
@@ -1167,7 +1190,7 @@ approximation (Theorem~\ref{thm:flat_barrier}).
 \caption{Analytical survived density (blue) and overshoot density (red) 
 overlaid on 200{,}000-path MC histograms (shaded) for conservative and 
 balanced mandates ($c = 0\%$, $\omega^*(0) = 1$, $q_{\mathrm{dd}} = 2$). 
-Parameters match Table~\ref{tab:mandates}. The $<1$\,pp gap between 
+Parameters match Table~\ref{tab:mandates}. The gap below $0.4$\,pp between 
 analytical and MC survival probabilities validates the constant-coefficient 
 approximation of Theorem~\ref{thm:flat_barrier}.}
 \label{fig:mandate_comparison}
@@ -1337,9 +1360,9 @@ parameters of Table~\ref{tab:params}. Figures~\ref{fig:opp_c0} and~\ref{fig:opp_
 opportunity set for $c = 0\%$ and $c = 2.5\%$, respectively. Without 
 consumption, $r_{\mathrm{impl}}$ ranges from $2.4\%$ (100\% bonds) to 
 $3.7\%$ (0\% bonds), and all portfolios are feasible. With $c = 2.5\%$, 
-the curve shifts down by approximately $2\%$: the 100\% bond portfolio 
-becomes capital-destructive ($r_{\mathrm{impl}} < 0$, survival $25\%$), 
-and the feasible region starts at roughly $w = 90\%$. The CDF panels 
+the curve shifts down by approximately $2.4\%$. The 100\% bond portfolio 
+becomes capital-destructive ($r_{\mathrm{impl}} = -1.3\%$, survival $23\%$), 
+and the feasible region starts at $w = 85\%$. The CDF panels 
 show how riskier mandates widen the distribution while lowering the 
 floor.
 
@@ -1359,10 +1382,10 @@ terminal wealth quantiles with floor $L_T$ (red dashed).}
 \centering
 \includegraphics[width=0.775\textwidth]{opportunity_set_c25.png}
 \caption{Investment opportunity set, $c = 2.5\%$. Consumption reduces 
-$r_{\mathrm{impl}}$ by approximately $2\%$: the range is $-0.3\%$ to 
-$1.3\%$. The 100\% bond portfolio is capital-destructive 
-($r_{\mathrm{impl}} < 0$, survival $25\%$); the feasible range starts 
-at approximately $w = 90\%$.}
+$r_{\mathrm{impl}}$ by approximately $2.4\%$, and the feasible range is 
+$0.2\%$ to $1.3\%$. The 100\% bond portfolio is capital-destructive 
+($r_{\mathrm{impl}} = -1.3\%$, survival $23\%$), and the feasible range 
+starts at $w = 85\%$.}
 \label{fig:opp_c25}
 \end{figure}
 
@@ -1415,7 +1438,7 @@ $60\%$ over $T = 10$ years.
 Figure~\ref{fig:risky_allocation} shows the expected risky allocation 
 $\bar{\omega}(t)$ with $\pm 1\sigma$ bands for all four mandates at 
 $c = 0\%$. All start fully invested and de-risk endogenously: the 
-growth mandate falls from $100\%$ to $37\%$ over 10 years, while the 
+growth mandate falls from $100\%$ to $36\%$ over 10 years, while the 
 income mandate maintains the highest allocation beyond $t \approx 1$y 
 --- an ordering inversion where the most aggressive mandate de-risks 
 fastest because it approaches its target most quickly. The $\pm 1\sigma$ 
@@ -1429,7 +1452,7 @@ by the binary survived/stopped distinction at longer horizons.
 \caption{Expected risky allocation $\bar{\omega}(t) \pm 
 \mathrm{Std}[R_t]/\E[\Pi_t]$ for four mandates ($c = 0\%$, 
 $\omega_0 = 1$). All mandates start fully invested and de-risk 
-endogenously. The growth mandate de-risks fastest (from 100\% to 37\%) 
+endogenously. The growth mandate de-risks fastest (from 100\% to 36\%) 
 because it approaches its target most quickly; the income mandate 
 maintains the highest allocation at all horizons beyond $t \approx 1$y. 
 The $\pm 1\sigma$ band width converges to approximately 60pp across 
@@ -1600,7 +1623,7 @@ We verify that the jump expectation of a quadratic function remains quadratic. L
 \label{eq:jump_quad_detail}
 \end{align}
 
-The required expectations, using \eqref{eq:jump_mgf} with $J^{[1]} \sim -\mathrm{Exp}(1/\eta^{[1]})$:
+The required expectations, using \eqref{eq:jump_mgf} with $J^{[1]} \sim -\mathrm{Exp}(\eta^{[1]})$:
 \begin{align}
 \E[e^{J^{[1]}}] &= \frac{1}{1 + \eta^{[1]}}, \quad
 \E[e^{2J^{[1]}}] = \frac{1}{1 + 2\eta^{[1]}}, \label{eq:jump_exp_moments} \\
@@ -1761,9 +1784,21 @@ By the Burkholder--Davis--Gundy inequality for the continuous martingale part an
 \]
 where $N_T$ is the (Poisson-distributed) number of transitions in $[0, T]$, and $C(T)$ is a constant depending on $T$, $\mu_Z$, $\sigma_Z$.  Since $\E[N_T] < \infty$ and each jump factor has finite second moment, the product has finite expectation (by independence of jump sizes), giving $\E[\sup_{t \leq T} Z_t^2] < \infty$.
 
-Therefore $\E[\Pi_T^2] \leq 2(\Pi^{*}_{\max})^2 + 2\E[Z_T^2] < \infty$, confirming $\varpi^* \in \mathcal{A}$.  The upgrade from local to true martingale in the proof of Theorem~\ref{thm:verification} follows from this uniform integrability. \qed
+Therefore $\E[\Pi_T^2] \leq 2(\Pi^{*}_{\max})^2 + 2\E[Z_T^2] < \infty$, confirming $\varpi^* \in \mathcal{A}$.  The upgrade from local to true martingale in the proof of Theorem~\ref{thm:verification} follows from this uniform integrability.
 
-The efficient frontier follows from computing $\Var[\Pi_T] = V^{[i]}(T,\Pi_0) + \ell^2/4$ (with growth rate $r_c$) and optimising over $\ell$.
+\paragraph{Parts (c) and (d).}\label{app:moments_proof}
+
+We first verify \eqref{eq:b_gamma_identity}. We substitute $b^{[i]} = \kappa(\tau)\, a^{[i]}$ with one scalar function $\kappa$ for both regimes into \eqref{eq:ode_b1}--\eqref{eq:ode_b2}. Then $\tilde{b}^{[i]} = \kappa\, \tilde{a}^{[i]}$, and the $a$-equations \eqref{eq:ode_a1_simple}--\eqref{eq:ode_a2_simple} reduce the right-hand side to $\kappa\,({a^{[i]}}' - r_c a^{[i]})$. The left-hand side is $\kappa' a^{[i]} + \kappa\, {a^{[i]}}'$, so the $b$-equations hold if and only if $\kappa' = -r_c \kappa$, and $\kappa(0) = -\ell$ gives $\kappa = -\ell e^{-r_c\tau}$. Uniqueness of the solution of the linear $b$-system completes the first identity. The same substitution in \eqref{eq:ode_g1}--\eqref{eq:ode_g2} verifies the $\gamma$ identity, because $(\tilde{b}^{[i]})^2/(4\Sigma^{[i]}) = \tfrac{\ell^2}{4} e^{-2r_c\tau} (\tilde{a}^{[i]})^2/\Sigma^{[i]}$ and the candidate vanishes at $\tau = 0$. The target follows as $\Pi^{*[i]}(t) = -\tilde{b}^{[i]}/(2\tilde{a}^{[i]}) = -\kappa/2$.
+
+For the moments, we parametrize strategies by the dollar position $\phi_t := \varpi_t \Pi_t$ in the risky asset, as in \citet{ZhouLi2000}. The wealth dynamics \eqref{eq:wealth_sde} are affine in $(\Pi, \phi)$ with the regime-independent cash rate $r_c$, so $\Pi_T = \Pi_0 e^{r_c T} + G(\phi)$, where $G$ is linear in $\phi$ with $G(0) = 0$, and $\mathcal{G} := \{G(\phi)\}$ over admissible $\phi$ is a linear subspace of $L^2$. Let $G^{*}$ be the $L^2$-projection of the constant $1$ onto $\mathcal{G}$, conditional on $\chi_0 = i$, and set $m^{[i]} := \E[(1 - G^{*})^2]$. Orthogonality gives $\E[(1 - G^{*})\,G^{*}] = 0$, hence $\E[G^{*}] = 1 - m^{[i]}$. With $d := \ell/2$ and $x := \Pi_0 e^{r_c T}$, the optimal position for the target $d$ is $(d - x)$ times the optimal position for the target $1$, so
+\begin{equation}\label{eq:projection_moments}
+\min_{\varpi \in \mathcal{A}} \E[(\Pi_T - d)^2] = m^{[i]} (d - x)^2, \qquad \E[\Pi_T] = d - (d - x)\, m^{[i]}.
+\end{equation}
+The left side of the first equality equals $V^{[i]}(T, \Pi_0) + \ell^2/4$ by part (a). Matching the coefficient of $\Pi_0^2$ with \eqref{eq:b_gamma_identity} gives $m^{[i]} = a^{[i]}(T)\, e^{-2r_c T} = e^{-\Theta^{[i]}(T)}$, which proves \eqref{eq:expected_wealth}, and solving $\E[\Pi_T] = \pi$ for $\ell$ gives \eqref{eq:ell_determination}. Finally,
+\begin{equation}\label{eq:projection_variance}
+\Var[\Pi_T] = \E[(\Pi_T - d)^2] - \big(d - \E[\Pi_T]\big)^2 = (d - x)^2\big(m^{[i]} - (m^{[i]})^2\big) = (\pi - x)^2\, \frac{m^{[i]}}{1 - m^{[i]}},
+\end{equation}
+using $\pi - x = (d - x)(1 - m^{[i]})$, which is \eqref{eq:efficient_frontier}.
 \end{proof}
 
 
@@ -1954,39 +1989,30 @@ where $q^{[s]}_k = \sum_{j=4}^6 m^{[s]}_{k,j-3}/\psi_j$.
 \subsection{Flat-Barrier Reduction (Theorem~\ref{thm:flat_barrier})}\label{app:flat_barrier}
 
 \begin{proof}
-We construct the gap process and verify that it satisfies a regime-switching jump-diffusion with flat barrier, up to a correction that is $O(\lambda^{[12]})$.
+We construct the gap process and verify that it satisfies a regime-switching jump-diffusion with a flat barrier, up to the approximation that the allocation coefficient $\omega^*_a(\tau)$ is constant.
 
 \medskip\noindent\textbf{Step~1: Gap dynamics between transitions.}
-Define $Z_t := \Pi^{*[\chi_t]}(t) - \Pi_t$, where $\Pi^{*[i]}(t) = -b^{[i]}(T-t)/(2a^{[i]}(T-t))$ is the regime-$i$ target.  Between regime transitions, $\chi_t = i$ is constant, and the wealth SDE~\eqref{eq:wealth_sde} gives $\dd Z_t = \dd \Pi^{*[i]}(t) - \dd \Pi_t$.  The target evolves as $\dd\Pi^{*[i]}(t)/\dd t = r_c\,\Pi^{*[i]}(t) + \phi^{[i]}(t)$, where $\phi^{[i]}(t)$ collects the time-derivative of $b^{[i]}/a^{[i]}$ from the coupled ODE system.  Since $b^{[i]}(\tau)$ satisfies the linear system~\eqref{eq:ode_b_matrix} driven by $\mathbf{B}(\tau)$ with entries depending on $\varpi^{*[i]}_a$, the correction $\phi^{[i]}$ is bounded and continuous.
+Define $Z_t := \Pi^{*}(t) - \Pi_t$, where $\Pi^{*}(t) = \tfrac{\ell}{2}e^{-r_c(T-t)}$ is the target, common to both regimes by Theorem~\ref{thm:verification}(c). The target satisfies $\dd\Pi^{*}(t) = r_c\,\Pi^{*}(t)\,\dd t$. Between regime transitions, $\chi_t = i$ is constant, and the wealth SDE~\eqref{eq:wealth_sde} gives $\dd Z_t = \dd \Pi^{*}(t) - \dd \Pi_t$.
 
-Under the optimal policy $\varpi^{*[i]} = |\omega^*_a|(\Pi^{*[i]}/\Pi - 1) = |\omega^*_a|\,Z/\Pi$, the wealth drift between transitions is $r_c\,\Pi + \varpi^{*[i]}(\mu^{[i]} - r_h)\Pi = r_c\,\Pi + |\omega^*_a|(\mu^{[i]} - r_h)Z$, giving
+Under the magnitude policy \eqref{eq:magnitude_policy}, $\varpi_t = |\omega^*_a|(\Pi^{*}/\Pi - 1) = |\omega^*_a|\,Z/\Pi$ with $|\omega^*_a| = |\omega^{*[i]}_a|$, and the wealth drift between transitions is $r_c\,\Pi + \varpi^{*[i]}(\mu^{[i]} - r_h)\Pi = r_c\,\Pi + |\omega^*_a|(\mu^{[i]} - r_h)Z$, giving
 \begin{equation}\label{eq:dZ_clean}
-\dd Z = [r_c\,Z + \phi^{[i]} - |\omega^*_a|(\mu^{[i]} - r_h)Z]\,\dd t - |\omega^*_a|\sigma^{[i]}Z\,\dd W.
+\dd Z = [r_c\,Z - |\omega^*_a|(\mu^{[i]} - r_h)Z]\,\dd t - |\omega^*_a|\sigma^{[i]}Z\,\dd W.
 \end{equation}
 
-The barrier is $B_t := \Pi^{*[\chi_t]}(t) - L_t$, where $L_t = L_0 e^{r_c t}$.  Since $\Pi^{*[i]}(t) = C^{[i]}(\tau)\,e^{r_c t}$, we have $B_t = (C^{[i]}(\tau) - L_0)\,e^{r_c t}$.  The log-gap $X_t := \ln(B_t/Z_t)$ absorbs the common $e^{r_c t}$ factor in numerator and denominator, eliminating $r_c$ from the drift of $X$---this is the cashless-rate cancellation.  The remaining drift of $X$ is $|\omega^*_a|(\mu^{[i]} - r_h) + \tfrac{1}{2}(|\omega^*_a|\sigma^{[i]})^2 - \phi^{[i]}/Z$, where the last term is a correction from the target's non-trivial time evolution.
+The barrier is $B_t := \Pi^{*}(t) - L_t$, where $L_t = L_0 e^{r_c t}$.  Since $\Pi^{*}(t) = \Pi^{*}(0)\,e^{r_c t}$, we have $B_t = (\Pi^{*}(0) - L_0)\,e^{r_c t}$.  The log-gap $X_t := \ln(B_t/Z_t)$ absorbs the common $e^{r_c t}$ factor in numerator and denominator, which eliminates $r_c$ from the drift of $X$ (the cashless-rate cancellation).  By It\^o's formula applied to \eqref{eq:dZ_clean}, the drift of $X$ is $|\omega^*_a|(\mu^{[i]} - r_h) + \tfrac{1}{2}(|\omega^*_a|\sigma^{[i]})^2$ and its diffusion coefficient is $|\omega^*_a|\sigma^{[i]}$, which are \eqref{eq:sigma_eff}--\eqref{eq:nu_eff}.
 
-\medskip\noindent\textbf{Step~2: Bounding the target correction.}
-We show $\phi^{[i]}(t)/Z_t$ is small.  From the $b$-equation~\eqref{eq:ode_b_matrix}, the time derivative of $\Pi^{*[i]}$ beyond the $r_c$ growth is driven by the off-diagonal coupling $\lambda^{[i\to j]}(1 + \varpi^{*[i]}_a \alpha^{[i]})$.  Since $\lambda^{[12]} = 0.1$ (and the off-diagonal entries are $O(\lambda^{[12]})$), the correction satisfies $|\phi^{[i]}(t)| = O(\lambda^{[12]}) \cdot \Pi^{*[i]}(t)$.  Meanwhile, $Z_t = \Pi^{*[i]} - \Pi_t \sim \Pi^{*[i]} \cdot (\omega_0/|\omega^*_a|)$ at $t = 0$ (from the full-investment constraint), giving $|\phi^{[i]}/Z| = O(\lambda^{[12]})$.  The resulting error in the log-gap drift is $O(0.1)$, small relative to the leading terms $|\omega^*_a|(\mu - r_h) \sim 0.02$--$0.05$ and $\tfrac{1}{2}\sigma^2_{\mathrm{eff}} \sim 0.01$--$0.02$.  Numerically, the correction is below $5\%$ of the total drift for all mandates in Table~\ref{tab:mandates}.
+\medskip\noindent\textbf{Step~2: The allocation coefficient.}
+The coefficient $\omega^*_a(\tau) = -\tilde{a}^{[i]}(\tau)/\Sigma^{[i]}(\tau)$ depends on $\tau$ through $(a^{[1]}, a^{[2]})$ and not on $\ell$.  We freeze it at its inception value $\omega^*_a(T)$.  For the mandates in Table~\ref{tab:mandates}, $|\omega^*_a|$ varies by less than $4\%$ over $\tau \in [0, T]$, so the frozen coefficients in \eqref{eq:sigma_eff}--\eqref{eq:nu_eff} are stationary to that accuracy.
 
 \medskip\noindent\textbf{Step~3: Gap jump at regime transitions.}
-At a crash transition ($\chi: 1 \to 2$) at time $t$, two things change simultaneously:
-\begin{enumerate}[label=(\alph*)]
-\item Wealth jumps: $\Pi_t = \Pi_{t^-}(1 + \varpi^{*[1]}(e^{J^{[1]}} - 1))$.
-\item Target switches: $\Pi^*(t)$ changes from $\Pi^{*[1]}(t)$ to $\Pi^{*[2]}(t)$.
-\end{enumerate}
-The gap jump is therefore
+At a crash transition ($\chi: 1 \to 2$) at time $t$, wealth jumps to $\Pi_t = \Pi_{t^-}(1 + \varpi^{*[1]}(e^{J^{[1]}} - 1))$, while the target is continuous because it is the same in both regimes.  The gap jump is therefore
 \begin{equation}\label{eq:gap_jump_full}
-Z_t - Z_{t^-} = \underbrace{[\Pi^{*[2]}(t) - \Pi^{*[1]}(t)]}_{\text{target switch}} - \underbrace{\Pi_{t^-}\varpi^{*[1]}(e^{J^{[1]}} - 1)}_{\text{wealth jump}}.
+Z_t - Z_{t^-} = -\Pi_{t^-}\varpi^{*[1]}(e^{J^{[1]}} - 1) = |\omega^*_a|\,Z_{t^-}\,(1 - e^{J^{[1]}}),
 \end{equation}
-The wealth jump term equals $|\omega^*_a|\,Z_{t^-}\,(1 - e^{J^{[1]}})$, which is the standard gap jump producing the effective exponential distribution via mean-matching (\eqref{eq:eta_eff_quadrature}).  The target-switch term $\Pi^{*[2]}(t) - \Pi^{*[1]}(t)$ is deterministic (given $\tau$) and satisfies
-\begin{equation}\label{eq:target_diff}
-\Pi^{*[2]}(t) - \Pi^{*[1]}(t) = -\frac{b^{[2]}(\tau)}{2a^{[2]}(\tau)} + \frac{b^{[1]}(\tau)}{2a^{[1]}(\tau)}.
-\end{equation}
-Since $a^{[1]}(\tau) \approx a^{[2]}(\tau)$ (both start at $1$ and their ODEs differ only through the $O(\lambda^{[12]})$ coupling), and $b^{[1]}(\tau) \approx b^{[2]}(\tau)$ (same initial condition $-\ell$, linear system with $O(\lambda^{[12]})$ off-diagonal), the target difference satisfies $|\Pi^{*[2]}(t) - \Pi^{*[1]}(t)| = O(\lambda^{[12]}) \cdot \Pi^{*[1]}(t)$.  For the base-case parameters, $|\Pi^{*[2]} - \Pi^{*[1]}|/\Pi^{*[1]} < 3\%$ uniformly over $\tau \in [0, T]$.
+which is the gap jump producing the effective exponential distribution via mean-matching \eqref{eq:eta_eff_quadrature}.  At a recovery transition ($\chi: 2 \to 1$) the gap is multiplied by $1 - u$ with $u = |\omega^{*[2]}_a|(e^{J^{[2]}} - 1)$, so the log-gap jumps by $-\ln(1 - u) > 0$ while $u < 1$, which we mean-match to $\mathrm{Exp}(\tilde\eta^{[2]})$ conditional on $u < 1$.  The event $u \geq 1$ leaves the domain of $X$ and is treated in Remark~\ref{rem:gap_domain}.
 
 \medskip\noindent\textbf{Step~4: Flat-barrier reduction.}
-Neglecting the $O(\lambda^{[12]})$ corrections from Steps~2--3, the log-gap $X_t = \ln(B_t/Z_t)$ satisfies a regime-switching jump-diffusion with flat absorbing barrier at $X = 0$, effective parameters \eqref{eq:sigma_eff}--\eqref{eq:nu_eff}, and exponentially distributed jumps with effective parameter $\tilde\eta^{[i]}$ from \eqref{eq:eta_eff_quadrature}.
+With the frozen coefficient of Step~2, the log-gap $X_t = \ln(B_t/Z_t)$ satisfies a regime-switching jump-diffusion with flat absorbing barrier at $X = 0$, effective parameters \eqref{eq:sigma_eff}--\eqref{eq:nu_eff}, and exponentially distributed jumps with effective parameter $\tilde\eta^{[i]}$ from \eqref{eq:eta_eff_quadrature}.
 \qed
 \end{proof}
 

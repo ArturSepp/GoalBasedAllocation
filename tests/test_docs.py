@@ -242,10 +242,10 @@ def test_legacy_user_guide_pages_redirect_to_chapters():
 @pytest.mark.parametrize(
     ("service_url", "canonical_url"),
     [
-        # stable and latest serve the same pages, so both name latest as canonical
+        # Each release channel describes its own source revision.
         (
             "https://goalbasedallocation.readthedocs.io/en/stable/",
-            "https://goalbasedallocation.readthedocs.io/en/latest/",
+            "https://goalbasedallocation.readthedocs.io/en/stable/",
         ),
         (
             "https://goalbasedallocation.readthedocs.io/en/latest/",
@@ -257,7 +257,7 @@ def test_legacy_user_guide_pages_redirect_to_chapters():
         ),
     ],
 )
-def test_stable_builds_name_latest_as_canonical(monkeypatch, service_url, canonical_url):
+def test_builds_preserve_channel_canonical(monkeypatch, service_url, canonical_url):
     pytest.importorskip("tomllib", reason="docs/conf.py reads pyproject.toml with tomllib")
     monkeypatch.setenv("READTHEDOCS_CANONICAL_URL", service_url)
     assert runpy.run_path(str(DOCS / "conf.py"))["html_baseurl"] == canonical_url

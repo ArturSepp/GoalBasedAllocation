@@ -15,8 +15,8 @@ Between transitions the log-price X_t = ln S_t follows
 
 and at transitions the price jumps (paper notation, η = jump MEAN):
 
-    0 → 1 (crash)   : X → X + J^[1],  J^[1] ~ −Exp(1/η₀),  E[e^{ΦJ}] = 1/(1 + η₀Φ)
-    1 → 0 (recovery): X → X + J^[2],  J^[2] ~ +Exp(1/η₁),  E[e^{ΦJ}] = 1/(1 − η₁Φ)
+    0 → 1 (crash)   : X → X + J^[1],  J^[1] ~ −Exp(η₀),  E[e^{ΦJ}] = 1/(1 + η₀Φ)
+    1 → 0 (recovery): X → X + J^[2],  J^[2] ~ +Exp(η₁),  E[e^{ΦJ}] = 1/(1 − η₁Φ)
 
 The Q-drifts are pinned by the martingale condition E[dS/S] = r dt, giving
 

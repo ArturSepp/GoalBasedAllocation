@@ -77,8 +77,8 @@ $$
 J^{[1]} = -E^{[1]}, \qquad J^{[2]} = E^{[2]}, \qquad E^{[i]} \sim \mathrm{Exp}\ \text{with mean}\ \eta^{[i]} .
 $$
 
-The paper writes $\mathrm{Exp}(1/\eta^{[i]})$, an exponential law with rate $1/\eta^{[i]}$. The
-crash loss and the recovery gain quoted as relative price changes are
+The paper writes $\mathrm{Exp}(\eta^{[i]})$ for the exponential law with mean $\eta^{[i]}$ (equation (2.3),
+October 2026 revision; earlier versions wrote the rate $1/\eta^{[i]}$). The crash loss and the recovery gain quoted as relative price changes are
 
 $$
 1 - \mathbb{E}\left[e^{J^{[1]}}\right] = \frac{\eta^{[1]}}{1 + \eta^{[1]}}, \qquad
@@ -159,8 +159,8 @@ dated 7 April 2026. Code comments in the package use LaTeX labels of the same ma
 | Manuscript | Subject | Implementation |
 |---|---|---|
 | Section 2, equations (2.1)–(2.11) | Model, compensators, hurdle rate, wealth dynamics | `RegimeSwitchParams`, `AssetSpecification` |
-| Section 3, equations (3.1)–(3.16) | Mean-variance problem and Riccati system | `find_ell`, `riccati_solver.solve_riccati` |
-| Section 4, equations (4.1)–(4.6) | Floor, gap process, effective jump size | `gap_process_asset` |
+| Section 3, equations (3.1)–(3.18) | Mean-variance problem and Riccati system | `find_ell`, `find_ell_expected_wealth`, `riccati_solver.solve_riccati` |
+| Section 4, equations (4.1)–(4.8) | Floor, gap process, effective jump size | `gap_process_asset` |
 | Section 5, equations (5.1)–(5.16) | Arrow–Debreu prices, characteristic polynomial, survival | `compute_density`, `compute_survival`, `compute_tilted_survival` |
 | Section 6, equations (6.1)–(6.24) | Terminal distribution, moments, consumption, floor cost | `compute_overshoot_density`, `compute_opportunity_point` |
 | Section 7, equations (7.1)–(7.9) | Asset classes, mandate aggregation, floor calibration | `create_paper_assets`, `build_effective_asset` |

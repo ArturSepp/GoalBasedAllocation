@@ -89,7 +89,7 @@ equation (8.4).
 
 **Proof.** The coefficients $\tilde a^{[i]}$ and $\Sigma^{[i]}$ depend only on $a^{[i]}$, whose equation
 does not contain $\ell$; hence $\omega_a^{[i]} = -\tilde a^{[i]}/\Sigma^{[i]}$ is the same for every
-$\ell$ (Remark 4.4). Solve (8.3) for $\Pi^{*}(0)$; the target grows at $r_c$ by the
+$\ell$ (Remark 4.6). Solve (8.3) for $\Pi^{*}(0)$; the target grows at $r_c$ by the
 [regime-independent target](mv_optimal_policy.md#the-target-is-common-to-both-regimes). $\square$
 
 `compute_opportunity_point` finds $\rho$ by bisection on $[0.001, 0.60]$ instead, solving the Riccati
@@ -171,16 +171,16 @@ outputs against the formulas of this chapter and of the terminal wealth chapter:
 - the reported initial allocation, 0.99966, equals $\lvert\omega_a^{[1]}\rvert(\Pi^{*}(0)/100 - 1)$ with
   $\lvert\omega_a^{[1]}\rvert = 1.2377$, and the bisection's $\rho = 5.9204$% is within $2 \times 10^{-5}$ of
   the closed form $\ln(1 + 1/1.2377)/10 = 5.9219$%;
-- expected wealth 139.040, standard deviation 46.087, survival 78.703%, floor atom 13.431% and overshoot
-  7.866%, an implied return of 3.296% against a target growth rate of 7.920%;
+- expected wealth 139.509, standard deviation 45.990, survival 79.071%, floor atom 13.100% and overshoot
+  7.830%, an implied return of 3.330% against a target growth rate of 7.920%;
 - the buy-and-hold mean 150.637 and standard deviation 74.848, an implied return of 4.097%, and a floor
-  protection cost of 7.699% of the buy-and-hold value, 80 basis points of implied return;
-- the expected risky allocation of 91.6% after one year, 61.5% after five and 42.9% after 9.9, with a
-  band from 13.8% to 71.9% at the end, as in Figure 6.
+  protection cost of 7.387% of the buy-and-hold value, 77 basis points of implied return;
+- the expected risky allocation of 91.6% after one year, 61.5% after five and 42.8% after 9.9, with a
+  band from 14.0% to 71.6% at the end, as in Figure 6.
 
-The exact overshoot mass of the same policy is 7.899%. The package integrates the overshoot density
+The exact overshoot mass of the same policy is 7.863%. The package integrates the overshoot density
 from 0.001 and builds its distribution function below the floor on a coarse grid, so its 5% quantile
-is 67.02, against 65.54 from the closed-form quantile $\Pi_T^{*} - B_T(\mathcal{O}/0.05)^{\tilde\eta^{[1]}}$.
+is 67.03, against 65.68 from the closed-form quantile $\Pi_T^{*} - B_T(\mathcal{O}/0.05)^{\tilde\eta^{[1]}}$.
 
 ```python
 import numpy as np
@@ -202,17 +202,17 @@ np.testing.assert_allclose([rho, rho_closed_form], [0.059204, 0.059219], atol=5e
 
 # terminal distribution, implied return and target growth
 np.testing.assert_allclose([point['E'], point['Std'], point['S'], point['F'], point['O']],
-                           [139.040, 46.087, 0.78703, 0.13431, 0.07866], atol=5e-4)
+                           [139.509, 45.990, 0.79071, 0.13100, 0.07830], atol=5e-4)
 np.testing.assert_allclose(point['S'] + point['F'] + point['O'], 1.0, atol=1e-12)
 np.testing.assert_allclose(point['r_impl'], np.log(point['E'] / wealth0) / horizon, rtol=1e-12)
-np.testing.assert_allclose([point['r_impl'], point['g']], [0.03296, 0.07920], atol=5e-6)
+np.testing.assert_allclose([point['r_impl'], point['g']], [0.033296, 0.07920], atol=5e-6)
 
 # buy-and-hold benchmark and the floor protection cost
 np.testing.assert_allclose([point['E_BH'], point['Std_BH'], point['r_impl_BH']], [150.637, 74.848, 0.04097],
                            atol=5e-4)
 assert point['C_disc'] == 0.0 and point['TV'] == point['E']
 np.testing.assert_allclose(point['floor_cost_pct'], (point['TV_BH'] - point['TV']) / point['TV_BH'], rtol=1e-12)
-np.testing.assert_allclose([point['floor_cost_pct'], point['r_impl_BH'] - point['r_impl']], [0.07699, 0.0080],
+np.testing.assert_allclose([point['floor_cost_pct'], point['r_impl_BH'] - point['r_impl']], [0.07387, 0.00767],
                            atol=5e-5)
 
 # rebuild the same policy from the public functions
@@ -227,7 +227,7 @@ eta = gap.params.eta0
 overshoot = eta * gba.compute_overshoot_density(horizon, np.array([0.0]), gap)[0]
 buffer_T = point['PiT'] - point['L_T']
 q5 = point['PiT'] - buffer_T * (overshoot / 0.05)**eta
-np.testing.assert_allclose([overshoot, q5, point['q5']], [0.07899, 65.54, 67.02], atol=5e-3)
+np.testing.assert_allclose([overshoot, q5, point['q5']], [0.07863, 65.68, 67.03], atol=5e-3)
 
 # expected glide path and its band, equations (8.8) to (8.11)
 glide = []
@@ -242,30 +242,32 @@ for t in (1.0, 5.0, 9.9):
     risky_std = point['wa'] * buffer_t * np.sqrt(tilted_2 - tilted_1**2)
     wealth_t = target_t * survival_t - buffer_t * tilted_1 + floor_t * (1.0 - survival_t)
     glide.append((risky / wealth_t, (risky - risky_std) / wealth_t, (risky + risky_std) / wealth_t))
-np.testing.assert_allclose([g[0] for g in glide], [0.916, 0.615, 0.429], atol=5e-4)
-np.testing.assert_allclose(glide[-1][1:], [0.138, 0.719], atol=5e-4)
+np.testing.assert_allclose([g[0] for g in glide], [0.916, 0.6146, 0.4278], atol=5e-4)
+np.testing.assert_allclose(glide[-1][1:], [0.1400, 0.7155], atol=5e-4)
 ```
 
 The second block evaluates the two ends of the curve and the balanced mandate with consumption. The
-income and growth mandates reproduce Table 2:
+income and growth mandates reproduce Table 2 up to the October 2026 correction of the recovery jump of
+the gap process (Sepp, 2026, Remark 4.5), which leaves the income row unchanged and raises the growth
+mandate's survival from the printed 73.8% to 74.2% and its implied return from 3.68% to 3.73%:
 
 | Mandate | $\lvert\omega_a^{[1]}\rvert$ | $\Pi_T^{*}$ | Expected wealth | Std | Std given survival | $r_{\mathrm{impl}}$ | Survival | $r_{\mathrm{impl}}^{\mathrm{BH}}$ |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Income (100/0/0) | 1.04 | 240 | 127.0 | 24.6 | 18.2 | 2.39% | 85.5% | 2.46% |
-| Balanced (35/43/22) | 1.24 | 221 | 139.0 | 46.1 | 24.1 | 3.30% | 78.7% | 4.10% |
-| Growth (0/67/33) | 0.92 | 254 | 144.5 | 61.9 | 31.5 | 3.68% | 73.8% | 5.01% |
+| Balanced (35/43/22) | 1.24 | 221 | 139.5 | 46.0 | 24.1 | 3.33% | 79.1% | 4.10% |
+| Growth (0/67/33) | 0.92 | 254 | 145.2 | 61.8 | 31.4 | 3.73% | 74.2% | 5.01% |
 
 The implied return falls with the bond weight, as Proposition 8.2 states, and the difference between the
-buy-and-hold and the floor-protected implied returns grows from 7 basis points for income to 133 for
+buy-and-hold and the floor-protected implied returns grows from 6.5 basis points for income to 128 for
 growth. With consumption of 2.5% the balanced mandate keeps its terminal floor of 79.04 from inception,
-its survival falls to 59.7% and its implied return to 0.88%; the discounted consumption is 24.34, the
-total value 133.53 against 141.94 for buy-and-hold, and the floor protection cost 5.93%.
+its survival falls to 60.2% and its implied return to 0.92%; the discounted consumption is 24.39, the
+total value 134.02 against 141.94 for buy-and-hold, and the floor protection cost 5.58%.
 
 ```python
 income = gba.compute_opportunity_point(w_bd=1.0, spec=spec)
 growth = gba.compute_opportunity_point(w_bd=0.0, spec=spec)
 table_2 = {'income': (income, (1.04, 240, 127.0, 24.6, 18.2, 0.0239, 0.855, 0.0246)),
-           'growth': (growth, (0.92, 254, 144.5, 61.9, 31.5, 0.0368, 0.738, 0.0501))}
+           'growth': (growth, (0.92, 254, 145.2, 61.8, 31.4, 0.0373, 0.742, 0.0501))}
 rounding = np.array([0.005, 0.5, 0.05, 0.05, 0.05, 0.00005, 0.0005, 0.00005])  # half a printed digit
 for result, row in table_2.values():
     computed = np.array([result['wa'], result['PiT'], result['E'], result['Std'], result['Stds'],
@@ -273,14 +275,14 @@ for result, row in table_2.values():
     assert np.all(np.abs(computed - np.array(row)) <= rounding), computed
 assert income['r_impl'] < point['r_impl'] < growth['r_impl']
 np.testing.assert_allclose([income['r_impl_BH'] - income['r_impl'], growth['r_impl_BH'] - growth['r_impl']],
-                           [0.0007, 0.0133], atol=5e-5)
+                           [0.00065, 0.01282], atol=5e-5)
 
 # consumption above the riskless rate: r_h = c and r_c = 0, so the floor does not grow
 consuming = gba.compute_opportunity_point(w_bd=0.35, spec=gba.AdvisorSpec(c=0.025))
 np.testing.assert_allclose(consuming['L_T'], point['L_T'], rtol=1e-12)
 np.testing.assert_allclose([consuming['S'], consuming['r_impl'], consuming['C_disc'], consuming['TV'],
                             consuming['TV_BH'], consuming['floor_cost_pct']],
-                           [0.5973, 0.0088, 24.34, 133.53, 141.94, 0.0593], atol=5e-3)
+                           [0.6025, 0.0092, 24.39, 134.02, 141.94, 0.0558], atol=5e-3)
 np.testing.assert_allclose(consuming['TV'], consuming['E'] + consuming['C_disc'], rtol=1e-12)
 ```
 

@@ -10,8 +10,9 @@ at regime transitions, with an absorbing lower barrier.
 
 Paper notation (η₀ > 0, η₁ > 0 throughout):
   Regime 0 = growth,  Regime 1 = stress
-  Crash  (0→1):  log-wealth jump ~ −Exp(1/η₀),  mgf factor (1−η₀ψ)
-  Recovery (1→0): log-wealth jump ~ +Exp(1/η₁),  mgf factor (1+η₁ψ)
+  Crash  (0→1):  log-wealth jump ~ −Exp(η₀),  mean η₀,  mgf factor (1−η₀ψ)
+  Recovery (1→0): log-wealth jump ~ +Exp(η₁),  mean η₁,  mgf factor (1+η₁ψ)
+  Exp(η) denotes the exponential law with MEAN η (numpy scale), as in paper eq (2.3)
 
   Forward characteristic exponents:
     G⁰(ψ) = (−½σ₀²ψ² + ν₀ψ + λ₀₁+p)(1 − η₀ψ)
@@ -559,7 +560,7 @@ def compute_overshoot_density(T: float, x_grid: np.ndarray,
 
     At a crash (regime 0→1), the process may jump through the barrier.
     By the memoryless property, the conditional overshoot distance is
-    Exp(1/η₀). The unconditional density involves the time-integrated
+    Exp(η₀), with mean η₀. The unconditional density involves the time-integrated
     regime-0 tilted survival:
 
       f_over(d, T) = (1/η₀) · exp(-d/η₀) · C_over(T)

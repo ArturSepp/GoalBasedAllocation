@@ -10,6 +10,7 @@ from goal_based_allocation.regime_switch_paper import (
 )
 from goal_based_allocation.riccati_solver import (
     find_ell,
+    find_ell_expected_wealth,
     gap_process_asset,
     simulate_mv_optimal,
 )
@@ -41,7 +42,12 @@ def run_local(local: Locals) -> None:
     print(f"  ℓ = {ell:.4f}")
     print(f"  a(T): [{riccati.a[0, -1]:.6f}, {riccati.a[1, -1]:.6f}]")
     target = equity.pi0 * np.exp(0.05 * horizon)
-    print(f"  E[Π_T] = {riccati.expected_wealth(0):.4f}  (target: {target:.4f})")
+    print(f"  Π*(0) = {riccati.pi_star_0(0):.4f}  (target: {target:.4f})")
+    print(f"  Θ(T) = [{riccati.information_ratio(0):.4f}, {riccati.information_ratio(1):.4f}]")
+    print(f"  E[Π_T] (no floor) = {riccati.expected_wealth(0):.4f}, "
+          f"std = {np.sqrt(riccati.wealth_variance(0)):.4f}")
+    ell_mean, _ = find_ell_expected_wealth(equity, horizon, target, rate, consumption)
+    print(f"  ℓ for E[Π_T] = {target:.4f}: {ell_mean:.4f}")
     print(f"  min(a): [{np.min(riccati.a[0]):.6f}, {np.min(riccati.a[1]):.6f}]")
 
     derived = riccati.derived_at_tau(horizon)
@@ -56,8 +62,8 @@ def run_local(local: Locals) -> None:
     monte_carlo = simulate_mv_optimal(riccati, n_paths=100_000, seed=42)
     survival_mc = np.mean(monte_carlo['survived'])
     print(f"  Survival: {survival_mc:.4f}")
-    print(f"  E[Π_T] (all): {np.mean(monte_carlo['Pi_T']):.4f}  "
-          f"(target: {riccati.expected_wealth(0):.4f})")
+    print(f"  E[Π_T] (all, with floor): {np.mean(monte_carlo['Pi_T']):.4f}  "
+          f"(no floor: {riccati.expected_wealth(0):.4f})")
     if survival_mc > 0.01:
         survived = monte_carlo['Pi_T'][monte_carlo['survived']]
         print(f"  E[Π_T|surv]: {np.mean(survived):.4f}")

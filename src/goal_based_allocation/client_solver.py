@@ -37,7 +37,7 @@ def portfolio_eta_quadrature(weights, etas, crash=True):
       η_port = -E[ln(Σ w_j exp(J_j))] = -E[ln(Σ w_j exp(-X_j))]
     For recovery (J_j ~ +Exp(η_j)):
       η_port = E[ln(Σ w_j exp(J_j))] = E[ln(Σ w_j exp(+X_j))]
-    where X_j ~ Exp(1/η_j) are independent.
+    where X_j ~ Exp(η_j), with mean η_j, are independent.
 
     Uses scipy.integrate for exact (deterministic) computation.
     """

@@ -184,15 +184,17 @@ and results are:
 
 | Quantity | Value | Table 2 |
 |---|---:|---:|
-| Survival $Q$ | 78.69% | 78.7% |
-| Floor atom $F$, overshoot mass $\mathcal{O}$ | 13.40%, 7.90% | |
-| Tilted survivals $\tilde Q(1)$, $\tilde Q(2)$ | 0.34419, 0.17334 | |
-| Expected terminal wealth | 139.03 | 139 |
-| Standard deviation, unconditional and given survival | 46.13, 24.13 | 46.1, 24.1 |
-| Implied return | 3.30% | 3.30% |
-| Quantiles at 5%, 25%, 50%, 75%, 95% | 65.5, 112.2, 153.1, 173.1, 190.9 | |
+| Survival $Q$ | 79.06% | 78.7% |
+| Floor atom $F$, overshoot mass $\mathcal{O}$ | 13.07%, 7.87% | |
+| Tilted survivals $\tilde Q(1)$, $\tilde Q(2)$ | 0.34465, 0.17301 | |
+| Expected terminal wealth | 139.50 | 139 |
+| Standard deviation, unconditional and given survival | 46.03, 24.06 | 46.1, 24.1 |
+| Implied return | 3.33% | 3.30% |
+| Quantiles at 5%, 25%, 50%, 75%, 95% | 65.7, 113.9, 153.6, 173.3, 191.0 | |
 
-The gap to target of 81.79 splits into the three terms of identity (8.7) exactly.
+The gap to target of 81.32 splits into the three terms of identity (8.7) exactly. The Table 2 column
+shows the manuscript's values, computed before the recovery jump of the gap process was corrected in
+October 2026 (Sepp, 2026, Remark 4.5); the correction raises survival by 0.4 points for this mandate.
 
 ```python
 import dataclasses
@@ -231,8 +233,8 @@ tilted_2 = gba.compute_tilted_survival(horizon, gap.x0, gap, 2.0)
 overshoot = eta * gba.compute_overshoot_density(horizon, np.array([0.0]), gap)[0]
 overshoot_1, overshoot_2 = overshoot / (1.0 - eta), overshoot / (1.0 - 2.0 * eta)
 floor_atom = 1.0 - survival - overshoot
-np.testing.assert_allclose([target_T, survival, floor_atom, overshoot], [220.82, 0.7869, 0.1340, 0.0790], atol=5e-3)
-np.testing.assert_allclose([tilted_1, tilted_2], [0.34419, 0.17334], atol=5e-6)
+np.testing.assert_allclose([target_T, survival, floor_atom, overshoot], [220.82, 0.7906, 0.1307, 0.0787], atol=5e-3)
+np.testing.assert_allclose([tilted_1, tilted_2], [0.34465, 0.17301], atol=5e-6)
 
 # moments, equations (6.17) and (6.18), and the moments given survival
 mean = (target_T * survival - buffer_T * tilted_1 + floor_T * floor_atom
@@ -245,13 +247,13 @@ mean_survived = target_T - buffer_T * tilted_1 / survival
 std_survived = np.sqrt(target_T**2 - 2.0 * target_T * buffer_T * tilted_1 / survival
                        + buffer_T**2 * tilted_2 / survival - mean_survived**2)
 implied = np.log(mean / wealth0) / horizon
-np.testing.assert_allclose([mean, std, std_survived], [139.03, 46.13, 24.13], atol=5e-3)
-np.testing.assert_allclose(implied, 0.0330, atol=5e-5)
+np.testing.assert_allclose([mean, std, std_survived], [139.50, 46.03, 24.06], atol=5e-3)
+np.testing.assert_allclose(implied, 0.0333, atol=5e-5)
 
 # the gap to target, identity (8.7)
 np.testing.assert_allclose(target_T - mean, buffer_T * (tilted_1 + overshoot_1) + (target_T - floor_T) * floor_atom,
                            rtol=1e-12)
-np.testing.assert_allclose(target_T - mean, 81.79, atol=5e-3)
+np.testing.assert_allclose(target_T - mean, 81.32, atol=5e-3)
 
 # distribution function and quantiles
 x_max = min(8.0, gap.x0 + 6.0 * max(gap.params.sigma0, gap.params.sigma1) * np.sqrt(horizon))
@@ -272,20 +274,20 @@ def quantile(u):
 
 probabilities = [0.05, 0.25, 0.50, 0.75, 0.95]
 quantiles = np.array([quantile(u) for u in probabilities])
-np.testing.assert_allclose(quantiles, [65.52, 112.25, 153.11, 173.10, 190.93], atol=5e-3)
+np.testing.assert_allclose(quantiles, [65.668, 113.896, 153.573, 173.346, 191.035], atol=5e-3)
 ```
 
 The second block checks the formulas with an exact simulation of the gap process, as in the
 [barrier chapter](laplace_barrier_framework.md#worked-example), mapping each simulated outcome to
 wealth by the first proposition. Over one million paths the simulated survival, floor atom and
-overshoot are 78.73%, 13.38% and 7.89%, the mean is 139.06 with a standard error of 0.05, the standard
-deviation is 46.00, and the quantiles are 65.5, 112.3, 153.1, 173.1 and 190.9.
+overshoot are 79.09%, 13.05% and 7.86%, the mean is 139.53 with a standard error of 0.05, the standard
+deviation is 45.93, and the quantiles are 65.7, 114.0, 153.6, 173.3 and 191.0.
 
 The package's wealth simulator, `simulate_mv_optimal`, follows the policy itself in 40,000 daily paths.
-It gives survival of 79.52%, a mean of 140.76, a standard deviation of 41.66 and quantiles of 70.3,
-115.5, 153.2, 173.1 and 191.0. The median and the upper quantiles agree with the analytical ones; the
-lower tail does not, because the exact gap jump is bounded while the reduced process has exponential
-overshoots, as the [floor chapter](wealth_floor_gap_process.md#worked-example) explains.
+It gives survival of 79.22%, a mean of 140.44, a standard deviation of 41.72 and quantiles of 71.3,
+112.7, 153.0, 173.0 and 191.0. The median and the upper quantiles agree with the analytical ones within
+0.6, and the lower tail does not, because the exact gap jump is bounded while the reduced process has
+exponential overshoots, as the [floor chapter](wealth_floor_gap_process.md#worked-example) explains.
 
 ```python
 def simulate_stopping(asset, horizon, n_paths, seed):
@@ -332,13 +334,13 @@ assert abs(wealth.mean() - mean) < 3.0 * wealth.std() / np.sqrt(status.size)
 np.testing.assert_allclose(wealth.std(), std, rtol=0.005)
 np.testing.assert_allclose(np.quantile(wealth, probabilities), quantiles, atol=0.2)
 
-# the wealth process under the regime-conditional policy, the package's own validator
+# the wealth process under the magnitude policy, the package's own validator
 from goal_based_allocation.riccati_solver import simulate_mv_optimal
 
 paths = simulate_mv_optimal(ric, n_paths=40_000, steps_per_year=260, seed=42)
 np.testing.assert_allclose([paths['survived'].mean(), paths['Pi_T'].mean(), paths['Pi_T'].std()],
-                           [0.7952, 140.76, 41.66], atol=5e-3)
-np.testing.assert_allclose(np.quantile(paths['Pi_T'], probabilities[2:]), quantiles[2:], atol=0.2)
+                           [0.7922, 140.44, 41.72], atol=5e-3)
+np.testing.assert_allclose(np.quantile(paths['Pi_T'], probabilities[2:]), quantiles[2:], atol=0.7)
 assert np.quantile(paths['Pi_T'], 0.05) - quantiles[0] > 4.0
 ```
 
@@ -375,8 +377,8 @@ Contract details:
 
 > **Pitfall.** The expected terminal wealth of the floor-protected strategy is neither the target
 > $\Pi_T^{*}$ nor the expected wealth of the unconstrained policy. For the balanced mandate the target
-> is 220.82 and the expected wealth 139.03, a target growth rate of 7.92% against an implied return of
-> 3.30%. Quote the implied return, and the quantiles, as the strategy's outcome.
+> is 220.82 and the expected wealth 139.50, a target growth rate of 7.92% against an implied return of
+> 3.33%. Quote the implied return, and the quantiles, as the strategy's outcome.
 
 ## Interpretation and limitations
 

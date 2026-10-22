@@ -440,14 +440,16 @@ def figure_path_dynamics(filename, outdir):
                 Sp[i+1] = Sp[i]*np.exp((mb-0.5*sg**2)*dt + sg*dW); regime[i+1]=reg
             if stopped: Pi[i+1] = Pi[i]*np.exp(r_c*dt); continue
             d_t = ric.derived_at_tau(T-t)
-            ov = np.clip(wa*(d_t['Pi_star'][0]/Pi[i]-1), -2, 3); omega[i] = ov
+            wa_t = wa_growth if reg == 0 else wa_stress   # magnitude policy, paper Assumption 4.3
+            ov = np.clip(wa_t*(d_t['Pi_star'][0]/Pi[i]-1), -2, 3); omega[i] = ov
             dr = r_c + ov*(mb-r); vl = ov*sg
             if tr: Pi[i+1] = Pi[i]*np.exp(dr*dt+vl*dW)*(1+ov*(np.exp(J)-1))
             else: Pi[i+1] = Pi[i]*np.exp(dr*dt+vl*dW)
             Lt1 = eff.pi_floor*np.exp(r_c*(t+dt))
             if Pi[i+1] <= Lt1: stopped = True
         if not stopped:
-            dT = ric.derived_at_tau(0); omega[-1] = wa*(dT['Pi_star'][0]/Pi[-1]-1)
+            dT = ric.derived_at_tau(0); wa_T = wa_growth if regime[-1] == 0 else wa_stress
+            omega[-1] = wa_T*(dT['Pi_star'][0]/Pi[-1]-1)
         return Pi, Sp, omega
 
     Pi1, Sp1, om1 = sim(SEED_SURVIVED)
@@ -482,7 +484,7 @@ def figure_path_dynamics(filename, outdir):
         ax.legend(fontsize=9, loc='upper left'); ax.set_xlim(0,10); ax.set_ylim(0,220); ax.grid(alpha=0.15)
 
         ax = axes[1, col]
-        ax.plot(tp, om[ix]*100, f'{clr}-', lw=1.5, label='$\\omega^*(t)$ (growth-regime policy)')
+        ax.plot(tp, om[ix]*100, f'{clr}-', lw=1.5, label='$\\omega(t)$ (magnitude policy)')
         ax.axhline(wa_growth*100, color='C0', ls='-.', lw=1.5, alpha=0.6,
                    label=f'$|\\omega^{{*[1]}}_a|$ = {wa_growth:.0%} (growth)')
         ax.axhline(wa_stress*100, color='C3', ls='-.', lw=1.5, alpha=0.6,
@@ -492,7 +494,7 @@ def figure_path_dynamics(filename, outdir):
         ax.set_title(f'{ttl} — allocation'); ax.legend(fontsize=8, loc='upper right')
         ax.set_xlim(0,10); ax.set_ylim(-20,200); ax.grid(alpha=0.15)
 
-    fig.suptitle('MV-Optimal Strategy: Balanced Mandate (35%/43%/22%), $c = 0\\%$, $\\omega_0 = 1$')
+    fig.suptitle('Magnitude Policy with Floor: Balanced Mandate (35%/43%/22%), $c = 0\\%$, $\\omega_0 = 1$')
     fig.tight_layout()
     fig.savefig(outdir / filename, dpi=150)
     plt.close('all')

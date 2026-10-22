@@ -27,7 +27,7 @@ its steps are exact, and measures the error of the one that is not.
 
 `gap_process_asset` takes a `RiccatiSolution` from [`find_ell`](mv_optimal_policy.md) and returns
 an `AssetSpecification` for the log-gap process. Its starting point `x0` is the initial log-gap, its
-barrier is at zero, and its diffusion and jump parameters are the effective ones of Theorem 4.3 of
+barrier is at zero, and its diffusion and jump parameters are the effective ones of Theorem 4.4 of
 the manuscript. Every Laplace-domain function of the package then treats it like any other asset.
 
 The reduction has three ingredients. The change of variables to the log-gap maps the moving floor
@@ -44,7 +44,7 @@ the source of the difference between the analytical survival and a simulation of
 |---|---|
 | Time and rates | Years; the floor grows at $r_c$; the allocation coefficients are frozen at their values at inception, $\tau = T$ |
 | Regimes | The gap process starts in growth; each regime uses the magnitude $\lvert\omega_a^{[i]}\rvert$ of its own coefficient |
-| Jump sizes | Effective means $\tilde\eta^{[i]}$ of the gap jumps, by mean-matching; the crash formula is also applied to the recovery |
+| Jump sizes | Effective means $\tilde\eta^{[i]}$ of the gap jumps, by mean-matching; the recovery mean is conditional on wealth staying below the target |
 | Wealth coordinate | Log-gap $X_t = \ln(B_t/Z_t)$ with the barrier at $X = 0$; the gap asset stores $B_0$ as `pi0` and $Z_0$ as `pi_floor`, so `x0` is $\ln(B_0/Z_0)$ |
 | Measure | Physical |
 | Numerical method | `scipy.integrate.quad` for $\tilde\eta^{[i]}$; checked by exact simulation of the gap process with exponential and with exact jump laws, and by Euler simulation of wealth |
@@ -116,10 +116,9 @@ $d\ln Z = (r_c - \kappa(\mu^{[i]} - r_h) - \kappa^2(\sigma^{[i]})^2/2)dt - \kapp
 Subtracting from $d\ln B$ gives the drift and volatility of $X$. At a transition wealth changes by
 $\kappa Z(e^{J} - 1)$, so $Z$ is multiplied by $1 - \kappa(e^{J} - 1)$ while $B$ does not move. $\square$
 
-The parameters are those of Theorem 4.3 and equations (4.2)–(4.3) of the manuscript. Its proof
-carries a correction from the time variation of the target, of order $\lambda^{[12]}$ (Appendix C);
-by the regime-independent target that correction is zero, so the reduction is exact except for two
-steps. The coefficient $\omega_a^{[i]}(\tau)$ varies over the horizon and is frozen at inception;
+The parameters are those of Theorem 4.4 and equations (4.3)–(4.4) of the manuscript, whose proof
+(Appendix C, revised October 2026) uses the regime-independent target, so the reduction is exact
+except for two steps. The coefficient $\omega_a^{[i]}(\tau)$ varies over the horizon and is frozen at inception;
 for the equity example it moves from $-0.756$ to $-0.769$ over ten years, by 1.7%. The jump law, below,
 is replaced by an exponential.
 
@@ -131,7 +130,7 @@ is replaced by an exponential.
 
 ### The effective jump size
 
-**Definition (mean-matching; Sepp, 2026, equation (4.5)).** The crash gap jump
+**Definition (mean-matching; Sepp, 2026, equation (4.7)).** The crash gap jump
 $-\Delta X = \ln(1 + \kappa^{[1]}(1 - e^{J^{[1]}}))$ is replaced by an exponential variable with the
 same mean,
 
@@ -140,7 +139,7 @@ $$
 = \int_0^{\infty}\ln\left(1 + \kappa^{[1]}\left(1 - e^{-s}\right)\right)\frac{e^{-s/\eta^{[1]}}}{\eta^{[1]}}ds .
 $$
 
-**Proposition (Taylor expansion around the natural allocation level; equation (4.6)).** With
+**Proposition (Taylor expansion around the natural allocation level; equation (4.8)).** With
 $u = 1 - e^{J^{[1]}}$ and $\varepsilon = \kappa^{[1]} - 1$,
 
 $$
@@ -157,11 +156,14 @@ The level $\kappa^{[1]} = 1$ is natural because the gap then jumps by the log-re
 itself, $\ln(2 - e^{J})$ in place of $-J$. The quadrature is exact to machine precision; the expansion
 is an analytical alternative whose error grows with $\lvert\varepsilon\rvert$.
 
-For the recovery, `gap_process_asset` applies the same formula to $\eta^{[2]}$ and $\kappa^{[2]}$.
-The exact recovery gap jump is $-\ln(1 - \kappa^{[2]}(e^{J^{[2]}} - 1))$, a different function, with a
-larger mean in the worked example; a recovery jump can even lift wealth above the target, where the
-log-gap is undefined. Recoveries move the log-gap away from the barrier, so this choice affects
-survival much less than the crash approximation.
+For the recovery, `gap_process_asset` mean-matches the exact recovery gap jump
+$-\ln(1 - \kappa^{[2]}(e^{J^{[2]}} - 1))$ conditional on $J^{[2]} \lt \ln(1 + 1/\kappa^{[2]})$. A larger
+recovery lifts wealth above the target, where the log-gap is undefined, and the path can no longer
+reach the floor. The probability per recovery is $(1 + 1/\kappa^{[2]})^{-1/\eta^{[2]}}$, which
+`recovery_exit_probability` returns, and the gap process leaves the event out (Sepp, 2026,
+Remark 4.5). Before October 2026 the package applied the crash formula to the recovery, which
+understates the mean by a quarter in the worked example. Recoveries move the log-gap away from the
+barrier, so this jump affects survival much less than the crash approximation.
 
 ### Three components of stopped wealth
 
@@ -215,7 +217,9 @@ $\kappa = (0.7563, 0.2129)$. The first block checks the gap asset against the pr
   $\varepsilon = -0.244$;
 - the bound $\ln(1 + \kappa^{[1]}) = 0.5632$ lies below $x_0$, so one crash at inception cannot stop
   the exact process;
-- for the recovery the package uses 0.0240, while the exact gap jump has mean 0.0333.
+- $\tilde\eta^{[2]} = 0.0333$, the conditional mean of the exact recovery gap jump below its ceiling
+  $\ln(1 + 1/\kappa^{[2]}) = 1.740$, which a recovery exceeds with probability $1.6 \times 10^{-6}$;
+  the crash formula applied to the recovery gives 0.0240.
 
 ```python
 import numpy as np
@@ -270,12 +274,18 @@ np.testing.assert_allclose([first / gap.params.eta0 - 1.0, second / gap.params.e
 assert np.log1p(kappa[0]) < gap.x0 and sampled.max() < np.log1p(kappa[0])
 np.testing.assert_allclose(np.log1p(kappa[0]), 0.5632, atol=5e-5)
 
-# recovery: the package applies the crash formula; the exact gap jump has a larger mean
+# recovery: the exact gap jump, mean-matched conditional on wealth staying below the target
+from goal_based_allocation.riccati_solver import _eta_eff_quadrature, recovery_exit_probability
 eta_up = equity.params.eta1
 ceiling = np.log1p(1.0 / kappa[1])   # a larger recovery lifts wealth above the target
+p_exit = recovery_exit_probability(eta_up, kappa[1])
 exact_up = quad(lambda s: -np.log(1.0 - kappa[1] * np.expm1(s)) * np.exp(-s / eta_up) / eta_up,
-                0.0, ceiling)[0]
-np.testing.assert_allclose([gap.params.eta1, exact_up], [0.0240, 0.0333], atol=5e-5)
+                0.0, ceiling)[0] / (1.0 - p_exit)
+np.testing.assert_allclose(gap.params.eta1, exact_up, rtol=1e-6)
+np.testing.assert_allclose(p_exit, np.exp(-ceiling / eta_up), rtol=1e-12)
+np.testing.assert_allclose([gap.params.eta1, ceiling, _eta_eff_quadrature(eta_up, kappa[1])],
+                           [0.0333, 1.740, 0.0240], atol=5e-4)
+assert 1.5e-6 < p_exit < 1.7e-6
 ```
 
 The second block measures the error of the reduction in three steps, from the computation the
@@ -286,18 +296,19 @@ $e^{-2xy/(\sigma^2h)}$ that it touched zero, so that the barrier is monitored co
 
 | Computation | Survival to ten years |
 |---|---:|
-| Laplace survival of the gap asset, `compute_survival` | 92.92% |
-| Exact simulation of the gap asset, exponential jumps | 92.95% |
+| Laplace survival of the gap asset, `compute_survival` | 93.18% |
+| Exact simulation of the gap asset, exponential jumps | 93.21% |
 | Exact simulation of the gap diffusion with the exact gap-jump laws | 94.26% |
-| `simulate_mv_optimal`: daily Euler simulation of wealth under the regime-conditional policy | 94.55% |
+| `simulate_mv_optimal`: daily Euler simulation of wealth under the magnitude policy | 94.16% |
 
 The first two rows agree within one standard error of 0.04 points: the Laplace computation is exact
 for the process it is given. Replacing the exponential jumps by the bounded exact jumps raises
-survival by 1.3 points; this is the error of the mean-matching approximation, and it is
+survival by 1.1 points; this is the error of the mean-matching approximation, and it is
 conservative for survival here. Simulating wealth itself, with the coefficient varying over time,
-the signed stress policy, the clipping of the allocation to $[-2, 5]$ and daily monitoring of the
-floor, adds 0.3 points. The total difference of 1.6 points between the analytical and the simulated
-survival lies in the range of one to two points that Section 4 of the manuscript reports.
+the clipping of the allocation to $[-2, 5]$ and daily monitoring of the floor, lowers survival by
+0.1 points. The total difference of 1.0 points between the analytical and the simulated survival is
+the error of the mean-matching of the crash jump for this example; for the calibrated mandates of
+Table 2 the manuscript reports differences below 0.4 points.
 
 ```python
 def survival_by_simulation(asset, horizon, crash_jump, recovery_jump, n_paths, seed):
@@ -352,11 +363,11 @@ exact_recovery = lambda rng, n: -np.log(np.maximum(1.0 - kappa[1] * np.expm1(rng
                                                    1e-300))
 exact_jumps = survival_by_simulation(gap, horizon, exact_crash, exact_recovery, n_paths, seed=12)
 
-# wealth simulated under the regime-conditional policy, the package's own validator
+# wealth simulated under the magnitude policy, the package's own validator
 wealth_paths = simulate_mv_optimal(ric, n_paths=40_000, steps_per_year=260, seed=42)
 
 np.testing.assert_allclose([survival, reduced, exact_jumps, wealth_paths['survived'].mean()],
-                           [0.9292, 0.9295, 0.9426, 0.9455], atol=5e-5)
+                           [0.9318, 0.9321, 0.9426, 0.9416], atol=5e-5)
 assert abs(reduced - survival) < 3.0 * standard_error
 assert exact_jumps - survival > 25.0 * standard_error
 ```
@@ -367,9 +378,10 @@ assert exact_jumps - survival > 25.0 * standard_error
 |---|---|---|
 | Gap asset | $\sigma_{\mathrm{eff}}^{[i]}$, $\nu_{\mathrm{eff}}^{[i]}$, $\tilde\eta^{[i]}$, $x_0 = \ln(B_0/Z_0)$ | `gap_process_asset(ric)` |
 | Frozen magnitudes | $\kappa^{[i]} = \lvert\omega_a^{[i]}(\tau = T)\rvert$ | `ric.derived_at_tau(ric.T)['w_a']` |
-| Effective jump mean | Equation (4.5) by quadrature | `riccati_solver._eta_eff_quadrature(eta, w)` (internal) |
+| Effective crash jump mean | Equation (4.7) by quadrature | `riccati_solver._eta_eff_quadrature(eta, w)` (internal) |
+| Effective recovery jump mean and exit probability | Remark 4.5 | `riccati_solver._eta_eff_recovery_quadrature(eta, w)` (internal), `riccati_solver.recovery_exit_probability(eta, w)` |
 | Floor at the horizon | $L_T = L_0e^{r_cT}$ | `asset.pi_floor * np.exp(ric.r_c * T)` |
-| Wealth simulation | Euler, daily, regime-conditional policy, floor stopping | `riccati_solver.simulate_mv_optimal(ric, n_paths=100_000, steps_per_year=260, seed=42)` |
+| Wealth simulation | Euler, daily, magnitude policy by default (`policy='signed'` for the MV-optimal policy), floor stopping | `riccati_solver.simulate_mv_optimal(ric, n_paths=100_000, steps_per_year=260, seed=42, policy='magnitude')` |
 
 The functions live in
 [`riccati_solver.py`](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/src/goal_based_allocation/riccati_solver.py).
@@ -393,11 +405,12 @@ Contract details:
   the floor), `'regime_T'`, `'n_paths'`, `'stop_time'` and `'Pi_at_stop'`. It is a validator with
   time-discretisation and monitoring bias, not an exact simulation.
 
-> **Pitfall.** The analytical gap process and the package's wealth simulator do not describe the
-> same policy in stress. `gap_process_asset` uses $\lvert\omega_a^{[2]}\rvert$, a positive exposure,
-> while `simulate_mv_optimal` applies the signed regime-conditional policy, which is short below
-> target in stress for the paper's assets. The manuscript's figures use the growth coefficient in
-> both regimes, a third policy. State which policy a reported survival probability refers to.
+> **Pitfall.** The gap process describes the magnitude policy of Assumption 4.3 of the manuscript,
+> $\lvert\omega_a^{[i]}\rvert(\Pi^{*}/\Pi - 1)$ in both regimes, and so does `simulate_mv_optimal` by
+> default. The MV-optimal policy of Corollary 3.4 is short below target in stress for the paper's
+> assets; `simulate_mv_optimal(..., policy='signed')` simulates it, and its survival is higher by
+> 0.1 to 0.6 points for the mandates of Table 2. State which policy a reported survival probability
+> refers to.
 
 ## Interpretation and limitations
 

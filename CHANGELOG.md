@@ -6,6 +6,54 @@ follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.0.dev0] - 2026-10-17
+
+Development snapshot for the next minor release; not published. Retain the existing October
+2026 runtime, documented default-policy changes and API additions listed below. This snapshot
+changes release identity only: calculations, examples and recorded numerical results are
+unchanged. The published 0.4.2 baseline remains a separate historical version.
+
+### Changed
+
+- `RiccatiSolution.expected_wealth` now returns the expected terminal wealth of the unfloored
+  MV-optimal policy, `ell/2 - (ell/2 - Pi0 exp(r_c T)) exp(-Theta)` with the dynamic information
+  ratio `Theta = 2 r_c T - ln a(T)` (manuscript Theorem 3.8(c), October 2026 revision). It
+  previously returned `-b(T) / (2 a(T))`, the present value of the target, which is now
+  `RiccatiSolution.pi_star_0`. `find_ell` and every calibrated or documented number are unchanged.
+
+- `simulate_mv_optimal` simulates the magnitude policy `|ω*_a^[i]| (Π*/Π − 1)` in both regimes by
+  default, the policy of the manuscript's stopped-wealth analysis (Assumption 4.3, October 2026
+  revision) and of `gap_process_asset`; the new keyword `policy='signed'` runs the MV-optimal policy
+  of Corollary 3.4, which is short below target in stress. The Figure 1 path loop of the replication
+  script and `examples/wealth_process_simulation.py` apply the same magnitude policy; before, the
+  simulator used the signed policy and the figure loop the growth coefficient in both regimes. For
+  the paper's mandates the magnitude policy lowers survival by 0.1 to 0.6 points relative to the
+  signed policy, and the Laplace survival is within 0.4 points of its simulation.
+- Module docstrings and the conventions page write `Exp(η)` for the exponential law with mean `η`,
+  the convention of the computations and of the manuscript's equation (2.3) in its October 2026
+  revision, instead of the rate form `Exp(1/η)`. No computation changed.
+
+### Added
+
+- `RiccatiSolution.information_ratio` and `RiccatiSolution.wealth_variance`, and
+  `find_ell_expected_wealth`, which sets the multiplier for a required expected terminal wealth
+  (manuscript equation (3.16)); `tests/test_riccati_moments.py` checks the coefficient identities,
+  the single-regime Zhou–Li limit, the documented numbers and a Monte Carlo cross-check.
+
+### Fixed
+
+- `gap_process_asset` mean-matches the recovery jump of the log-gap to the exact jump
+  `-ln(1 - w (exp(J) - 1))`, conditional on wealth staying below the target (manuscript Remark 4.5,
+  October 2026 revision), through the new `_eta_eff_recovery_quadrature`; `recovery_exit_probability`
+  returns the probability per recovery that wealth jumps above the target, below `4e-6` for the
+  paper's mandates. The crash formula mirrored onto the recovery, used before, understated the
+  effective recovery jump by 20–30%. Survival of the four paper mandates rises by 0.01 to 0.46
+  points, expected wealth by up to 0.7 and the implied return by up to 5 basis points; the quickstart
+  output, the README results table and the handbook examples carry the new values.
+- The manuscript's Theorem 3.8(c)–(d): the information ratio carries `+2 r_c T`, the expected
+  terminal wealth is no longer identified with the present value of the target, and the
+  flat-barrier proof uses the regime-independent target. The handbook chapter follows the revision.
+
 ## [0.4.2] - 2026-10-07
 
 ### Fixed

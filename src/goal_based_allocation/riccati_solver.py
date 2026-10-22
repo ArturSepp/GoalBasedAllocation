@@ -16,6 +16,20 @@ Paper eq (RS_def):
   ã^[i] = (μ^[i] - r_h)·a^[i] + λ^[i→j]·α^[i]·a^[j]
   b̃^[i] = (μ^[i] - r_h)·b^[i] + λ^[i→j]·α^[i]·b^[j]
   Σ^[i] = (σ^[i])²·a^[i] + λ^[i→j]·(σ_J^[i])²·a^[j]
+
+Paper Theorem 3.8(c)-(d) (identities and moments without the floor):
+  b^[i](τ)  = -ℓ·e^{-r_c τ}·a^[i](τ)                      (the b-system is integrated anyway;
+  γ^[i](τ)  = -(ℓ²/4)·(1 - e^{-2 r_c τ}·a^[i](τ))           the identities are checked in tests)
+  Π*(t)     = (ℓ/2)·e^{-r_c (T-t)}                         same target in both regimes
+  Θ^[i](T)  = -ln a^[i](T) + 2 r_c T                       dynamic information ratio
+  E[Π_T|i]  = ℓ/2 - (ℓ/2 - Π_0 e^{r_c T})·e^{-Θ^[i](T)}
+  Var[Π_T|i] = (E[Π_T|i] - Π_0 e^{r_c T})² / (e^{Θ^[i](T)} - 1)   efficient frontier
+
+Entry points: solve_riccati (given ℓ), find_ell (ℓ from the present value of the target,
+Π*(0) = Π_0 e^{target_return·T}), find_ell_expected_wealth (ℓ from E[Π_T], paper eq
+ell_determination), gap_process_asset (flat-barrier reduction), simulate_mv_optimal (MC check).
+The absorbing floor does not belong here: it enters through gap_process_asset and the Laplace
+framework in regime_switch_paper.
 """
 from __future__ import annotations
 
@@ -130,8 +144,34 @@ class RiccatiSolution:
         # Paper eq (27): ω* = (ã/Σ)·(Π*/Π − 1) = -w_a·(Π*/Π − 1)
         return -d['w_a'][regime] * (d['Pi_star'][regime] / Pi - 1)
 
-    def expected_wealth(self, regime=0):
+    def pi_star_0(self, regime=0):
+        """Present value of the target, Π*(0) = -b^[i](T)/(2a^[i](T)) = (ℓ/2)e^{-r_c T}.
+
+        The same for both regimes up to the ODE tolerance (paper Theorem 3.8(c)).
+        """
         return -self.b[regime, -1] / (2 * self.a[regime, -1])
+
+    def information_ratio(self, regime=0):
+        """Dynamic information ratio Θ^[i](T) = -ln a^[i](T) + 2 r_c T (paper eq theta_def)."""
+        return -np.log(self.a[regime, -1]) + 2.0 * self.r_c * self.T
+
+    def expected_wealth(self, regime=0):
+        """Expected terminal wealth E[Π_T | χ_0 = regime] of the optimal policy without a floor.
+
+        Paper eq (expected_wealth): ℓ/2 - (ℓ/2 - Π_0 e^{r_c T}) e^{-Θ^[i](T)}. This is not the
+        present value of the target, which is ``pi_star_0``.
+        """
+        d = 0.5 * self.ell
+        x = self.asset.pi0 * np.exp(self.r_c * self.T)
+        return d - (d - x) * np.exp(-self.information_ratio(regime))
+
+    def wealth_variance(self, regime=0):
+        """Variance Var[Π_T | χ_0 = regime] of the optimal policy without a floor.
+
+        Paper eq (efficient_frontier): (E[Π_T] - Π_0 e^{r_c T})² / (e^{Θ^[i](T)} - 1).
+        """
+        x = self.asset.pi0 * np.exp(self.r_c * self.T)
+        return (self.expected_wealth(regime) - x) ** 2 / np.expm1(self.information_ratio(regime))
 
 
 def solve_riccati(asset, T, ell, r=0.02, c=0.02, n_steps=10000):
@@ -175,21 +215,54 @@ def solve_riccati(asset, T, ell, r=0.02, c=0.02, n_steps=10000):
 
 
 def find_ell(asset, T, target_return, r=0.02, c=0.02, regime=0):
+    """Lagrange multiplier from the present value of the target.
+
+    Sets ℓ so that Π*(0) = -b(T)/(2a(T)) = Π_0 e^{target_return·T}, i.e.
+    ℓ = 2 Π_0 e^{(target_return + r_c) T}. ``target_return`` is the growth rate of the present value
+    of the target, not the expected return of the policy. For a required expected terminal wealth
+    use ``find_ell_expected_wealth``. Returns ``(ell, RiccatiSolution)``.
+    """
     Pi_target = asset.pi0 * np.exp(target_return * T)
     sol0 = solve_riccati(asset, T, 1.0, r, c)
     sol1 = solve_riccati(asset, T, 10.0, r, c)
-    E0, E1 = sol0.expected_wealth(regime), sol1.expected_wealth(regime)
+    E0, E1 = sol0.pi_star_0(regime), sol1.pi_star_0(regime)
     ell_opt = 1.0 + (Pi_target - E0) / (E1 - E0) * 9.0
     return ell_opt, solve_riccati(asset, T, ell_opt, r, c)
 
 
-def simulate_mv_optimal(ric, n_paths=100_000, steps_per_year=260, seed=42):
-    """MC of wealth under MV-optimal allocation with overshoot tracking.
+def find_ell_expected_wealth(asset, T, expected_wealth, r=0.02, c=0.02, regime=0):
+    """Lagrange multiplier from the required expected terminal wealth E[Π_T | χ_0 = regime].
+
+    Paper eq (ell_determination): ℓ/2 = x + (π - x) / (1 - e^{-Θ^[regime](T)}) with
+    x = Π_0 e^{r_c T} and π = ``expected_wealth`` in wealth units. The coefficient a(T), and hence
+    Θ, does not depend on ℓ, so one probe solve provides it. The policy is the unfloored MV-optimal
+    policy of Problem 3.1. Returns ``(ell, RiccatiSolution)``.
+    """
+    probe = solve_riccati(asset, T, 1.0, r, c)
+    x = asset.pi0 * np.exp(probe.r_c * T)
+    if expected_wealth <= x:
+        raise ValueError(f"expected_wealth={expected_wealth} must exceed the cash outcome "
+                         f"Pi0 exp(r_c T)={x}")
+    theta = probe.information_ratio(regime)
+    ell = 2.0 * (x + (expected_wealth - x) / (-np.expm1(-theta)))
+    return ell, solve_riccati(asset, T, ell, r, c)
+
+
+def simulate_mv_optimal(ric, n_paths=100_000, steps_per_year=260, seed=42, policy='magnitude'):
+    """MC of wealth under the goal-seeking allocation with floor stopping and overshoot tracking.
 
     The wealth SDE between transitions (paper eq:wealth_sde):
       dΠ/Π = [r_c + ω·(μ^[i] − r_h)]dt + ω·σ^[i]·dW
     where μ^[i] = mu_bar (diffusion drift) and r_h = max(r, c).
+
+    policy: 'magnitude' (default) applies |ω*_a^[i]|·(Π*/Π − 1) in both regimes, the policy of the
+    paper's stopped-wealth analysis (Assumption 4.3, magnitude policy) and of gap_process_asset.
+    'signed' applies the MV-optimal policy of Corollary 3.4, −ω*_a^[i]·(Π*/Π − 1), which is short
+    the risky asset below the target in stress when ω*_a^[2] > 0; use it to validate Theorem 3.8.
+    The two coincide in the growth regime, where ω*_a^[1] < 0.
     """
+    if policy not in ('magnitude', 'signed'):
+        raise ValueError(f"policy must be 'magnitude' or 'signed', got {policy!r}")
     rng = np.random.default_rng(seed)
     par = ric.asset.params
     T = ric.T; n_steps = int(T*steps_per_year)
@@ -213,8 +286,9 @@ def simulate_mv_optimal(ric, n_paths=100_000, steps_per_year=260, seed=42):
 
         d = ric.derived_at_tau(T - t)
         w_a = np.where(regime == 0, d['w_a'][0], d['w_a'][1])
+        coef = np.abs(w_a) if policy == 'magnitude' else -w_a
         Pi_star = np.where(regime == 0, d['Pi_star'][0], d['Pi_star'][1])
-        omega = np.where(alive & (Pi > 1e-10), -w_a*(Pi_star/Pi - 1), 0.0)
+        omega = np.where(alive & (Pi > 1e-10), coef*(Pi_star/Pi - 1), 0.0)
         omega = np.clip(omega, -2.0, 5.0)
 
         p_sw = np.where(regime == 0, par.lambda01*dt, par.lambda10*dt)
@@ -291,6 +365,44 @@ def _eta_eff_quadrature(eta0, w):
     return max(result, 1e-10)
 
 
+def recovery_exit_probability(eta1, w):
+    """Probability that one recovery jump lifts wealth above the target (paper eq p_exit).
+
+    At a recovery the gap is multiplied by 1 - u with u = w·(e^J - 1), J ~ Exp(η₁). The log-gap
+    X = ln(B/Z) is defined while u < 1, i.e. J < J* = ln(1 + 1/w). The exit probability is
+      p = P(J ≥ J*) = exp(-J*/η₁) = (1 + 1/w)^(-1/η₁),
+    below 4e-6 for the mandates of the paper with the stress-regime coefficient w = |ω*_a^[2]|.
+    """
+    if eta1 <= 0 or w <= 0:
+        return 0.0
+    return float(np.exp(-np.log1p(1.0 / w) / eta1))
+
+
+def _eta_eff_recovery_quadrature(eta1, w):
+    """Effective gap jump at a recovery transition via numerical quadrature (paper Remark 4.5).
+
+    While u = w·(e^J - 1) < 1 the log-gap jumps by ΔX = -ln(1 - u) > 0, away from the barrier.
+    We approximate ΔX ~ Exp(η_eff) by mean-matching conditional on u < 1:
+
+      η_eff = E[-ln(1 - w(e^J - 1)) | J < J*] = ∫₀^{J*} -ln(1 - w(e^t - 1)) (1/η₁)e^{-t/η₁} dt / (1 - p),
+
+    with J* = ln(1 + 1/w) and p = recovery_exit_probability(eta1, w). The log singularity at J*
+    is integrable. The exit event itself (probability p per recovery) is left out of the gap
+    process, which bounds the survival error by λ^[21]·p times the expected time in stress.
+    This replaces the mirrored crash formula used before October 2026, which agreed with the
+    exact mean only to first order in η₁ and understated it by 20-30% for the paper's mandates.
+    """
+    from scipy.integrate import quad
+    if eta1 <= 0 or w <= 0:
+        return 0.0
+    j_star = np.log1p(1.0 / w)
+    p_exit = recovery_exit_probability(eta1, w)
+    def integrand(t):
+        return -np.log1p(-w * np.expm1(t)) * (1/eta1) * np.exp(-t/eta1)
+    result, _ = quad(integrand, 0.0, j_star, limit=400)
+    return max(result / (1.0 - p_exit), 1e-10)
+
+
 def gap_process_asset(ric):
     """Construct AssetSpecification for the gap process Z = Π* - Π.
 
@@ -315,9 +427,10 @@ def gap_process_asset(ric):
     sigma_eff0 = w0 * par.sigma0
     sigma_eff1 = w1 * par.sigma1
 
-    # Effective jump sizes: exact quadrature (no approximation)
+    # Effective jump sizes by mean-matching: crash (paper eq eta_eff_quadrature) and recovery
+    # (paper Remark 4.5, conditional on the gap staying positive)
     eta_eff0 = _eta_eff_quadrature(par.eta0, w0) if par.eta0 > 0 else 0.0
-    eta_eff1 = _eta_eff_quadrature(par.eta1, w1) if par.eta1 > 0 else 0.0
+    eta_eff1 = _eta_eff_recovery_quadrature(par.eta1, w1) if par.eta1 > 0 else 0.0
 
     # Target log-drift for gap process X = ln(B/Z):
     #   Paper eq (nu_eff): ν_eff = |ω*_a|·(μ − r_h) + ½σ²_eff

@@ -38,8 +38,8 @@ quadratic one, so the target is $\Pi^{*}(t) = (\ell/2)e^{-r_c(T - t)}$ in both r
 constant coefficient follows from the quadratic one as well, so the expected value and the variance
 of terminal wealth under the optimal policy depend on the Riccati solution only through
 $a^{[i]}(T)$. Third, $-b(T)/(2a(T))$, which `find_ell` matches to its `target_return`, is the present
-value of the target, not the expected terminal wealth; the chapter shows how to set $\ell$ for an
-expected-wealth target.
+value of the target, not the expected terminal wealth. `RiccatiSolution.expected_wealth` returns the
+expected terminal wealth, and `find_ell_expected_wealth` sets $\ell$ for an expected-wealth target.
 
 ## Inputs, notation, and assumptions
 
@@ -159,8 +159,8 @@ $-\tilde b^{[i]}/(2\tilde a^{[i]}) = -\kappa/2$. $\square$
 > **Insight.** The target is the bliss point $\ell/2$ discounted at the net floor rate. A portfolio
 > exactly at the target holds no risky asset and reaches $\ell/2$ in cash at the horizon. The regime
 > changes how hard the policy pursues the target, through $\omega_a^{[i]}$, but not the target itself.
-> The manuscript's reduction to a flat barrier bounds the difference between the regime targets by a
-> term of order $\lambda^{[12]}$ (Appendix C, Step 3); the proposition shows that it is zero.
+> The manuscript's reduction to a flat barrier (Theorem 4.4 and Appendix C) uses this common target,
+> so the only quantity frozen in that reduction is the allocation coefficient.
 
 **Proposition (constant coefficient).** For every $\tau$ and both regimes,
 $\gamma^{[i]}(\tau) = (\ell^2/4)(e^{-2r_c\tau}a^{[i]}(\tau) - 1)$, so that
@@ -208,18 +208,19 @@ Without regime switching or jumps, $a(T) = e^{(2r_c - \theta^2)T}$ (Proposition 
 $\Theta = \theta^2T$ and the frontier is the one of Zhou and Li (2000).
 
 > **Pitfall.** `find_ell(asset, T, target_return)` sets $\ell$ so that $-b(T)/(2a(T)) = \Pi_0 e^{\rho T}$
-> for $\rho$ = `target_return`, and `RiccatiSolution.expected_wealth` returns the same quantity.
-> By the first proposition this is $\Pi^{*}(0)$, the present value of the target, and equation (3.13)
-> of the manuscript identifies it with $\mathbb{E}[\Pi_T]$. The expected terminal wealth of the
-> optimal policy is the formula above instead: in the worked example a `target_return` of 4% gives
+> for $\rho$ = `target_return`. By the first proposition this is $\Pi^{*}(0)$, the present value of
+> the target, which `RiccatiSolution.pi_star_0` returns, and $\rho$ is not an expected return. The
+> expected terminal wealth of the optimal policy is the formula above, returned by
+> `RiccatiSolution.expected_wealth`: in the worked example a `target_return` of 4% gives
 > $\mathbb{E}[\Pi_T] = 131.80$, an implied return of 2.76%, which a Monte Carlo simulation confirms.
-> For an expected-wealth target $\bar\Pi_T$, solve the first formula for the multiplier,
-> $\ell = 2(\bar\Pi_T - e^{-r_cT}a^{[i]}(T)\Pi_0)/(1 - u^{[i]})$, which needs $a^{[i]}(T)$ from one Riccati
-> solve.
+> For an expected-wealth target $\bar\Pi_T$, `find_ell_expected_wealth` solves the first formula for
+> the multiplier, $\ell = 2(\bar\Pi_T - e^{-r_cT}a^{[i]}(T)\Pi_0)/(1 - u^{[i]})$, which needs $a^{[i]}(T)$
+> from one Riccati solve.
 
-Equation (3.15) of the manuscript writes the information ratio with $-2r_cT$; the frontier holds with
-$+2r_cT$, as the proof and the single-regime limit $\Theta = \theta^2T$ show, and the worked example
-confirms it numerically.
+The three propositions are Theorem 3.8(c) and (d) of the manuscript, equations (3.13)–(3.17), in the
+revision of October 2026. Earlier versions wrote the information ratio with $-2r_cT$ and identified
+$\Pi^{*}(0)$ with $\mathbb{E}[\Pi_T]$. The single-regime limit $\Theta = \theta^2T$ and the worked
+example fix both.
 
 ### The allocation coefficient
 
@@ -235,12 +236,13 @@ which is Proposition 3.9 of the manuscript with regime switching. Earlier in the
 coefficient blends both regimes through $a^{[j]}$ in $\tilde a^{[i]}$ and $\Sigma^{[i]}$.
 
 > **Insight.** In stress the total return of every asset class of Table 1 is at or below the hurdle
-> rate of 2%, so $\tilde a^{[2]} \le 0$ near the horizon: the regime-conditional policy is short the
-> risky asset whenever wealth is below target in stress. The manuscript's numerical sections use the
-> growth policy in both regimes because the regime is not observed (Section 7);
-> `RiccatiSolution.omega_star` returns the regime-conditional policy, sign included, and the
-> [gap process](wealth_floor_gap_process.md) uses the magnitude $\lvert\omega_a^{[i]}\rvert$ in each
-> regime.
+> rate of 2%, so $\tilde a^{[2]} \le 0$ near the horizon, and the MV-optimal policy is short the
+> risky asset whenever wealth is below target in stress. The manuscript's stopped-wealth analysis
+> replaces this short by a long position of the same size, the magnitude policy
+> $\lvert\omega_a^{[i]}\rvert(\Pi^{*}/\Pi - 1)$ of Assumption 4.3, at a cost of at most 0.6 points of
+> survival for the mandates of Table 2. `RiccatiSolution.omega_star` returns the MV-optimal policy,
+> sign included. `simulate_mv_optimal` and the [gap process](wealth_floor_gap_process.md) follow the
+> magnitude policy, and `simulate_mv_optimal(..., policy='signed')` runs the MV-optimal one.
 
 ## Worked example
 
@@ -286,7 +288,7 @@ pi_star_0, pi_star_T = inception['Pi_star'][0], ell / 2.0
 np.testing.assert_allclose(inception['Pi_star'], [pi_star_0, pi_star_0], rtol=1e-12)
 np.testing.assert_allclose(horizon_end['Pi_star'], [pi_star_T, pi_star_T], rtol=1e-12)
 np.testing.assert_allclose([pi_star_0, pi_star_T], [149.18, 182.21], atol=5e-3)
-np.testing.assert_allclose(ric.expected_wealth(0), pi_star_0, rtol=1e-12)
+np.testing.assert_allclose([ric.pi_star_0(0), ric.pi_star_0(1)], [pi_star_0, pi_star_0], rtol=1e-12)
 
 # allocation coefficients: jump-adjusted Merton ratio at the horizon, regime signs at inception
 sigma_j2 = 1.0 / (1.0 + 2.0 * equity.params.eta0) - 2.0 / (1.0 + equity.params.eta0) + 1.0
@@ -311,6 +313,11 @@ np.testing.assert_allclose(np.log(expected[0] / wealth0) / horizon, 0.0276, atol
 np.testing.assert_allclose(std, np.abs(expected - wealth0 * np.exp(r_c * horizon)) / np.sqrt(np.exp(theta) - 1.0),
                            rtol=1e-12)
 
+# the same three quantities from the RiccatiSolution methods
+np.testing.assert_allclose([ric.information_ratio(0), ric.information_ratio(1)], theta, rtol=1e-12)
+np.testing.assert_allclose([ric.expected_wealth(0), ric.expected_wealth(1)], expected, rtol=1e-10)
+np.testing.assert_allclose([ric.wealth_variance(0), ric.wealth_variance(1)], std**2, rtol=1e-10)
+
 # the same moments from the value function V = a Pi0^2 + b Pi0 + gamma and the envelope theorem
 value = ric.a[:, -1] * wealth0**2 + ric.b[:, -1] * wealth0 + ric.gamma[:, -1]
 np.testing.assert_allclose(expected, np.exp(-r_c * horizon) * a_T * wealth0 - 2.0 * ric.gamma[:, -1] / ell,
@@ -333,9 +340,10 @@ exposure $(\tilde a^{[i]}/\Sigma^{[i]})(\Pi^{*}(t) - \Pi_t)$ in the current regi
 is 131.93 with a standard error of 0.11, against 131.80 from the proposition, and the simulated
 standard deviation is 22.07, against 22.07; the target of `find_ell`, 149.18, is more than 150
 standard errors away. The block then sets the multiplier for an expected terminal wealth of
-$100e^{0.4} = 149.18$: it is $\ell = 580.60$, the target at inception is 237.68, the policy starts at
-104.1% in the risky asset, and `find_ell` reproduces the same multiplier with a `target_return` of
-8.66%. The standard deviation of terminal wealth rises from 22.07 to 61.78.
+$100e^{0.4} = 149.18$: it is $\ell = 580.60$, which `find_ell_expected_wealth` returns, the target at
+inception is 237.68, the policy starts at 104.1% in the risky asset, and `find_ell` reproduces the
+same multiplier with a `target_return` of 8.66%. The standard deviation of terminal wealth rises from
+22.07 to 61.78.
 
 ```python
 def simulate_unconstrained(ric, n_paths, steps_per_year, seed):
@@ -383,6 +391,9 @@ np.testing.assert_allclose(ell_mean / 2.0 - np.exp(-r_c * horizon) * a_T[0] * (s
                            target_mean, rtol=1e-12)
 np.testing.assert_allclose([ell_mean, start, mean_ric.omega_star(0.0, wealth0, 0)],
                            [580.60, 237.68, 1.0413], atol=5e-3)
+ell_method, method_ric = gba.find_ell_expected_wealth(equity, horizon, target_mean, r=r, c=c)
+np.testing.assert_allclose(ell_method, ell_mean, rtol=1e-12)
+np.testing.assert_allclose(method_ric.expected_wealth(0), target_mean, rtol=1e-12)
 rho_equivalent = np.log(start / wealth0) / horizon
 np.testing.assert_allclose(gba.find_ell(equity, horizon, rho_equivalent, r=r, c=c)[0], ell_mean, rtol=1e-10)
 np.testing.assert_allclose(rho_equivalent, 0.0866, atol=5e-5)
@@ -394,11 +405,14 @@ np.testing.assert_allclose(np.sqrt(a_T[0] * (start - wealth0)**2 * (1.0 - u[0]))
 | Quantity | Formula | Entry point |
 |---|---|---|
 | Multiplier and Riccati solution | $\ell$ with $-b(T)/(2a(T)) = \Pi_0e^{\rho T}$ | `find_ell(asset, T, target_return, r=0.02, c=0.02, regime=0)` |
+| Multiplier for a required expected terminal wealth | $\ell = 2(\bar\Pi_T - e^{-r_cT}a^{[i]}(T)\Pi_0)/(1 - u^{[i]})$ | `find_ell_expected_wealth(asset, T, expected_wealth, r=0.02, c=0.02, regime=0)` |
 | Riccati solution for a given multiplier | $a$, $b$, $\gamma$ on a grid of $\tau$ | `riccati_solver.solve_riccati(asset, T, ell, r=0.02, c=0.02, n_steps=10000)` |
 | Coefficients at $\tau$ | linear interpolation of $a$ and $b$ | `RiccatiSolution.at_tau(tau)` |
 | Coupled coefficients, allocation coefficient, target | $\tilde a$, $\tilde b$, $\Sigma$, $\omega_a$, $\Pi^{*}$ | `RiccatiSolution.derived_at_tau(tau)` |
 | Regime-conditional policy | $-\omega_a^{[i]}(\Pi^{*}/\Pi - 1)$ | `RiccatiSolution.omega_star(t, Pi, regime)` |
-| Present value of the target | $-b^{[i]}(T)/(2a^{[i]}(T)) = \Pi^{*}(0)$ | `RiccatiSolution.expected_wealth(regime=0)` |
+| Present value of the target | $-b^{[i]}(T)/(2a^{[i]}(T)) = \Pi^{*}(0)$ | `RiccatiSolution.pi_star_0(regime=0)` |
+| Dynamic information ratio | $\Theta^{[i]} = 2r_cT - \ln a^{[i]}(T)$ | `RiccatiSolution.information_ratio(regime=0)` |
+| Expected terminal wealth and its variance | $\mathbb{E}[\Pi_T]$ and $\mathrm{Var}[\Pi_T]$ of the moments proposition | `RiccatiSolution.expected_wealth(regime=0)`, `RiccatiSolution.wealth_variance(regime=0)` |
 | Hurdle and net floor rate | $\max(r, c)$, $\max(0, r - c)$ | `RiccatiSolution.r_h`, `RiccatiSolution.r_c` |
 
 The solver lives in

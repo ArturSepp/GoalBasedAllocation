@@ -61,6 +61,7 @@ Methodology: [The MV-optimal policy and the Riccati system](../mv_optimal_policy
    :nosignatures:
 
    goal_based_allocation.find_ell
+   goal_based_allocation.find_ell_expected_wealth
    goal_based_allocation.gap_process_asset
 ```
 

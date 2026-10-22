@@ -54,7 +54,9 @@ def simulate_path(ric, seed: int) -> tuple[np.ndarray, np.ndarray, bool]:
         if stopped:
             Pi[i + 1] = Pi[i] * np.exp(r_c * dt)
             continue
-        omega = float(np.clip(ric.omega_star(t_grid[i], Pi[i], regime), -2.0, 5.0))
+        # magnitude policy of the paper's Assumption 4.3: |omega*_a| of the current regime
+        coef = abs(ric.derived_at_tau(T - t_grid[i])['w_a'][regime])
+        omega = float(np.clip(coef * (ric.derived_at_tau(T - t_grid[i])['Pi_star'][0] / Pi[i] - 1.0), -2.0, 5.0))
         sig = par.sigma0 if regime == 0 else par.sigma1
         mb = mu_bar[0] if regime == 0 else mu_bar[1]
         z = rng.standard_normal()

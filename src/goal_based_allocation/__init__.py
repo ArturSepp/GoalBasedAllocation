@@ -29,7 +29,7 @@ from .regime_switch_paper import (
     create_paper_mandates,
     bh_moments_rsjd,
 )
-from .riccati_solver import find_ell, gap_process_asset
+from .riccati_solver import find_ell, find_ell_expected_wealth, gap_process_asset
 from .client_solver import build_effective_asset, portfolio_sigma_unc, portfolio_eta_quadrature
 from .opportunity_set import AdvisorSpec, compute_opportunity_point, build_opportunity_set
 from .vanilla_option_pricer import (
@@ -53,4 +53,4 @@ from .variance_swap import (
     skew_overidentification_test,
 )
 
-__version__ = "0.4.2"
+__version__ = "0.5.0.dev0"

@@ -421,7 +421,7 @@ metadata is available in [`CITATION.cff`](CITATION.cff).
   title        = {goal-based-allocation: A {Python} package for dynamic mean-variance
                   portfolio allocation under regime-switching jump-diffusions},
   year         = {2026},
-  version      = {0.4.2},
+  version      = {0.5.0.dev0},
   url          = {https://github.com/ArturSepp/GoalBasedAllocation}
 }
 ```

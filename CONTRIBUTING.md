@@ -1,5 +1,10 @@
 # Contributing to GoalBasedAllocation
 
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-08-22](https://github.com/ArturSepp/GoalBasedAllocation/commit/a3c6dfabe2b80893e32c0e2ca16a979abac1bf1f)*
+
+Source: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
+
 Thanks for your interest in `goal-based-allocation`. The package implements the analytical model
 behind a research paper, so explicit conventions and independently verified numerical results
 take priority over convenience.
@@ -25,6 +30,51 @@ Use the bug-report template and include the package version, Python version, ope
 minimal self-contained reproducer, and the full traceback or incorrect output. For a numerical
 problem, state the regime, rate, annualisation, wealth, floor, horizon, and model parameters, then
 name the independent analytical identity or Monte Carlo check used for comparison.
+
+## Starter tasks
+
+These are bounded proposals, not assigned issues or confirmed defects. Recheck source and open
+work before agreeing one task. Use the existing [feature form](https://github.com/ArturSepp/GoalBasedAllocation/issues/new?template=feature_request.yml),
+Area **Documentation or deterministic example**. Include the task ID, owner, exact paths, reproduction, acceptance and focused
+check under Proposed behavior; retain required boundary checkboxes. Use the bug form only for
+observed incorrect behaviour. Keep numerical code, public signatures, dependencies, fixtures and
+canonical examples unchanged for these documentation tasks.
+
+### GBA-1: clarify released versus source output
+
+Owner: GoalBasedAllocation. Edit only `docs/getting-started.md` to clarify one observed release/source ambiguity. Acceptance: identify the matched snapshot, 10-year horizon, initial wealth 100 and continuous annual rate units. Preserve every computed value and the canonical script.
+
+```console
+python examples/getting_started/quickstart.py
+python -m pytest tests/test_quickstart.py -q
+```
+
+### GBA-2: clarify model conventions
+
+Owner: GoalBasedAllocation. Edit only `docs/conventions.md` to clarify one rate, wealth-unit or floor-state ambiguity. Acceptance: a reader can distinguish a model input from a realised guarantee without changing formulas, contours, quadrature nodes or ODE tolerances.
+
+```console
+python -m pytest tests/test_framework.py -q
+```
+
+### GBA-3: check release navigation
+
+Owner: GoalBasedAllocation. Edit only `docs/getting-started.md` to clarify one stable/main or API-reference route. Acceptance: retain the pinned canonical example and existing page anchors, without changing method or manuscript results.
+
+```console
+python -m pytest tests/test_docs.py -q
+```
+
+Run the package's existing strict HTML command after a documentation edit and inspect the
+changed passage. On the maintainer's OneDrive checkout, dot-source the shared
+`Enter-AgentRepo.ps1` first and use `C:\Python\GoalBasedAllocation312\Scripts\python.exe`.
+Keep exports, caches, builds and run output on C. The `uv` setup below is for ordinary contributor
+checkouts outside OneDrive; never create `.venv` in the synchronized checkout.
+
+Follow the [shared review guidance](https://github.com/ArturSepp/ArturSepp/blob/main/docs/contributing_to_stack.md#review-attribution-and-automation-assisted-changes).
+Record the revision, actual versions, exact checks and skips, rendered review and material
+automation assistance. Preserve MIT licensing and attribution. Automated checks do not
+establish independent reader success. Review time and acceptance are not promised.
 
 ## Development setup
 
