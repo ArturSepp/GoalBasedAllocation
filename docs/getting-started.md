@@ -20,15 +20,14 @@ its wealth floor, its expected terminal wealth and the exact buy-and-hold benchm
 
 ## Reproducible released workflow
 
-The tested support floor for this first-use workflow is **goal-based-allocation 0.4.2** on
-Python 3.12. This is a verified floor, not the historical introduction version. Install core
-without extras; save and run the existing package-owned script in a working directory outside
-synchronized folders:
+This first-use workflow is verified with **goal-based-allocation 0.5.0** on Python 3.12. The
+package requires Python 3.11 or newer. Install core without extras; save and run the
+release-pinned script in a working directory outside synchronized folders:
 
 ```powershell
-python -m pip install "goal-based-allocation==0.4.2"
+python -m pip install "goal-based-allocation==0.5.0"
 python -c "from importlib.metadata import version; import goal_based_allocation as p; print(version('goal-based-allocation')); print(p.__file__)"
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ArturSepp/GoalBasedAllocation/89fb834ad008fc958f091a71f9696056fdf37e63/examples/getting_started/quickstart.py' -OutFile quickstart.py
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ArturSepp/GoalBasedAllocation/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py' -OutFile quickstart.py
 python quickstart.py
 ```
 
@@ -39,23 +38,23 @@ No universal time-to-first-result is promised.
 This small CPU task evaluates one balanced mandate and its analytical buy-and-hold benchmark. It uses a 10-year horizon, initial wealth 100 and continuously compounded annual rates; the printed quantities are model outputs. It needs no data, credentials, GUI, pandas or optional extras, and writes no files. NumPy, SciPy and Matplotlib are the core runtime. Keep the rate, wealth, floor and horizon conventions together when adapting inputs.
 
 [Stable documentation](https://goalbasedallocation.readthedocs.io/en/stable/) is the release channel;
-[latest](https://goalbasedallocation.readthedocs.io/en/latest/) follows main and may include unreleased changes. Check the build's
-source version; a stable alias is not proof of the latest PyPI upload. The source-checkout results below can differ from the released trial; use a matching source snapshot when comparing values.
+[latest](https://goalbasedallocation.readthedocs.io/en/latest/) follows main and may include unreleased
+changes. The commands above pin both the 0.5.0 package and its quickstart source. The expected
+output below is verified against that release.
 
 ## Install
 
-Use the pinned commands above for a released-wheel trial. The included script and expected
-output below describe this **source checkout**, which can differ from the published wheel even
-when an uncommitted development change has not changed the version string. To reproduce those
-source-specific values, follow the [contributor setup](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CONTRIBUTING.md#development-setup)
-and install the matching checkout outside synchronized folders:
+Use the pinned commands above to reproduce the released workflow. For development, follow the
+[contributor setup](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CONTRIBUTING.md)
+and install the matching checkout outside synchronized folders. Development versions can differ
+from the released example:
 
 ```bash
 python -m pip install .
 ```
 
-The core runtime requires Python 3.11 or newer, NumPy, SciPy, and Matplotlib. The released first-use
-workflow is offline: it needs no credentials, market data, display, or source checkout; the source-specific output below requires a matching checkout.
+The core runtime requires Python 3.11 or newer, NumPy, SciPy, and Matplotlib. Once installed, the
+released workflow runs offline without credentials, market data, a display, or a source checkout.
 
 ## Run one balanced mandate
 
@@ -67,10 +66,10 @@ writes no files; execution time depends on the platform and numerical dependenci
 :caption: examples/getting_started/quickstart.py
 ```
 
-[View the script on GitHub](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/examples/getting_started/quickstart.py).
+[View the 0.5.0 script on GitHub](https://github.com/ArturSepp/GoalBasedAllocation/blob/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py).
 
-Expected output (minor platform differences affect only trailing digits); `tests/test_quickstart.py`
-checks these values:
+Verified output for 0.5.0 (minor platform differences affect only trailing digits);
+`tests/test_quickstart.py` checks these values:
 
 ```text
 GoalBasedAllocation quickstart

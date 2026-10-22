@@ -5,12 +5,12 @@
 The package models two regimes and an absorbing wealth floor; it is not a discrete constrained
 multi-asset optimiser, trading engine, or production portfolio-management system.
 
-**Install:** `pip install goal-based-allocation` · **Import:** `goal_based_allocation` · **Status:** Beta
+**Install:** `pip install "goal-based-allocation==0.5.0"` · **Import:** `goal_based_allocation` · **Status:** Beta
 
 [![PyPI](https://img.shields.io/pypi/v/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
 [![Python](https://img.shields.io/pypi/pyversions/goal-based-allocation?style=flat-square)](https://pypi.org/project/goal-based-allocation/)
 [![CI](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ArturSepp/GoalBasedAllocation/actions/workflows/ci.yml)
-[![Docs](https://readthedocs.org/projects/goalbasedallocation/badge/?version=latest)](https://goalbasedallocation.readthedocs.io/en/latest/)
+[![Docs](https://readthedocs.org/projects/goalbasedallocation/badge/?version=stable)](https://goalbasedallocation.readthedocs.io/en/stable/)
 [![License](https://img.shields.io/github/license/ArturSepp/GoalBasedAllocation.svg?style=flat-square)](LICENSE)
 [![Downloads](https://static.pepy.tech/badge/goal-based-allocation)](https://pepy.tech/project/goal-based-allocation)
 [![Monthly](https://static.pepy.tech/badge/goal-based-allocation/month)](https://pepy.tech/project/goal-based-allocation)
@@ -21,7 +21,8 @@ Regime-Switching Jump-Diffusions with Absorbing Barriers and Distribution Matchi
 [Statement of need](#statement-of-need) for what the package implements from it and
 [Citation](#citation) for the BibTeX entries.
 
-**Documentation:** [goalbasedallocation.readthedocs.io](https://goalbasedallocation.readthedocs.io/en/latest/) ·
+**Documentation:** [stable 0.5.0](https://goalbasedallocation.readthedocs.io/en/stable/) ·
+[development (latest)](https://goalbasedallocation.readthedocs.io/en/latest/) ·
 [getting started](docs/getting-started.md) · [paper index](papers/README.md)
 
 ---
@@ -69,7 +70,7 @@ rolling multi-asset optimisation with weight constraints, transaction costs and 
 ## Installation
 
 ```bash
-pip install goal-based-allocation
+pip install "goal-based-allocation==0.5.0"
 ```
 
 Or clone and install in development mode:
@@ -186,11 +187,13 @@ in the handbook chapters [regime-switching model](docs/regime_switching_model.md
 
 ## Five-minute quickstart
 
-The tested [getting-started script](examples/getting_started/quickstart.py) runs offline from a
-source checkout and exercises the same public API used below:
+The [0.5.0 getting-started script](https://github.com/ArturSepp/GoalBasedAllocation/blob/343c9a12bcd49da4ff90cf0af295c7a7d4ec0d61/examples/getting_started/quickstart.py)
+runs offline with `goal-based-allocation==0.5.0`. Follow the
+[released installation and download workflow](docs/getting-started.md#reproducible-released-workflow),
+then run the downloaded script:
 
 ```console
-python examples/getting_started/quickstart.py
+python quickstart.py
 ```
 
 Survival probability for a single asset:
