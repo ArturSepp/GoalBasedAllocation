@@ -10,9 +10,9 @@ myst:
 
 # Notation and conventions
 
-*Author: [Artur Sepp](https://github.com/ArturSepp)*
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-08-19](https://github.com/ArturSepp/GoalBasedAllocation/commit/d5a04a57ecb27f8686e2d18046c8546f3eca3577)*
 
-Project: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
 Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 Every chapter of the handbook states its conventions in a seven-row card and uses the symbols of

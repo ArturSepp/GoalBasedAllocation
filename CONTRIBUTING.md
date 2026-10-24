@@ -2,7 +2,7 @@
 
 *Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-08-22](https://github.com/ArturSepp/GoalBasedAllocation/commit/a3c6dfabe2b80893e32c0e2ca16a979abac1bf1f)*
 
-Source: [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
 Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 Thanks for your interest in `goal-based-allocation`. The package implements the analytical model

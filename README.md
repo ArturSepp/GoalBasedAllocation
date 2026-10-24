@@ -1,5 +1,10 @@
 # goal-based-allocation
 
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-04-06](https://github.com/ArturSepp/GoalBasedAllocation/commit/0bfbb17d774755981ef14b382929fef7bf52cee3)*
+
+Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
+
 **Semi-analytical dynamic mean-variance allocation and terminal-wealth risk under regime-switching jump-diffusions**
 
 The package models two regimes and an absorbing wealth floor; it is not a discrete constrained

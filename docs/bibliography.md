@@ -9,9 +9,9 @@ myst:
 
 # Bibliography
 
-*Author: [Artur Sepp](https://github.com/ArturSepp)*
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-10-01](https://github.com/ArturSepp/GoalBasedAllocation/commit/7a3a3ea0b8f608dd0a890b81a5866cf5a12646a7)*
 
-This is the reference list of the [GoalBasedAllocation handbook](https://github.com/ArturSepp/GoalBasedAllocation).
+Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
 Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 Every entry below is written once, in one style: authors, year, title, venue with volume, issue and

@@ -10,7 +10,10 @@ myst:
 
 # goal-based-allocation
 
-*Author: [Artur Sepp](https://github.com/ArturSepp)*
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-08-19](https://github.com/ArturSepp/GoalBasedAllocation/commit/d5a04a57ecb27f8686e2d18046c8546f3eca3577)*
+
+Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 <a id="goalbasedallocation"></a>
 
@@ -24,7 +27,6 @@ companion code to Sepp (2026), *Dynamic Mean-Variance Portfolio Allocation under
 Jump-Diffusions with Absorbing Barriers and Distribution Matching*
 ([SSRN 6534579](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6534579)).
 
-Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 ## Start here
 

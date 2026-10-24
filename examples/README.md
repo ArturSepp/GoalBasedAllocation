@@ -1,5 +1,10 @@
 # Examples
 
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-07-15](https://github.com/ArturSepp/GoalBasedAllocation/commit/34dccb66d402add62c50a955e4a4f7f91d71ab18)*
+
+Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
+
 Minimal, self-contained illustrations of the core objects in the paper. The
 plotting scripts use the public API of `goal_based_allocation` and save one PNG.
 The getting-started script is output-free and is tested against built artifacts.

@@ -9,10 +9,9 @@ myst:
 
 # Documentation standard
 
-*Author: [Artur Sepp](https://github.com/ArturSepp)*
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-10-01](https://github.com/ArturSepp/GoalBasedAllocation/commit/7a3a3ea0b8f608dd0a890b81a5866cf5a12646a7)*
 
-This standard applies to human-authored documentation for
-[GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
 Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 This is the GoalBasedAllocation supplement to the
@@ -38,6 +37,13 @@ mean-variance allocation; the Laplace transform framework; terminal wealth and i
 derivatives under the same model. A new chapter enters the toctree of its part on the
 [home page](index.md), the `CHAPTERS` list of `tests/test_documentation_examples.py` and the
 methodology list of `tests/test_docs.py`.
+
+Use the linked Artur Sepp byline and the GoalBasedAllocation repository/software-citation block
+shown at the top of this page on every human-authored page, including the README, contribution
+guide, example guide and legacy redirect pages. Each page's First recorded date links to its own
+earliest verified source history, following renames and earlier source formats when applicable.
+A new uncommitted page keeps the author-only byline until commit evidence exists. Generated API
+stub pages retain their producer-owned format; the human-authored API overview carries the header.
 
 ## Handbook conventions
 

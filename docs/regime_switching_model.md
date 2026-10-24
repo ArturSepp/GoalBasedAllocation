@@ -9,7 +9,7 @@ myst:
 
 # The regime-switching jump-diffusion
 
-*Author: [Artur Sepp](https://github.com/ArturSepp)*
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-10-01](https://github.com/ArturSepp/GoalBasedAllocation/commit/7a3a3ea0b8f608dd0a890b81a5866cf5a12646a7)*
 
 Implemented in [GoalBasedAllocation](https://github.com/ArturSepp/GoalBasedAllocation).
 Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
