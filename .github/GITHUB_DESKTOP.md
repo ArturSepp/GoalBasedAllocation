@@ -1,8 +1,8 @@
 # Committing with GitHub Desktop
 
-*Author: [Artur Sepp](https://github.com/ArturSepp)*
+*Author: [Artur Sepp](https://github.com/ArturSepp) / First recorded: [2026-09-21](https://github.com/ArturSepp/GoalBasedAllocation/commit/a9c187b6ab92089edecaab1820654262cda518e2)*
 
-Project: [goal_based_allocation](https://github.com/ArturSepp/GoalBasedAllocation).
+Implemented in [goal-based-allocation](https://github.com/ArturSepp/GoalBasedAllocation).
 Software citation: [CITATION.cff](https://github.com/ArturSepp/GoalBasedAllocation/blob/main/CITATION.cff).
 
 Create a working branch, select the intended changes, and commit normally. The installed
