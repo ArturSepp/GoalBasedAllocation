@@ -263,14 +263,23 @@ def test_builds_preserve_channel_canonical(monkeypatch, service_url, canonical_u
     assert runpy.run_path(str(DOCS / "conf.py"))["html_baseurl"] == canonical_url
 
 
+@pytest.mark.parametrize(
+    "service_url",
+    [None] + [f"https://goalbasedallocation.readthedocs.io/en/{channel}/"
+              for channel in ("latest", "stable", "0.4.1")],
+    ids=["local", "latest", "stable", "tagged"],
+)
 def test_site_build_shortens_titles_and_keeps_redirect_stubs_out_of_the_index(
-    monkeypatch, tmp_path
+    monkeypatch, tmp_path, service_url
 ):
     # Furo would end every title with the full html_title, and the redirect stubs, the noindex
     # search page and the general index would be offered to search engines in the sitemap.
     for module in ("sphinx", "furo", "myst_parser", "sphinx_sitemap"):
         pytest.importorskip(module)
-    monkeypatch.delenv("READTHEDOCS_CANONICAL_URL", raising=False)
+    if service_url is None:
+        monkeypatch.delenv("READTHEDOCS_CANONICAL_URL", raising=False)
+    else:
+        monkeypatch.setenv("READTHEDOCS_CANONICAL_URL", service_url)
     source = tmp_path / "source"
     (source / "user-guide").mkdir(parents=True)
     (source / "conf.py").write_text(
@@ -314,7 +323,7 @@ def test_site_build_shortens_titles_and_keeps_redirect_stubs_out_of_the_index(
 
         def __init__(self):
             super().__init__()
-            self.robots, self.descriptions = [], []
+            self.robots, self.descriptions, self.canonicals = [], [], []
 
         def handle_starttag(self, tag, attrs):
             attrs = dict(attrs)
@@ -322,6 +331,8 @@ def test_site_build_shortens_titles_and_keeps_redirect_stubs_out_of_the_index(
                 self.robots.append(attrs["content"])
             if tag == "meta" and attrs.get("name") == "description":
                 self.descriptions.append(attrs["content"])
+            if tag == "link" and attrs.get("rel") == "canonical":
+                self.canonicals.append(attrs["href"])
 
     def head(name):
         """Parse the head of a built page and return its titles and tag collector."""
@@ -343,8 +354,11 @@ def test_site_build_shortens_titles_and_keeps_redirect_stubs_out_of_the_index(
     assert stub.robots == ["noindex, follow"]
     assert stub.descriptions == ["A moved page."]
     sitemap = (output / "sitemap.xml").read_text(encoding="utf-8")
-    base = "https://goalbasedallocation.readthedocs.io/en/latest/"
+    base = service_url or "https://goalbasedallocation.readthedocs.io/en/latest/"
     assert sorted(re.findall(r"<loc>(.*?)</loc>", sitemap)) == [
+        base,
         f"{base}chapter.html",
-        f"{base}index.html",
     ]
+    # A sitemap must advertise the same URL the rendered page asks Google to index.
+    assert index.canonicals == [base]
+    assert chapter.canonicals == [f"{base}chapter.html"]
